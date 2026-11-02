@@ -14,9 +14,7 @@ Summary
   GDI+ engine on SkiaSharp (SkiaGdiPlus)      tools/lift/additions/System.Drawing.Common,   MIT (drawingForCore
                                               src/drawingForCore.System.Drawing.Common/     contributors)
                                               SkiaGdiPlus
-  System.Drawing (WebFormsForCore)            src/drawingForCore.System.Drawing             MIT (Simon Jakob Egli;
-                                                                                            FontConverter .NET
-                                                                                            Foundation)
+  System.Drawing (WebFormsForCore)            src/drawingForCore.System.Drawing             MIT (Simon Jakob Egli)
   System.Drawing.Common 6.0's tests and       test/drawingForCore.System.Drawing.Common.    MIT (.NET Foundation)
     TestUtilities                             Tests, test/drawingForCore.TestUtilities
   .NET Arcade (XUnitExtensions,               test/drawingForCore.Microsoft.DotNet.*        MIT (.NET Foundation)
@@ -49,9 +47,9 @@ System.Drawing
 --------------
 
 src/drawingForCore.System.Drawing comes from WebFormsForCore (https://github.com/webformsforcore/WebFormsForCore,
-commit 52f4172, src/WebFormsForCore.Drawing), MIT License, Copyright (c) 2024 Simon Jakob Egli. Its FontConverter comes
-from .NET (https://github.com/dotnet/runtime, MIT License, Copyright (c) .NET Foundation and Contributors). The copy is
-made by tools/lift/lift_system_drawing.py and recorded in tools/lift/manifests/System.Drawing.tsv. The assembly carries
+commit 52f4172, src/WebFormsForCore.Drawing/AssemblyInfo.cs), MIT License, Copyright (c) 2024 Simon Jakob Egli: the
+assembly's attributes and its type forwards to System.Drawing.Common. The copy is made by
+tools/lift/lift_system_drawing.py, which lists every change, and recorded in tools/lift/manifests/System.Drawing.tsv. The assembly carries
 System.Drawing's public key (token b03f5f7f11d50a3a, keys/System.Drawing.snk); it is public signed, not signed by
 Microsoft.
 

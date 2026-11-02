@@ -11,7 +11,7 @@ Yes. Everything in the packages is under the MIT License.
 | --- | --- | --- | --- |
 | System.Drawing.Common 6.0 (Microsoft's code) | `src/drawingForCore.System.Drawing.Common` | MIT (© .NET Foundation) | ✅ Yes |
 | The GDI+ engine on SkiaSharp | `tools/lift/additions/System.Drawing.Common` (copied to `SkiaGdiPlus/`) | MIT (© drawingForCore contributors) | ✅ Yes |
-| System.Drawing (from WebFormsForCore; FontConverter from .NET) | `src/drawingForCore.System.Drawing` | MIT (© Simon Jakob Egli; © .NET Foundation) | ✅ Yes |
+| System.Drawing (type forwards, from WebFormsForCore) | `src/drawingForCore.System.Drawing` | MIT (© Simon Jakob Egli) | ✅ Yes |
 | SkiaSharp and Skia (from NuGet) | restored at build time | MIT (© Microsoft, Xamarin); Skia BSD 3-Clause (© Google) | ✅ Yes |
 | Tests and test infrastructure from dotnet/runtime, arcade and runtime-assets | `test/` | MIT (© .NET Foundation) | ✅ Yes (not in the packages) |
 

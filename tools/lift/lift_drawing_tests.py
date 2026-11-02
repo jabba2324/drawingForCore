@@ -159,7 +159,8 @@ def main():
     dest = os.path.join(test, name)
     reset(dest)
     src_rel = "src/Microsoft.DotNet.XUnitExtensions/src"
-    for root, _, files in os.walk(os.path.join(arcade, src_rel)):
+    for root, dirs, files in os.walk(os.path.join(arcade, src_rel)):
+        dirs.sort()  # a stable manifest: os.walk lists directories in the file system's order
         for f in sorted(files):
             if f.endswith(".cs"):
                 rel = os.path.relpath(os.path.join(root, f), arcade)
@@ -263,7 +264,8 @@ def main():
     data = 0
     for pkg in TESTDATA:
         base = f"src/{pkg}"
-        for root, _, files in os.walk(os.path.join(assets, base)):
+        for root, dirs, files in os.walk(os.path.join(assets, base)):
+            dirs.sort()
             for f in sorted(files):
                 if f.endswith(".csproj"):
                     continue

@@ -25,7 +25,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyVersion("13.5.0.0")]
 [assembly: TypeForwardedTo(typeof (Bitmap))]
 [assembly: TypeForwardedTo(typeof (BitmapSuffixInSameAssemblyAttribute))]
-//[assembly: TypeForwardedTo(typeof (BitmapSuffixInSatelliteAssemblyAttribute))]
+[assembly: TypeForwardedTo(typeof (BitmapSuffixInSatelliteAssemblyAttribute))] // drawingForCore: System.Drawing.Common defines it (was a duplicate, CS0433)
 [assembly: TypeForwardedTo(typeof (Brush))]
 [assembly: TypeForwardedTo(typeof (Brushes))]
 [assembly: TypeForwardedTo(typeof (BufferedGraphics))]
@@ -76,7 +76,7 @@ using System.Runtime.CompilerServices;
 [assembly: TypeForwardedTo(typeof (WarpMode))]
 [assembly: TypeForwardedTo(typeof (WrapMode))]
 [assembly: TypeForwardedTo(typeof (Font))]
-//[assembly: TypeForwardedTo(typeof (FontConverter))]
+[assembly: TypeForwardedTo(typeof (FontConverter))] // drawingForCore: System.Drawing.Common defines it (was a duplicate, CS0433)
 //[assembly: TypeForwardedTo(typeof (FontConverter.FontNameConverter))]
 //[assembly: TypeForwardedTo(typeof (FontConverter.FontUnitConverter))]
 [assembly: TypeForwardedTo(typeof (FontFamily))]
@@ -194,4 +194,4 @@ using System.Runtime.CompilerServices;
 [assembly: TypeForwardedTo(typeof (PrivateFontCollection))]
 [assembly: TypeForwardedTo(typeof (TextRenderingHint))]
 [assembly: TypeForwardedTo(typeof (TextureBrush))]
-//[assembly: TypeForwardedTo(typeof (ToolboxBitmapAttribute))]
+[assembly: TypeForwardedTo(typeof (ToolboxBitmapAttribute))] // drawingForCore: System.Drawing.Common defines it (was a duplicate, CS0433)

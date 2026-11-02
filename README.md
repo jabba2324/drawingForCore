@@ -78,7 +78,7 @@ differs from what is committed. The GDI+ engine is drawingForCore's own code, in
 | Project | Assembly | From |
 | --- | --- | --- |
 | `src/drawingForCore.System.Drawing.Common` | System.Drawing.Common 11.0.0.0 | [dotnet/runtime](https://github.com/dotnet/runtime) release/6.0, with the engine (`SkiaGdiPlus/`) |
-| `src/drawingForCore.System.Drawing` | System.Drawing 13.5.0.0 | [WebFormsForCore](https://github.com/webformsforcore/WebFormsForCore) |
+| `src/drawingForCore.System.Drawing` | System.Drawing 13.5.0.0 (type forwards to System.Drawing.Common) | [WebFormsForCore](https://github.com/webformsforcore/WebFormsForCore) |
 | `test/drawingForCore.System.Drawing.Common.Tests` | Microsoft's tests | dotnet/runtime release/6.0, with test data from [dotnet/runtime-assets](https://github.com/dotnet/runtime-assets) |
 | `test/drawingForCore.TestUtilities`, `.Microsoft.DotNet.XUnitExtensions`, `.Microsoft.DotNet.RemoteExecutor` | Microsoft's test infrastructure | dotnet/runtime and [dotnet/arcade](https://github.com/dotnet/arcade) release/6.0 |
 

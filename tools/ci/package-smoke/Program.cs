@@ -8,7 +8,6 @@ using System.Drawing.Imaging;
 var failures = new List<string>();
 void Check(bool ok, string what) { Console.WriteLine($"{(ok ? "ok  " : "FAIL")} {what}"); if (!ok) failures.Add(what); }
 
-// System.Drawing isn't named by type: it defines FontConverter as System.Drawing.Common does (CS0433, LIFT.md open items).
 var common = typeof(Bitmap).Assembly.GetName();
 var drawing = System.Reflection.Assembly.Load("System.Drawing").GetName();
 Console.WriteLine($"{common.FullName}\n{drawing.FullName}");
@@ -48,10 +47,14 @@ using (var gif = Image.FromFile(Path.Combine(dir, "smoke.gif")))
 
 // .NET Framework code names GDI+'s types in System.Drawing, which forwards them to System.Drawing.Common.
 Check(Type.GetType("System.Drawing.Bitmap, System.Drawing", throwOnError: false) == typeof(Bitmap), "System.Drawing forwards Bitmap to System.Drawing.Common");
+Check(Type.GetType("System.Drawing.FontConverter, System.Drawing", throwOnError: false) == typeof(FontConverter), "System.Drawing forwards FontConverter to System.Drawing.Common");
+Check(Type.GetType("System.Drawing.FontConverter+FontNameConverter, System.Drawing", throwOnError: false) == typeof(FontConverter.FontNameConverter), "... and its nested types");
 
-// FontConverter, through TypeDescriptor as designers and configuration use it.
-var converted = TypeDescriptor.GetConverter(typeof(Font)).ConvertFromInvariantString("Arial, 12pt, style=Bold") as Font;
+// FontConverter, named in code (System.Drawing defined its own copy, and this didn't compile: CS0433) and through
+// TypeDescriptor, as designers and configuration use it.
+var converted = new FontConverter().ConvertFromInvariantString("Arial, 12pt, style=Bold") as Font;
 Check(converted is { Size: 12, Bold: true }, "FontConverter parses \"Arial, 12pt, style=Bold\"");
+Check(TypeDescriptor.GetConverter(typeof(Font)) is FontConverter, "Font's TypeConverter is FontConverter");
 
 Directory.Delete(dir, true);
 Console.WriteLine(failures.Count == 0 ? "Package smoke test passed." : $"{failures.Count} checks failed.");

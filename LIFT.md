@@ -146,8 +146,18 @@ What moved, and what changed in moving:
   comment marker (`// webForCore:` → `// drawingForCore:`) and the issue number `(#46)`, which referred to webForCore's
   issues, removed from the test fixups' comments.
 - **System.Drawing is lifted too.** In webForCore, `src/WebFormsForCore.Drawing` was part of the fork base, unchanged
-  from WebFormsForCore except its project file. Here `tools/lift/lift_system_drawing.py` copies its four source files
-  byte for byte from WebFormsForCore at the fork commit and generates the project file.
+  from WebFormsForCore except its project file. Here `tools/lift/lift_system_drawing.py` copies it from WebFormsForCore
+  at the fork commit and generates the project file.
+- **System.Drawing forwards three types it used to duplicate.** WebFormsForCore's System.Drawing defined its own
+  `FontConverter` (from dotnet/runtime), `ToolboxBitmapAttribute` (a stub that ignored its arguments) and
+  `BitmapSuffixInSatelliteAssemblyAttribute`, with their forwards commented out in `AssemblyInfo.cs`.
+  System.Drawing.Common 6.0 defines all three, so an application referencing both (as the `drawingForCore` package
+  does, and webForCore's packages did) and naming one didn't compile: "error CS0433: The type 'FontConverter' exists in
+  both 'System.Drawing.Common, Version=11.0.0.0' and 'System.Drawing, Version=13.5.0.0'". The new package smoke test
+  hit it. Those three files aren't lifted; the three forwards are restored (fixups in the script), so only
+  `AssemblyInfo.cs` is lifted. Nested types (`FontConverter.FontNameConverter`, `FontUnitConverter`) are forwarded with
+  their containing type; their own commented-out forwards stay as they are. The smoke test names `FontConverter`, and
+  checks that `System.Drawing` forwards it and its nested types.
 - **Public signing instead of FakeStrongName.** webForCore built these assemblies with its own key and rewrote the
   public key afterwards (WebFormsForCore's FakeStrongName task, which needs Mono.Cecil and prebuilt build tools). Here
   the SDK's public signing does it: `keys/System.Drawing.Common.snk` and `keys/System.Drawing.snk` hold only
@@ -174,14 +184,6 @@ the smoke test (NuGet downloads both packages from the feed's flat container).
 ## Open items
 
 - **Metafiles** (EMF/WMF): 141 of the 151 known failures. Not implemented.
-- **System.Drawing duplicates three types.** WebFormsForCore's System.Drawing defines its own `FontConverter`,
-  `ToolboxBitmapAttribute` (a stub) and `BitmapSuffixInSatelliteAssemblyAttribute`, and System.Drawing.Common 6.0 also
-  has them (its forwards to them are commented out in `AssemblyInfo.cs`). Code that names one of them while
-  referencing both assemblies gets CS0433. The `drawingForCore` package references both, so an application that
-  names `FontConverter` doesn't compile ("The type 'FontConverter' exists in both 'System.Drawing.Common, Version=11.0.0.0'
-  and 'System.Drawing, Version=13.5.0.0'"); the package smoke test hit it, and webForCore's packages have it too. Kept
-  as webForCore had it for the move; forwarding the three types (the commented-out forwards) would remove the
-  duplicates.
 - **The 1,008 tests Microsoft disabled for libgdiplus:** 560 pass. Bringing those that pass into the selection would
   widen what CI checks.
 - **macOS** isn't tested. SkiaSharp ships its native assets.

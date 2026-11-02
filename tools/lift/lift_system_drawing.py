@@ -3,10 +3,12 @@
 
 On .NET Framework, System.Drawing.dll holds GDI+'s classes; on .NET they are in System.Drawing.Common, and the shared
 framework's System.Drawing.dll facade forwards to it. WebFormsForCore's src/WebFormsForCore.Drawing replaces that facade
-with an assembly of the same name and a higher version (13.5.0.0): type forwards to System.Drawing.Common, and its own
-FontConverter (from dotnet/runtime), ToolboxBitmapAttribute (a stub) and BitmapSuffixInSatelliteAssemblyAttribute,
-which System.Drawing.Common 6.0 also defines (LIFT.md, open items). Its source files are copied byte for byte from the
-commit below; the project file is generated.
+with an assembly of the same name and a higher version (13.5.0.0) that forwards GDI+'s types to System.Drawing.Common.
+WebFormsForCore also defined its own FontConverter, ToolboxBitmapAttribute (a stub) and
+BitmapSuffixInSatelliteAssemblyAttribute, with their forwards commented out; System.Drawing.Common 6.0 defines them
+too, so code that named one of them didn't compile (CS0433). Here those three files aren't lifted and the forwards are
+restored (FIXUPS). AssemblyInfo.cs is copied byte for byte from the commit below, then the FIXUPS are applied; the
+project file is generated.
 
 Usage: lift_system_drawing.py <WebFormsForCore checkout> <repository root>
 The checkout may be at any commit that has COMMIT (read with git show). Writes tools/lift/manifests/System.Drawing.tsv.
@@ -17,7 +19,16 @@ NAME = "System.Drawing"
 PROJECT = "drawingForCore.System.Drawing"
 COMMIT = "52f4172dbc09b3ad0b849c97642720fa7a49aa22"  # webformsforcore/WebFormsForCore, 29 Oct 2026
 SOURCE = "src/WebFormsForCore.Drawing"
-FILES = ["AssemblyInfo.cs", "BitmapSuffixInSatelliteAssemblyAttribute.cs", "FontConverter.cs", "ToolboxBitmapAttribute.cs"]
+FILES = ["AssemblyInfo.cs"]
+# Not lifted: System.Drawing.Common defines these types, and System.Drawing forwards them (below).
+EXCLUDED = ["BitmapSuffixInSatelliteAssemblyAttribute.cs", "FontConverter.cs", "ToolboxBitmapAttribute.cs"]
+
+# (file, old, new). Nested types (FontConverter.FontNameConverter, ...) are forwarded with their containing type.
+FIXUPS = [
+    ("AssemblyInfo.cs", "//[assembly: TypeForwardedTo(typeof (" + name + "))]\n",
+     "[assembly: TypeForwardedTo(typeof (" + name + "))] // drawingForCore: System.Drawing.Common defines it (was a duplicate, CS0433)\n")
+    for name in ("BitmapSuffixInSatelliteAssemblyAttribute", "FontConverter", "ToolboxBitmapAttribute")
+]
 
 
 def main():
@@ -31,6 +42,11 @@ def main():
     manifest = [f"# webformsforcore/WebFormsForCore {COMMIT}: source path (relative to repo root)\tdestination (relative to the repository root)"]
     for f in FILES:
         data = subprocess.check_output(["git", "-C", upstream, "show", f"{COMMIT}:{SOURCE}/{f}"])
+        for name, old, new in FIXUPS:
+            if name == f:
+                assert data.count(old.encode()) == 1, (f, old)
+                data = data.replace(old.encode(), new.encode())
+                print(f"   fixup {f}: {new.split('typeof (')[1].split(')')[0]}")
         target = os.path.join(dest, f)
         open(target, "wb").write(data)
         manifest.append(f"{SOURCE}/{f}\t{os.path.relpath(target, root)}")
