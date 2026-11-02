@@ -21,7 +21,7 @@ and moved to its own repository because it is useful to any .NET Framework code 
 | --- | --- |
 | Status | Pre-release (0.1.0) |
 | Target | .NET 11 (`net11.0`). Linux x64 and Windows x64, both built and tested in CI. SkiaSharp also ships macOS assets; macOS isn't tested |
-| Tests | Microsoft's System.Drawing.Common 6.0 test suite: 3,883 tests, 3,716 pass, 16 skipped, 151 known failures (141 of them metafiles, which aren't implemented). CI fails on any other failure |
+| Tests | Microsoft's System.Drawing.Common 6.0 test suite, in CI on Linux and on Windows: 3,882 tests, 3,705 pass, 26 skipped, 151 known failures (141 of them metafiles, which aren't implemented). CI fails on any other failure |
 | Packages | `drawingForCore` (System.Drawing) and `drawingForCore.Common` (System.Drawing.Common), on the feed below and on the [GitHub releases](https://github.com/jabba2324/drawingForCore/releases). Not on nuget.org |
 
 ## Using it

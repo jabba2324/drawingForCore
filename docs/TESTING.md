@@ -4,9 +4,13 @@ drawingForCore is tested with **Microsoft's own test suite** for System.Drawing.
 with the code ([MODIFICATIONS.md](MODIFICATIONS.md)). Its tests record what Windows GDI+ does, so they measure how
 close the engine is to it.
 
-**Latest run (0.1.0, 2 Nov 2026, Linux x64 and Windows x64, Release): 3,883 tests in Microsoft's Linux selection.
-3,716 pass, 16 are skipped by the suite, and 151 fail, all of them known (141 are metafiles, which aren't
-implemented).**
+**Latest run (0.1.0, CI, 2 Nov 2026, Linux x64 and Windows x64, Release): 3,882 tests in Microsoft's Linux selection,
+the same on both. 3,705 pass, 26 are skipped by the suite, and 151 fail, all of them known (141 are metafiles, which
+aren't implemented).** The numbers are webForCore's CI numbers for the same suite.
+
+Ten printing tests run only where a printer is installed (`PrinterSettingsTests`, `PrintControllerTests`,
+`PreviewPrintControllerTests`): CI's runners have none, so they are skipped there. On a machine with a printer they run
+and pass: 3,883 tests, 3,716 pass, 16 skipped, 151 known failures (Fedora 44, with CUPS).
 
 ## Running the tests
 

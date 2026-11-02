@@ -177,7 +177,8 @@ What moved, and what changed in moving:
   after each release (`.github/workflows/feed.yml`). No account, token or server.
 
 Result (Linux x64, Release, lifted from fresh shallow clones): **3,883 tests, 3,716 pass, 16 skipped, 151 fail, all
-known**, the same as webForCore's last run. Packing gives `drawingForCore` and `drawingForCore.Common` with symbol
+known**, the same as webForCore's last local run. In CI, on both platforms: 3,882 tests, 3,705 pass, 26 skipped, 151
+known failures, the same as webForCore's CI (ten printing tests need an installed printer, which the runners lack). Packing gives `drawingForCore` and `drawingForCore.Common` with symbol
 packages. The package smoke test passes. A feed made by Sleet from those packages, served over HTTP, restores and runs
 the smoke test (NuGet downloads both packages from the feed's flat container).
 
