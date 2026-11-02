@@ -1,0 +1,4 @@
+# Lifted code is stored byte for byte as upstream has it (some of Microsoft's files have CRLF line endings, and test
+# data is binary). Never convert it.
+src/drawingForCore.*/** -text
+test/drawingForCore.*/** -text

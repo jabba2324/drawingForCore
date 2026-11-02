@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/drawingForCore.System.Drawing.Common/drawingForCore.System.Drawing.Common.csproj" />
+    <Project Path="src/drawingForCore.System.Drawing/drawingForCore.System.Drawing.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <Project Path="test/drawingForCore.Microsoft.DotNet.RemoteExecutor/drawingForCore.Microsoft.DotNet.RemoteExecutor.csproj" />
+    <Project Path="test/drawingForCore.Microsoft.DotNet.XUnitExtensions/drawingForCore.Microsoft.DotNet.XUnitExtensions.csproj" />
+    <Project Path="test/drawingForCore.System.Drawing.Common.Tests/drawingForCore.System.Drawing.Common.Tests.csproj" />
+    <Project Path="test/drawingForCore.TestUtilities/drawingForCore.TestUtilities.csproj" />
+  </Folder>
+</Solution>

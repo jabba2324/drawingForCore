@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- System.Drawing.Common 6.0 (dotnet/runtime 76b9680, release/6.0), lifted by tools/lift/lift_drawing.py: Microsoft's
+       managed code for a Unix build, with the GDI+ flat API implemented in managed code on SkiaSharp (SkiaGdiPlus/)
+       instead of libgdiplus. Generated; do not edit (change the lift script or tools/lift/additions/System.Drawing.Common/). -->
+  <PropertyGroup>
+    <TargetFramework>net11.0</TargetFramework>
+    <AssemblyName>System.Drawing.Common</AssemblyName>
+    <RootNamespace>System.Drawing</RootNamespace>
+    <AssemblyVersion>11.0.0.0</AssemblyVersion>
+    <FileVersion>11.0.0.0</FileVersion>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>$(DefineConstants);DRAWING_NAMESPACE</DefineConstants>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <GenerateResourceUsePreserializedResources>false</GenerateResourceUsePreserializedResources>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <NoWarn>$(NoWarn);CS0618;CS8600;CS8601;CS8602;CS8603;CS8604;CS8618;CS8625;CS8765;CS8767;CA1416;SYSLIB0003;SYSLIB0011;SYSLIB0051;CS0649;CS0169;CS0414</NoWarn>
+    <PackageId>drawingForCore.Common</PackageId>
+    <Description>System.Drawing.Common for .NET 11 on Linux, macOS and Windows: Microsoft's System.Drawing.Common 6.0 with GDI+ implemented in managed code on SkiaSharp.</Description>
+    <!-- System.Drawing.Common's identity (the shared framework's System.Drawing facade forwards to it): public signed
+         with its public key (keys/), as dotnet/runtime's own open-source builds are. -->
+    <AssemblyOriginatorKeyFile>..\..\keys\System.Drawing.Common.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <PublicSign>true</PublicSign>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="**\*.cs" Exclude="bin\**;obj\**" />
+    <EmbeddedResource Include="Resources\Strings.resx" LogicalName="System.Drawing.Common.Strings.resources" />
+    <EmbeddedResource Include="Resources\System\Drawing\DefaultComponent.bmp" LogicalName="System.Drawing.DefaultComponent.bmp" />
+    <EmbeddedResource Include="Resources\System\Drawing\Printing\PrintDocument.bmp" />
+    <EmbeddedResource Include="Resources\System\Drawing\ShieldIcon.ico" LogicalName="System.Drawing.ShieldIcon.ico" />
+    <EmbeddedResource Include="Resources\System\Drawing\Error.ico" LogicalName="placeholder.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SkiaSharp" Version="3.119.0" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="3.119.0" />
+  </ItemGroup>
+</Project>

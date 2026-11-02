@@ -1,0 +1,5 @@
+# webformsforcore/WebFormsForCore 52f4172dbc09b3ad0b849c97642720fa7a49aa22: source path (relative to repo root)	destination (relative to the repository root)
+src/WebFormsForCore.Drawing/AssemblyInfo.cs	src/drawingForCore.System.Drawing/AssemblyInfo.cs
+src/WebFormsForCore.Drawing/BitmapSuffixInSatelliteAssemblyAttribute.cs	src/drawingForCore.System.Drawing/BitmapSuffixInSatelliteAssemblyAttribute.cs
+src/WebFormsForCore.Drawing/FontConverter.cs	src/drawingForCore.System.Drawing/FontConverter.cs
+src/WebFormsForCore.Drawing/ToolboxBitmapAttribute.cs	src/drawingForCore.System.Drawing/ToolboxBitmapAttribute.cs
