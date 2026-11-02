@@ -68,6 +68,9 @@ Packing builds version `<Version>-ci.<run number>` (Directory.Build.props). The 
 folder, then draws, saves and reloads PNG, JPEG and GIF images, checks pixels, formats and `FontConverter`, and checks
 that the assemblies have Microsoft's names, versions and public key tokens.
 
+The default branch, `main`, is protected: a pull request can merge only once both jobs have passed on it. Force
+pushes and deleting the branch are blocked; repository admins can still push directly.
+
 A `v<Version>` tag also builds the release version and, once both jobs pass, attaches the packages to a GitHub release
 (with `docs/release-notes/<version>.md` as its notes) and rebuilds the NuGet feed on GitHub Pages from the latest
 releases (`.github/workflows/feed.yml`, which can also be run by hand).
