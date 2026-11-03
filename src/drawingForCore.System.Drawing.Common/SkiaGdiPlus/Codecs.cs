@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using SkiaSharp;
 
@@ -289,23 +288,12 @@ namespace System.Drawing
 
         // Encoding
 
-        public static int Encode(GpImage image, Guid clsid, IntPtr encoderParameters, Stream output)
+        // quality: the JPEG quality, Encoder.Quality from the caller's EncoderParameters (the flat API functions read
+        // it), 75 without one.
+        public static int Encode(GpImage image, Guid clsid, long quality, Stream output)
         {
             var codec = ByClsid(clsid);
             if (codec == null || (codec.Flags & Encoder) == 0) return SafeNativeMethods.SkiaGdiPlus.FileNotFound; // GDI+: unknown encoder
-            long quality = 75;
-            if (encoderParameters != IntPtr.Zero)
-            {
-                // GDI+'s EncoderParameters block, as Microsoft's EncoderParameters.ConvertToMemory writes it: the count
-                // (pointer-sized), then each EncoderParameter (Guid, NumberOfValues, Type, Value pointer).
-                int count = Marshal.ReadInt32(encoderParameters), size = Marshal.SizeOf<EncoderParameter>();
-                for (int i = 0; i < count; i++)
-                {
-                    IntPtr p = encoderParameters + IntPtr.Size + i * size;
-                    if (Marshal.PtrToStructure<Guid>(p) == System.Drawing.Imaging.Encoder.Quality.Guid && Marshal.ReadInt32(p, 16) > 0)
-                        quality = Marshal.ReadInt32(Marshal.ReadIntPtr(p, 24));
-                }
-            }
             if (codec.Format == ImageFormat.Png.Guid) return EncodeSkia(image, SKEncodedImageFormat.Png, 100, output);
             if (codec.Format == ImageFormat.Jpeg.Guid) return EncodeJpeg(image, (int)Math.Clamp(quality, 0, 100), output);
             if (codec.Format == ImageFormat.Bmp.Guid) { Bmp.Write(image, output); return SafeNativeMethods.SkiaGdiPlus.Ok; }

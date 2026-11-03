@@ -112,9 +112,21 @@ namespace System.Drawing
             StreamSeekDelegate doSeek, StreamCloseDelegate close, StreamSizeDelegate size, ref Guid encoderClsID, IntPtr encoderParameters)
         {
             var img = Image(image);
-            if (img == null) return InvalidParameter;
+            if (img == null) return InvalidParameter;            // The JPEG quality from GDI+'s EncoderParameters block, as Microsoft's EncoderParameters.ConvertToMemory
+            // writes it: the count (pointer-sized), then each EncoderParameter (Guid, NumberOfValues, Type, Value pointer).
+            long quality = 75;
+            if (encoderParameters != IntPtr.Zero)
+            {
+                int count = Marshal.ReadInt32(encoderParameters), parameterSize = Marshal.SizeOf<EncoderParameter>();
+                for (int i = 0; i < count; i++)
+                {
+                    IntPtr p = encoderParameters + IntPtr.Size + i * parameterSize;
+                    if (Marshal.PtrToStructure<Guid>(p) == System.Drawing.Imaging.Encoder.Quality.Guid && Marshal.ReadInt32(p, 16) > 0)
+                        quality = Marshal.ReadInt32(Marshal.ReadIntPtr(p, 24));
+                }
+            }
             using var ms = new MemoryStream();
-            int status = Codecs.Encode(img, encoderClsID, encoderParameters, ms);
+            int status = Codecs.Encode(img, encoderClsID, quality, ms);
             if (status != Ok) return status;
             var bytes = ms.GetBuffer();
             fixed (byte* p = bytes)
@@ -133,9 +145,21 @@ namespace System.Drawing
         internal static int GdipSaveImageToFile(IntPtr image, string filename, ref Guid encoderClsID, IntPtr encoderParameters)
         {
             var img = Image(image);
-            if (img == null || filename == null) return InvalidParameter;
+            if (img == null || filename == null) return InvalidParameter;            // The JPEG quality from GDI+'s EncoderParameters block, as Microsoft's EncoderParameters.ConvertToMemory
+            // writes it: the count (pointer-sized), then each EncoderParameter (Guid, NumberOfValues, Type, Value pointer).
+            long quality = 75;
+            if (encoderParameters != IntPtr.Zero)
+            {
+                int count = Marshal.ReadInt32(encoderParameters), parameterSize = Marshal.SizeOf<EncoderParameter>();
+                for (int i = 0; i < count; i++)
+                {
+                    IntPtr p = encoderParameters + IntPtr.Size + i * parameterSize;
+                    if (Marshal.PtrToStructure<Guid>(p) == System.Drawing.Imaging.Encoder.Quality.Guid && Marshal.ReadInt32(p, 16) > 0)
+                        quality = Marshal.ReadInt32(Marshal.ReadIntPtr(p, 24));
+                }
+            }
             using var ms = new MemoryStream();
-            int status = Codecs.Encode(img, encoderClsID, encoderParameters, ms);
+            int status = Codecs.Encode(img, encoderClsID, quality, ms);
             if (status != Ok) return status;
             try
             {
