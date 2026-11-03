@@ -11,9 +11,8 @@ Summary
   Component                                   Location                                      Licence
   ------------------------------------------  --------------------------------------------  --------------------------
   System.Drawing.Common 6.0                   src/drawingForCore.System.Drawing.Common      MIT (.NET Foundation)
-  GDI+ engine on SkiaSharp (SkiaGdiPlus)      tools/lift/additions/System.Drawing.Common,   MIT (drawingForCore
-                                              src/drawingForCore.System.Drawing.Common/     contributors)
-                                              SkiaGdiPlus
+  GDI+ engine on SkiaSharp (SkiaGdiPlus)      src/drawingForCore.System.Drawing.Common/     MIT (drawingForCore
+                                              SkiaGdiPlus                                   contributors)
   System.Drawing (WebFormsForCore)            src/drawingForCore.System.Drawing             MIT (Simon Jakob Egli)
   System.Drawing.Common 6.0's tests and       test/drawingForCore.System.Drawing.Common.    MIT (.NET Foundation)
     TestUtilities                             Tests, test/drawingForCore.TestUtilities
@@ -34,10 +33,9 @@ licensed under the MIT License:
     Licensed to the .NET Foundation under one or more agreements.
     The .NET Foundation licenses this file to you under the MIT license.
 
-It lives in src/drawingForCore.System.Drawing.Common; each file keeps its original header. The copy is made by
-tools/lift/lift_drawing.py, which lists every change, and the per-file source is recorded in
-tools/lift/manifests/System.Drawing.Common.tsv. The GDI+ engine in SkiaGdiPlus/ (from
-tools/lift/additions/System.Drawing.Common/) is drawingForCore's own, under the MIT License. The assembly carries
+It is in the external/runtime submodule (https://github.com/xforcore/runtime, branch drawingforcore), compiled by
+src/drawingForCore.System.Drawing.Common; each file keeps its original header, and every change is a commit on that
+branch. The GDI+ engine in SkiaGdiPlus/ is drawingForCore's own, under the MIT License. The assembly carries
 System.Drawing.Common's public key (token cc7b13ffcd2ddd51, keys/System.Drawing.Common.snk) so that references to it
 resolve; it is public signed, not signed by Microsoft. It uses SkiaSharp (https://github.com/mono/SkiaSharp, MIT
 License, Copyright (c) 2015-2016 Xamarin, Inc., Copyright (c) 2017-2018 Microsoft Corporation) and the Skia native
@@ -48,8 +46,8 @@ System.Drawing
 
 src/drawingForCore.System.Drawing comes from WebFormsForCore (https://github.com/webformsforcore/WebFormsForCore,
 commit 52f4172, src/WebFormsForCore.Drawing/AssemblyInfo.cs), MIT License, Copyright (c) 2024 Simon Jakob Egli: the
-assembly's attributes and its type forwards to System.Drawing.Common. The copy is made by
-tools/lift/lift_system_drawing.py, which lists every change, and recorded in tools/lift/manifests/System.Drawing.tsv. The assembly carries
+assembly's attributes and its type forwards to System.Drawing.Common. It was copied once
+and is kept in this repository. The assembly carries
 System.Drawing's public key (token b03f5f7f11d50a3a, keys/System.Drawing.snk); it is public signed, not signed by
 Microsoft.
 
@@ -66,10 +64,11 @@ test/drawingForCore.Microsoft.DotNet.XUnitExtensions and test/drawingForCore.Mic
 test data from .NET Runtime Assets (https://github.com/dotnet/runtime-assets, branch release/6.0, commit 848e27e:
 System.Drawing.Common.TestData, System.ComponentModel.TypeConverter.TestData, System.Windows.Extensions.TestData; in
 the tests' TestData folder). Both are licensed under the MIT License, Copyright (c) .NET Foundation and Contributors.
-The copy is made by tools/lift/lift_drawing_tests.py, which lists every change, and the per-file source is recorded
-in tools/lift/manifests/System.Drawing.Common.Tests.tsv.
+They are in the external/runtime, external/arcade and external/runtime-assets submodules
+(https://github.com/xforcore/runtime, arcade and runtime-assets, branch drawingforcore); every change is a commit on
+those branches.
 
 The test data's fonts (Code New Roman, (c) 2015 TypoStyle Co.) are not committed: the font's own licence text both
 grants the SIL Open Font License 1.1 and forbids redistribution. tools/ci/fetch-test-fonts.sh downloads them from
-dotnet/runtime-assets for test runs, and the lift script copies them from a local checkout. They are never in the
+dotnet/runtime-assets for test runs, and xforcore/runtime-assets' branch removes them. They are never in the
 packages.

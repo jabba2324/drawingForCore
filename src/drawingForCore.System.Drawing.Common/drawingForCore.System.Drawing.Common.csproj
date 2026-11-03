@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- System.Drawing.Common 6.0 (dotnet/runtime 76b9680, release/6.0), lifted by tools/lift/lift_drawing.py: Microsoft's
+  <!-- System.Drawing.Common 6.0 (dotnet/runtime 76b9680, release/6.0), from the external/runtime submodule: Microsoft's
        managed code for a Unix build, with the GDI+ flat API implemented in managed code on SkiaSharp (SkiaGdiPlus/)
-       instead of libgdiplus. Generated; do not edit (change the lift script or tools/lift/additions/System.Drawing.Common/). -->
+       instead of libgdiplus. Changes to Microsoft's files are commits on xforcore/runtime's drawingforcore branch. -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>System.Drawing.Common</AssemblyName>
@@ -30,15 +30,212 @@
 
   <ItemGroup>
     <Compile Include="**\*.cs" Exclude="bin\**;obj\**" />
-    <EmbeddedResource Include="Resources\Strings.resx" LogicalName="System.Drawing.Common.Strings.resources" />
-    <EmbeddedResource Include="Resources\System\Drawing\DefaultComponent.bmp" LogicalName="System.Drawing.DefaultComponent.bmp" />
-    <EmbeddedResource Include="Resources\System\Drawing\Printing\PrintDocument.bmp" />
-    <EmbeddedResource Include="Resources\System\Drawing\ShieldIcon.ico" LogicalName="System.Drawing.ShieldIcon.ico" />
-    <EmbeddedResource Include="Resources\System\Drawing\Error.ico" LogicalName="placeholder.ico" />
+    <EmbeddedResource Include="../../external/runtime/src/libraries/System.Drawing.Common/src/Resources/Strings.resx" Link="Resources/Strings.resx" LogicalName="System.Drawing.Common.Strings.resources" />
+    <EmbeddedResource Include="../../external/runtime/src/libraries/System.Drawing.Common/src/Resources/System/Drawing/DefaultComponent.bmp" Link="Resources/System/Drawing/DefaultComponent.bmp" LogicalName="System.Drawing.DefaultComponent.bmp" />
+    <EmbeddedResource Include="../../external/runtime/src/libraries/System.Drawing.Common/src/Resources/System/Drawing/Printing/PrintDocument.bmp" Link="Resources/System/Drawing/Printing/PrintDocument.bmp" />
+    <EmbeddedResource Include="../../external/runtime/src/libraries/System.Drawing.Common/src/Resources/System/Drawing/ShieldIcon.ico" Link="Resources/System/Drawing/ShieldIcon.ico" LogicalName="System.Drawing.ShieldIcon.ico" />
+    <EmbeddedResource Include="../../external/runtime/src/libraries/System.Drawing.Common/src/Resources/System/Drawing/Error.ico" Link="Resources/System/Drawing/Error.ico" LogicalName="placeholder.ico" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="SkiaSharp" Version="3.119.0" />
     <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="3.119.0" />
+  </ItemGroup>
+  <!-- Microsoft's files from the external/ submodules (xforcore forks, drawingforcore branches), at their old paths. -->
+  <ItemGroup>
+    <Compile Include="../../external/runtime/src/libraries/Common/src/Interop/Windows/Gdi32/Interop.RasterOp.cs" Link="Common/Interop/Windows/Gdi32/Interop.RasterOp.cs" />
+    <Compile Include="../../external/runtime/src/libraries/Common/src/Interop/Windows/User32/Interop.LOGFONT.cs" Link="Common/Interop/Windows/User32/Interop.LOGFONT.cs" />
+    <Compile Include="../../external/runtime/src/libraries/Common/src/System/LocalAppContextSwitches.Common.cs" Link="Common/System/LocalAppContextSwitches.Common.cs" />
+    <Compile Include="../../external/runtime/src/libraries/Common/src/System/Obsoletions.cs" Link="Common/System/Obsoletions.cs" />
+    <Compile Include="../../external/runtime/src/libraries/Common/src/System/Text/ValueStringBuilder.cs" Link="Common/System/Text/ValueStringBuilder.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/Interop/Unix/Interop.Libraries.cs" Link="Interop/Unix/Interop.Libraries.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Bitmap.Unix.cs" Link="System/Drawing/Bitmap.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Bitmap.cs" Link="System/Drawing/Bitmap.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/BitmapSuffixInSameAssemblyAttribute.cs" Link="System/Drawing/BitmapSuffixInSameAssemblyAttribute.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/BitmapSuffixInSatelliteAssemblyAttribute.cs" Link="System/Drawing/BitmapSuffixInSatelliteAssemblyAttribute.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Brush.cs" Link="System/Drawing/Brush.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Brushes.cs" Link="System/Drawing/Brushes.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/BufferedGraphics.Unix.cs" Link="System/Drawing/BufferedGraphics.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/BufferedGraphics.cs" Link="System/Drawing/BufferedGraphics.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/BufferedGraphicsContext.Unix.cs" Link="System/Drawing/BufferedGraphicsContext.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/BufferedGraphicsContext.cs" Link="System/Drawing/BufferedGraphicsContext.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/BufferedGraphicsManager.Unix.cs" Link="System/Drawing/BufferedGraphicsManager.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/CharacterRange.cs" Link="System/Drawing/CharacterRange.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/ClientUtils.cs" Link="System/Drawing/ClientUtils.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/ContentAlignment.cs" Link="System/Drawing/ContentAlignment.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/CopyPixelOperation.cs" Link="System/Drawing/CopyPixelOperation.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/DashCap.cs" Link="System/Drawing/DashCap.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Design/CategoryNameCollection.cs" Link="System/Drawing/Design/CategoryNameCollection.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/AdjustableArrowCap.Unix.cs" Link="System/Drawing/Drawing2D/AdjustableArrowCap.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/AdjustableArrowCap.cs" Link="System/Drawing/Drawing2D/AdjustableArrowCap.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/Blend.cs" Link="System/Drawing/Drawing2D/Blend.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/BrushType.cs" Link="System/Drawing/Drawing2D/BrushType.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/ColorBlend.cs" Link="System/Drawing/Drawing2D/ColorBlend.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/CombineMode.cs" Link="System/Drawing/Drawing2D/CombineMode.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/CompositingMode.cs" Link="System/Drawing/Drawing2D/CompositingMode.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/CompositingQuality.cs" Link="System/Drawing/Drawing2D/CompositingQuality.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/CoordinateSpace.cs" Link="System/Drawing/Drawing2D/CoordinateSpace.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/CustomLineCap.Unix.cs" Link="System/Drawing/Drawing2D/CustomLineCap.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/CustomLineCap.cs" Link="System/Drawing/Drawing2D/CustomLineCap.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/CustomLineCapType.cs" Link="System/Drawing/Drawing2D/CustomLineCapType.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/DashStyle.cs" Link="System/Drawing/Drawing2D/DashStyle.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/FillMode.cs" Link="System/Drawing/Drawing2D/FillMode.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/FlushIntention.cs" Link="System/Drawing/Drawing2D/FlushIntention.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/GraphicsContainer.cs" Link="System/Drawing/Drawing2D/GraphicsContainer.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/GraphicsPath.Unix.cs" Link="System/Drawing/Drawing2D/GraphicsPath.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/GraphicsPathIterator.cs" Link="System/Drawing/Drawing2D/GraphicsPathIterator.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/GraphicsState.cs" Link="System/Drawing/Drawing2D/GraphicsState.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/HatchBrush.cs" Link="System/Drawing/Drawing2D/HatchBrush.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/HatchStyle.cs" Link="System/Drawing/Drawing2D/HatchStyle.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/InterpolationMode.cs" Link="System/Drawing/Drawing2D/InterpolationMode.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/LineCap.cs" Link="System/Drawing/Drawing2D/LineCap.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/LineJoin.cs" Link="System/Drawing/Drawing2D/LineJoin.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/LinearGradientBrush.cs" Link="System/Drawing/Drawing2D/LinearGradientBrush.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/LinearGradientMode.cs" Link="System/Drawing/Drawing2D/LinearGradientMode.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/Matrix.cs" Link="System/Drawing/Drawing2D/Matrix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/MatrixOrder.cs" Link="System/Drawing/Drawing2D/MatrixOrder.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/PathData.cs" Link="System/Drawing/Drawing2D/PathData.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/PathGradientBrush.cs" Link="System/Drawing/Drawing2D/PathGradientBrush.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/PathPointType.cs" Link="System/Drawing/Drawing2D/PathPointType.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/PenAlignment.cs" Link="System/Drawing/Drawing2D/PenAlignment.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/PenType.cs" Link="System/Drawing/Drawing2D/PenType.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/PixelOffsetMode.cs" Link="System/Drawing/Drawing2D/PixelOffsetMode.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/QualityMode.cs" Link="System/Drawing/Drawing2D/QualityMode.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/RegionData.cs" Link="System/Drawing/Drawing2D/RegionData.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/SafeCustomLineCapHandle.cs" Link="System/Drawing/Drawing2D/SafeCustomLineCapHandle.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/SmoothingMode.cs" Link="System/Drawing/Drawing2D/SmoothingMode.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/WarpMode.cs" Link="System/Drawing/Drawing2D/WarpMode.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Drawing2D/WrapMode.cs" Link="System/Drawing/Drawing2D/WrapMode.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Font.Unix.cs" Link="System/Drawing/Font.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Font.cs" Link="System/Drawing/Font.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/FontConverter.cs" Link="System/Drawing/FontConverter.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/FontFamily.Unix.cs" Link="System/Drawing/FontFamily.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/FontFamily.cs" Link="System/Drawing/FontFamily.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/FontStyle.cs" Link="System/Drawing/FontStyle.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/GdiPlusStreamHelper.Unix.cs" Link="System/Drawing/GdiPlusStreamHelper.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Gdiplus.cs" Link="System/Drawing/Gdiplus.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/GdiplusNative.Unix.cs" Link="System/Drawing/GdiplusNative.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/GdiplusNative.cs" Link="System/Drawing/GdiplusNative.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Graphics.Unix.cs" Link="System/Drawing/Graphics.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Graphics.cs" Link="System/Drawing/Graphics.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/GraphicsUnit.cs" Link="System/Drawing/GraphicsUnit.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/IDeviceContext.cs" Link="System/Drawing/IDeviceContext.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Icon.Unix.cs" Link="System/Drawing/Icon.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/IconConverter.cs" Link="System/Drawing/IconConverter.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Image.Unix.cs" Link="System/Drawing/Image.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Image.cs" Link="System/Drawing/Image.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/ImageAnimator.cs" Link="System/Drawing/ImageAnimator.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/ImageConverter.cs" Link="System/Drawing/ImageConverter.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/ImageFormatConverter.cs" Link="System/Drawing/ImageFormatConverter.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/ImageInfo.cs" Link="System/Drawing/ImageInfo.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/ImageType.cs" Link="System/Drawing/ImageType.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/BitmapData.Unix.cs" Link="System/Drawing/Imaging/BitmapData.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/BitmapData.cs" Link="System/Drawing/Imaging/BitmapData.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/ColorAdjustType.cs" Link="System/Drawing/Imaging/ColorAdjustType.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/ColorChannelFlags.cs" Link="System/Drawing/Imaging/ColorChannelFlags.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/ColorMap.cs" Link="System/Drawing/Imaging/ColorMap.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/ColorMapType.cs" Link="System/Drawing/Imaging/ColorMapType.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/ColorMatrix.cs" Link="System/Drawing/Imaging/ColorMatrix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/ColorMatrixFlags.cs" Link="System/Drawing/Imaging/ColorMatrixFlags.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/ColorMode.cs" Link="System/Drawing/Imaging/ColorMode.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/ColorPalette.cs" Link="System/Drawing/Imaging/ColorPalette.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/EmfPlusFlags.cs" Link="System/Drawing/Imaging/EmfPlusFlags.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/EmfPlusRecordType.cs" Link="System/Drawing/Imaging/EmfPlusRecordType.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/EmfType.cs" Link="System/Drawing/Imaging/EmfType.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/Encoder.cs" Link="System/Drawing/Imaging/Encoder.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/EncoderParameter.cs" Link="System/Drawing/Imaging/EncoderParameter.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/EncoderParameterValueType.cs" Link="System/Drawing/Imaging/EncoderParameterValueType.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/EncoderParameters.cs" Link="System/Drawing/Imaging/EncoderParameters.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/EncoderValue.cs" Link="System/Drawing/Imaging/EncoderValue.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/FrameDimension.cs" Link="System/Drawing/Imaging/FrameDimension.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/ImageAttributes.cs" Link="System/Drawing/Imaging/ImageAttributes.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/ImageCodecFlags.cs" Link="System/Drawing/Imaging/ImageCodecFlags.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/ImageCodecInfo.cs" Link="System/Drawing/Imaging/ImageCodecInfo.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/ImageCodecInfoPrivate.cs" Link="System/Drawing/Imaging/ImageCodecInfoPrivate.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/ImageFlags.cs" Link="System/Drawing/Imaging/ImageFlags.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/ImageFormat.cs" Link="System/Drawing/Imaging/ImageFormat.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/ImageLockMode.cs" Link="System/Drawing/Imaging/ImageLockMode.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/MetaHeader.Unix.cs" Link="System/Drawing/Imaging/MetaHeader.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/Metafile.Unix.cs" Link="System/Drawing/Imaging/Metafile.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/Metafile.cs" Link="System/Drawing/Imaging/Metafile.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/MetafileFrameUnit.cs" Link="System/Drawing/Imaging/MetafileFrameUnit.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/MetafileHeader.Unix.cs" Link="System/Drawing/Imaging/MetafileHeader.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/MetafileHeaderEmf.cs" Link="System/Drawing/Imaging/MetafileHeaderEmf.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/MetafileHeaderWmf.cs" Link="System/Drawing/Imaging/MetafileHeaderWmf.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/MetafileType.cs" Link="System/Drawing/Imaging/MetafileType.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/PaletteFlags.cs" Link="System/Drawing/Imaging/PaletteFlags.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/PixelFormat.cs" Link="System/Drawing/Imaging/PixelFormat.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/PlayRecordCallback.cs" Link="System/Drawing/Imaging/PlayRecordCallback.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/PropertyItem.cs" Link="System/Drawing/Imaging/PropertyItem.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Imaging/WmfPlaceableFileHeader.cs" Link="System/Drawing/Imaging/WmfPlaceableFileHeader.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Internal/ISystemEventTracker.cs" Link="System/Drawing/Internal/ISystemEventTracker.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/LibX11Functions.cs" Link="System/Drawing/LibX11Functions.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/LibraryResolver.cs" Link="System/Drawing/LibraryResolver.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/LocalAppContextSwitches.Unix.cs" Link="System/Drawing/LocalAppContextSwitches.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/MarshallingHelpers.cs" Link="System/Drawing/MarshallingHelpers.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/NativeMethods.cs" Link="System/Drawing/NativeMethods.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/NumericsExtensions.cs" Link="System/Drawing/NumericsExtensions.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Pen.Unix.cs" Link="System/Drawing/Pen.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Pen.cs" Link="System/Drawing/Pen.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Pens.cs" Link="System/Drawing/Pens.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/Duplex.cs" Link="System/Drawing/Printing/Duplex.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/InvalidPrinterException.Core.cs" Link="System/Drawing/Printing/InvalidPrinterException.Core.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/InvalidPrinterException.cs" Link="System/Drawing/Printing/InvalidPrinterException.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/LibcupsNative.cs" Link="System/Drawing/Printing/LibcupsNative.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/Margins.cs" Link="System/Drawing/Printing/Margins.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/MarginsConverter.cs" Link="System/Drawing/Printing/MarginsConverter.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/PageSettings.Unix.cs" Link="System/Drawing/Printing/PageSettings.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/PaperKinds.cs" Link="System/Drawing/Printing/PaperKinds.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/PaperSize.cs" Link="System/Drawing/Printing/PaperSize.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/PaperSource.cs" Link="System/Drawing/Printing/PaperSource.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/PaperSourceKind.cs" Link="System/Drawing/Printing/PaperSourceKind.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/PreviewPageInfo.cs" Link="System/Drawing/Printing/PreviewPageInfo.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/PreviewPrintController.Unix.cs" Link="System/Drawing/Printing/PreviewPrintController.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/PreviewPrintController.cs" Link="System/Drawing/Printing/PreviewPrintController.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/PrintAction.cs" Link="System/Drawing/Printing/PrintAction.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/PrintController.Unix.cs" Link="System/Drawing/Printing/PrintController.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/PrintController.cs" Link="System/Drawing/Printing/PrintController.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/PrintDocument.Unix.cs" Link="System/Drawing/Printing/PrintDocument.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/PrintEventArgs.Unix.cs" Link="System/Drawing/Printing/PrintEventArgs.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/PrintEventHandler.cs" Link="System/Drawing/Printing/PrintEventHandler.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/PrintPageEventArgs.Unix.cs" Link="System/Drawing/Printing/PrintPageEventArgs.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/PrintPageEventHandler.cs" Link="System/Drawing/Printing/PrintPageEventHandler.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/PrintRange.cs" Link="System/Drawing/Printing/PrintRange.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/PrinterResolution.cs" Link="System/Drawing/Printing/PrinterResolution.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/PrinterResolutionKind.cs" Link="System/Drawing/Printing/PrinterResolutionKind.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/PrinterSettings.Unix.cs" Link="System/Drawing/Printing/PrinterSettings.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/PrinterUnit.cs" Link="System/Drawing/Printing/PrinterUnit.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/PrinterUnitConvert.cs" Link="System/Drawing/Printing/PrinterUnitConvert.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/PrintingServices.Unix.cs" Link="System/Drawing/Printing/PrintingServices.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/QueryPageSettingsEventArgs.cs" Link="System/Drawing/Printing/QueryPageSettingsEventArgs.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/QueryPageSettingsEventHandler.cs" Link="System/Drawing/Printing/QueryPageSettingsEventHandler.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Printing/StandardPrintController.Unix.cs" Link="System/Drawing/Printing/StandardPrintController.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/PropertyItemInternal.cs" Link="System/Drawing/PropertyItemInternal.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Region.Unix.cs" Link="System/Drawing/Region.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Region.cs" Link="System/Drawing/Region.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/RotateFlipType.cs" Link="System/Drawing/RotateFlipType.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/SRDescriptionAttribute.cs" Link="System/Drawing/SRDescriptionAttribute.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/SolidBrush.cs" Link="System/Drawing/SolidBrush.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/StringAlignment.cs" Link="System/Drawing/StringAlignment.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/StringDigitSubstitute.cs" Link="System/Drawing/StringDigitSubstitute.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/StringFormat.cs" Link="System/Drawing/StringFormat.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/StringFormatFlags.cs" Link="System/Drawing/StringFormatFlags.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/StringTrimming.cs" Link="System/Drawing/StringTrimming.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/StringUnit.cs" Link="System/Drawing/StringUnit.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/SystemBrushes.cs" Link="System/Drawing/SystemBrushes.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/SystemFonts.Unix.cs" Link="System/Drawing/SystemFonts.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/SystemFonts.cs" Link="System/Drawing/SystemFonts.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/SystemIcons.Unix.cs" Link="System/Drawing/SystemIcons.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/SystemPens.cs" Link="System/Drawing/SystemPens.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Text/FontCollection.cs" Link="System/Drawing/Text/FontCollection.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Text/GenericFontFamilies.cs" Link="System/Drawing/Text/GenericFontFamilies.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Text/HotkeyPrefix.cs" Link="System/Drawing/Text/HotkeyPrefix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Text/InstalledFontCollection.cs" Link="System/Drawing/Text/InstalledFontCollection.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Text/PrivateFontCollection.Unix.cs" Link="System/Drawing/Text/PrivateFontCollection.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Text/PrivateFontCollection.cs" Link="System/Drawing/Text/PrivateFontCollection.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/Text/TextRenderingHint.cs" Link="System/Drawing/Text/TextRenderingHint.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/TextureBrush.cs" Link="System/Drawing/TextureBrush.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/ToolboxBitmapAttribute.Unix.cs" Link="System/Drawing/ToolboxBitmapAttribute.Unix.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/src/System/Drawing/macFunctions.cs" Link="System/Drawing/macFunctions.cs" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 # Linux and Windows builds in parallel, System.Drawing.Common's test suite on both (docs/TESTING.md), and the NuGet
 # packages: every run packs them, checks that an application builds and runs from them, and keeps Linux's as the
-# "packages" artifact. Linux also checks that the committed source is what the lift scripts produce. A version tag
+# "packages" artifact. Microsoft's code comes from the external/ submodules. A version tag
 # (v0.1.0, matching <Version> in Directory.Build.props) also publishes the packages as a GitHub release, once both
 # platforms pass, and updates the NuGet feed on GitHub Pages (feed.yml).
 name: CI
@@ -32,7 +32,10 @@ jobs:
       version: ${{ steps.version.outputs.version }}
 
     steps:
+      # Microsoft's code comes from submodules of cleared-down forks (external/, xforcore/webForCore#61).
       - uses: actions/checkout@v4
+        with:
+          submodules: true
 
       # The release version from Directory.Build.props; any other run builds a prerelease of it (0.1.0-ci.123).
       - name: Version
@@ -58,21 +61,7 @@ jobs:
       - name: System packages
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends fontconfig fonts-dejavu-core libfontconfig1
 
-      # The lifted projects are generated: regenerate them, and docs/lifted-changes.md, from upstream at the lifted
-      # commits and fail on any difference, so every change is in the lift scripts or tools/lift/additions/.
-      - name: Lift check
-        run: |
-          tools/lift/fetch-sources.sh "$RUNNER_TEMP/sources"
-          tools/lift/lift.sh "$RUNNER_TEMP/sources"
-          python3 tools/lift/changes_report.py "$RUNNER_TEMP/sources"
-          if [ -n "$(git status --porcelain)" ]; then
-            git status --short
-            git diff --stat
-            echo "::error::The committed files differ from what tools/lift/lift.sh and changes_report.py produce; rerun them and commit the result."
-            exit 1
-          fi
-
-      # Before the build, which copies them next to the tests (the lift check copied them too).
+      # Before the build, which copies them next to the tests.
       - name: Test fonts
         run: tools/ci/fetch-test-fonts.sh
 
@@ -123,7 +112,12 @@ jobs:
       - name: Line endings
         run: git config --global core.autocrlf false
 
+      - name: Long paths
+        run: git config --global core.longpaths true
+
       - uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Set up .NET (global.json)
         uses: actions/setup-dotnet@v4

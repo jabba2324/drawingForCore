@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- Microsoft.DotNet.XUnitExtensions (dotnet/arcade 565a800, release/6.0), lifted by tools/lift/lift_drawing_tests.py. MIT.
-       Generated; do not edit. -->
+  <!-- Microsoft.DotNet.XUnitExtensions (dotnet/arcade 565a800, release/6.0), from the external/arcade submodule. MIT. -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
@@ -22,5 +21,47 @@
     <PackageReference Include="xunit.assert" Version="2.4.1" />
     <PackageReference Include="xunit.extensibility.core" Version="2.4.1" />
     <PackageReference Include="xunit.extensibility.execution" Version="2.4.1" />
+  </ItemGroup>
+  <!-- Microsoft's files from the external/ submodules (xforcore forks, drawingforcore branches), at their old paths. -->
+  <ItemGroup>
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/Attributes/ActiveIssueAttribute.cs" Link="Attributes/ActiveIssueAttribute.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/Attributes/ConditionalClassAttribute.cs" Link="Attributes/ConditionalClassAttribute.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/Attributes/ConditionalFactAttribute.cs" Link="Attributes/ConditionalFactAttribute.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/Attributes/ConditionalTheoryAttribute.cs" Link="Attributes/ConditionalTheoryAttribute.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/Attributes/OuterLoopAttribute.cs" Link="Attributes/OuterLoopAttribute.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/Attributes/PlatformSpecificAttribute.cs" Link="Attributes/PlatformSpecificAttribute.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/Attributes/SkipOnCIAttribute.cs" Link="Attributes/SkipOnCIAttribute.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/Attributes/SkipOnCoreClrAttribute.cs" Link="Attributes/SkipOnCoreClrAttribute.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/Attributes/SkipOnMonoAttribute.cs" Link="Attributes/SkipOnMonoAttribute.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/Attributes/SkipOnPlatformAttribute.cs" Link="Attributes/SkipOnPlatformAttribute.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/Attributes/SkipOnTargetFrameworkAttribute.cs" Link="Attributes/SkipOnTargetFrameworkAttribute.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/Attributes/TestCategoryAttribute.cs" Link="Attributes/TestCategoryAttribute.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/ConditionalDiscovererException.cs" Link="ConditionalDiscovererException.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/DesktopTraceListener.cs" Link="DesktopTraceListener.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/DiscovererHelpers.cs" Link="DiscovererHelpers.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/Discoverers/ActiveIssueDiscoverer.cs" Link="Discoverers/ActiveIssueDiscoverer.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/Discoverers/ConditionalClassDiscoverer.cs" Link="Discoverers/ConditionalClassDiscoverer.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/Discoverers/ConditionalFactDiscoverer.cs" Link="Discoverers/ConditionalFactDiscoverer.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/Discoverers/ConditionalTestDiscoverer.cs" Link="Discoverers/ConditionalTestDiscoverer.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/Discoverers/ConditionalTheoryDiscoverer.cs" Link="Discoverers/ConditionalTheoryDiscoverer.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/Discoverers/OuterLoopTestsDiscoverer.cs" Link="Discoverers/OuterLoopTestsDiscoverer.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/Discoverers/PlatformSpecificDiscoverer.cs" Link="Discoverers/PlatformSpecificDiscoverer.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/Discoverers/SkipOnCIDiscoverer.cs" Link="Discoverers/SkipOnCIDiscoverer.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/Discoverers/SkipOnCoreClrDiscoverer.cs" Link="Discoverers/SkipOnCoreClrDiscoverer.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/Discoverers/SkipOnMonoDiscoverer.cs" Link="Discoverers/SkipOnMonoDiscoverer.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/Discoverers/SkipOnPlatformDiscoverer.cs" Link="Discoverers/SkipOnPlatformDiscoverer.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/Discoverers/SkipOnTargetFrameworkDiscoverer.cs" Link="Discoverers/SkipOnTargetFrameworkDiscoverer.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/Discoverers/TestCategoryDiscoverer.cs" Link="Discoverers/TestCategoryDiscoverer.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/Extensions/TheoryExtensions.cs" Link="Extensions/TheoryExtensions.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/RuntimeConfiguration.cs" Link="RuntimeConfiguration.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/RuntimeTestModes.cs" Link="RuntimeTestModes.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/SkippedFactTestCase.cs" Link="SkippedFactTestCase.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/SkippedTestCase.cs" Link="SkippedTestCase.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/SkippedTestMessageBus.cs" Link="SkippedTestMessageBus.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/SkippedTheoryTestCase.cs" Link="SkippedTheoryTestCase.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/TargetFrameworkMonikers.cs" Link="TargetFrameworkMonikers.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/TestPlatforms.cs" Link="TestPlatforms.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/TestRuntimes.cs" Link="TestRuntimes.cs" />
+    <Compile Include="../../external/arcade/src/Microsoft.DotNet.XUnitExtensions/src/XunitConstants.cs" Link="XunitConstants.cs" />
   </ItemGroup>
 </Project>

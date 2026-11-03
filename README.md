@@ -71,9 +71,10 @@ implemented throw `NotImplementedException`, as GDI+'s "not implemented" status 
 
 ## How it's made
 
-Microsoft's code is never edited by hand. The lift scripts in `tools/lift/` copy it byte for byte from upstream at a
-fixed commit and apply a short list of recorded changes. CI regenerates the source on every run and fails if it
-differs from what is committed. The GDI+ engine is drawingForCore's own code, in `tools/lift/additions/`.
+Microsoft's code comes from submodules in `external/`: forks of dotnet/runtime, dotnet/arcade and
+dotnet/runtime-assets under [xforcore](https://github.com/xforcore), cleared down to the files drawingForCore uses at
+a fixed commit, with each of drawingForCore's changes as a commit on the `drawingforcore` branch. The GDI+ engine is
+drawingForCore's own code, in `src/drawingForCore.System.Drawing.Common/SkiaGdiPlus/`.
 
 | Project | Assembly | From |
 | --- | --- | --- |
@@ -84,13 +85,13 @@ differs from what is committed. The GDI+ engine is drawingForCore's own code, in
 
 - [LIFT.md](LIFT.md): the record of how it was built, with every decision and result.
 - [docs/MODIFICATIONS.md](docs/MODIFICATIONS.md): every change from Microsoft's source and why.
-- [docs/lifted-changes.md](docs/lifted-changes.md): every lifted file that differs from upstream (generated).
 - [docs/TESTING.md](docs/TESTING.md): running the tests, the selection, and the known failures.
 - [CONTRIBUTING.md](CONTRIBUTING.md): how to make a change.
 
 ## Building
 
-The .NET SDK in `global.json` (10.0.100, or a later 10.0 feature band). Python 3 and Bash (Git Bash on Windows) run the scripts.
+The .NET SDK in `global.json` (10.0.100, or a later 10.0 feature band), and Bash (Git Bash on Windows) for the
+scripts. Clone with `git clone --recurse-submodules`.
 
 ```bash
 tools/ci/fetch-test-fonts.sh                     # fonts for the tests (not redistributable, so not committed)
@@ -102,12 +103,12 @@ tools/ci/pack.sh 0.2.0-local packages            # the NuGet packages
 ## Repository layout
 
 ```text
-src/                                  # the two lifted projects (generated; do not edit)
-test/                                 # Microsoft's tests and test infrastructure (generated)
+external/                             # Microsoft's code: submodules of the xforcore forks' drawingforcore branches
+src/                                  # the two projects, and the GDI+ engine (SkiaGdiPlus/)
+test/                                 # Microsoft's tests and test infrastructure
 keys/                                 # Microsoft's public keys, for public signing
-tools/lift/                           # the lift scripts, the GDI+ engine (additions/) and the manifests
 tools/ci/                             # tests, known failures, packing and the package smoke test
-docs/                                 # modifications, lifted changes, testing, licensing, release notes
+docs/                                 # modifications, testing, licensing, release notes
 ```
 
 ## Licence
