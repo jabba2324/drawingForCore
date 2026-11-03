@@ -28,6 +28,12 @@ The assemblies keep Microsoft's names (System.Drawing.Common, System.Drawing) an
 against them binds without changes. They are public signed with those public keys, not signed by Microsoft, and
 drawingForCore isn't affiliated with or endorsed by Microsoft.
 
+Public signing is the SDK's (`SignAssembly` and `PublicSign` in the projects), as dotnet/runtime's own open-source
+builds do it: `keys/System.Drawing.Common.snk` and `keys/System.Drawing.snk` hold only Microsoft's public keys, so the
+assemblies carry public key tokens cc7b13ffcd2ddd51 and b03f5f7f11d50a3a, which the package smoke test checks. No
+SHA-1 signing happens, so no OpenSSL setting is needed to build (webForCore, which rewrote the key after building with
+WebFormsForCore's FakeStrongName task, needs `OPENSSL_ENABLE_SHA1_SIGNATURES=1` on Fedora and RHEL).
+
 ## What isn't in the repository
 
 The fonts Microsoft's tests use (Code New Roman) aren't committed or shipped: their licence text both grants the SIL
