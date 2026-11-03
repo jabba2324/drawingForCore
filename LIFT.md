@@ -197,6 +197,32 @@ webForCore moved from .NET 11 RC to .NET 10 LTS (webForCore #55, #58), and a `ne
 Result (Linux x64, Release, SDK 10.0.403, runtime 10.0.14): **3,883 tests, 3,716 pass, 16 skipped, 151 fail, all
 known**, the same as on .NET 11. Packing gives both packages with `lib/net10.0`, and the package smoke test passes.
 
+## The code rules (3 Nov 2026)
+
+drawingForCore takes webForCore's rules for its own code (CONTRIBUTING.md, 8–10): no reflection into internals, no
+unsafe code or GC tricks outside the native boundary, slow and stable over fast. webForCore's list of code that broke
+them (webForCore #57) had the engine's on it, "moving to drawingForCore"; what the move left is fixed here or listed
+in #3.
+
+- **Handles:** a GDI+ handle was a strong `GCHandle` to the engine's object. It is now a number in the engine's handle
+  table (a dictionary under a lock), removed by the matching `Gdip*Delete`/`Dispose` function. An unknown or freed
+  handle is InvalidParameter instead of a crash. Objects are freed exactly as before: the wrappers' `Dispose` or
+  finalisers call the delete functions. (Checked before the change with 0.2.0: 6,000 undisposed 512×512 bitmaps and
+  20,000 `ToolboxBitmapAttribute` lookups, whose constructor loads a bitmap as on Windows, ended at 75 MB.)
+- **JPEG quality:** read from GDI+'s `EncoderParameters` block, in the layout Microsoft's
+  `EncoderParameters.ConvertToMemory` writes, instead of reflecting on `EncoderParameter._parameterValue`.
+- **`GdipGetNearestColor`:** answered with `Unsafe.SkipInit`, on the idea that the colour came in through the out
+  variable. Microsoft's Unix `Graphics.GetNearestColor` passes none (dotnet/runtime#22221; its test is disabled on
+  Unix), so the answer is 0, as it was.
+- **`Opaque`** used `MemoryMarshal` to write through a read-only span; SkiaSharp 3's `SKBitmap.GetPixelSpan()` is
+  writable.
+- **Left (#3):** pointers past the boundary. The integer overloads convert their points to `stackalloc`/`fixed`
+  floats and call the pointer-taking float functions, and the codecs read pixels through `GpImage.ReadPixels(byte*)`.
+  They are to take spans, with the flat API functions as thin pointer wrappers.
+
+Result (Linux x64, Release, .NET 10.0.14): **3,883 tests, 3,716 pass, 16 skipped, 151 fail, all known**, the same as
+0.2.0.
+
 ## Open items
 
 - **Metafiles** (EMF/WMF): 141 of the 151 known failures. Not implemented.

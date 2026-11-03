@@ -1,14 +1,17 @@
 // drawingForCore: the GDI+ flat API on SkiaSharp, in place of libgdiplus (tools/lift/lift_drawing.py).
 // Licensed under the MIT license (as System.Drawing.Common).
 #nullable disable
+using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace System.Drawing
 {
     // Microsoft's System.Drawing calls these functions with the signatures of its libgdiplus P/Invokes. GDI+ objects
-    // are managed objects here; the handle the caller keeps (an IntPtr, passed back in a HandleRef) is a GCHandle to
-    // the object, freed by the matching Gdip*Delete/Dispose function. Results are GDI+ Status codes.
+    // are managed objects here; the handle the caller keeps (an IntPtr, passed back in a HandleRef) is a number that
+    // the handle table maps to the object, until the matching Gdip*Delete/Dispose function removes it (the wrapper's
+    // Dispose or finaliser calls it). Results are GDI+ Status codes.
     internal static partial class SafeNativeMethods
     {
     internal static unsafe partial class SkiaGdiPlus
@@ -36,12 +39,28 @@ namespace System.Drawing
         internal const int PropertyNotFound = 19;
         internal const int PropertyNotSupported = 20;
 
-        internal static IntPtr NewHandle(object value) => GCHandle.ToIntPtr(GCHandle.Alloc(value));
+        // The handle table: a plain dictionary, not GCHandles, so nothing here steers the GC (CONTRIBUTING.md, rule 9),
+        // and an unknown or already freed handle is InvalidParameter instead of a crash.
+        static readonly Dictionary<IntPtr, object> s_handles = new Dictionary<IntPtr, object>();
+        static long s_lastHandle;
+
+        internal static IntPtr NewHandle(object value)
+        {
+            var handle = (IntPtr)Interlocked.Increment(ref s_lastHandle);
+            lock (s_handles) s_handles.Add(handle, value);
+            return handle;
+        }
 
         internal static T Get<T>(IntPtr handle) where T : class
         {
             if (handle == IntPtr.Zero) return null;
-            return GCHandle.FromIntPtr(handle).Target as T;
+            lock (s_handles) return s_handles.TryGetValue(handle, out var value) ? value as T : null;
+        }
+
+        // Removes the handle without disposing what it refers to (a font family shared with its collection).
+        internal static bool Release(IntPtr handle)
+        {
+            lock (s_handles) return s_handles.Remove(handle);
         }
 
         internal static T Get<T>(HandleRef handle) where T : class => Get<T>(handle.Handle);
@@ -49,9 +68,9 @@ namespace System.Drawing
         internal static int Free(IntPtr handle)
         {
             if (handle == IntPtr.Zero) return InvalidParameter;
-            var gc = GCHandle.FromIntPtr(handle);
-            (gc.Target as IDisposable)?.Dispose();
-            gc.Free();
+            object value;
+            lock (s_handles) { if (!s_handles.Remove(handle, out value)) return InvalidParameter; }
+            (value as IDisposable)?.Dispose();
             return Ok;
         }
 

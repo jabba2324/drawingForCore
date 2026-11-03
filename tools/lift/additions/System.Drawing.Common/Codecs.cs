@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using SkiaSharp;
 
@@ -295,11 +296,14 @@ namespace System.Drawing
             long quality = 75;
             if (encoderParameters != IntPtr.Zero)
             {
-                var parameters = EncoderParameters.ConvertFromMemory(encoderParameters);
-                foreach (var p in parameters.Param)
+                // GDI+'s EncoderParameters block, as Microsoft's EncoderParameters.ConvertToMemory writes it: the count
+                // (pointer-sized), then each EncoderParameter (Guid, NumberOfValues, Type, Value pointer).
+                int count = Marshal.ReadInt32(encoderParameters), size = Marshal.SizeOf<EncoderParameter>();
+                for (int i = 0; i < count; i++)
                 {
-                    if (p != null && p.Encoder.Guid == System.Drawing.Imaging.Encoder.Quality.Guid && p.NumberOfValues > 0)
-                        quality = System.Runtime.InteropServices.Marshal.ReadInt32(GetValue(p));
+                    IntPtr p = encoderParameters + IntPtr.Size + i * size;
+                    if (Marshal.PtrToStructure<Guid>(p) == System.Drawing.Imaging.Encoder.Quality.Guid && Marshal.ReadInt32(p, 16) > 0)
+                        quality = Marshal.ReadInt32(Marshal.ReadIntPtr(p, 24));
                 }
             }
             if (codec.Format == ImageFormat.Png.Guid) return EncodeSkia(image, SKEncodedImageFormat.Png, 100, output);
@@ -309,9 +313,6 @@ namespace System.Drawing
             if (codec.Format == ImageFormat.Tiff.Guid) { Tiff.Write(image, output); return SafeNativeMethods.SkiaGdiPlus.Ok; }
             return SafeNativeMethods.SkiaGdiPlus.NotImplemented;
         }
-
-        static IntPtr GetValue(EncoderParameter p) =>
-            (IntPtr)typeof(EncoderParameter).GetField("_parameterValue", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).GetValue(p);
 
         static int EncodeSkia(GpImage image, SKEncodedImageFormat format, int quality, Stream output)
         {

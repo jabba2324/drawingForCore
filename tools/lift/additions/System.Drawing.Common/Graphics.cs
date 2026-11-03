@@ -277,8 +277,9 @@ namespace System.Drawing
         internal static int GdipGetDpiX(HandleRef graphics, out float dpi) { var g = G(graphics); dpi = g?.DpiX ?? 0; return g == null ? InvalidParameter : Ok; }
         internal static int GdipGetDpiY(HandleRef graphics, out float dpi) { var g = G(graphics); dpi = g?.DpiY ?? 0; return g == null ? InvalidParameter : Ok; }
 
-        // The colour comes in through the same variable; on a 32-bit surface the nearest colour is the colour itself.
-        internal static int GdipGetNearestColor(IntPtr graphics, out int argb) { System.Runtime.CompilerServices.Unsafe.SkipInit(out argb); return G(graphics) == null ? InvalidParameter : Ok; }
+        // Microsoft's Unix Graphics.GetNearestColor passes no colour in (dotnet/runtime#22221; its test is disabled on Unix),
+        // so the answer is 0, as it was with libgdiplus.
+        internal static int GdipGetNearestColor(IntPtr graphics, out int argb) { argb = 0; return G(graphics) == null ? InvalidParameter : Ok; }
 
         internal static int GdipSaveGraphics(HandleRef graphics, out int state)
         {

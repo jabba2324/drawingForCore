@@ -462,7 +462,7 @@ namespace System.Drawing
         internal static int GdipGetGenericFontFamilySerif(out IntPtr fontfamily) { fontfamily = NewHandle(GpFontFamily.Generic("Times New Roman", "serif")); return Ok; }
         internal static int GdipGetGenericFontFamilyMonospace(out IntPtr fontfamily) { fontfamily = NewHandle(GpFontFamily.Generic("Courier New", "monospace")); return Ok; }
         internal static int GdipCloneFontFamily(IntPtr fontfamily, out IntPtr clonefontfamily) { clonefontfamily = IntPtr.Zero; var f = Family(fontfamily); if (f == null) return InvalidParameter; clonefontfamily = NewHandle(f); return Ok; }
-        internal static int GdipDeleteFontFamily(HandleRef fontFamily) { if (fontFamily.Handle == IntPtr.Zero) return InvalidParameter; GCHandle.FromIntPtr(fontFamily.Handle).Free(); return Ok; }
+        internal static int GdipDeleteFontFamily(HandleRef fontFamily) { if (fontFamily.Handle == IntPtr.Zero) return InvalidParameter; return Release(fontFamily.Handle) ? Ok : InvalidParameter; }
 
         internal static int GdipGetFamilyName(HandleRef family, char* name, int language)
         {
