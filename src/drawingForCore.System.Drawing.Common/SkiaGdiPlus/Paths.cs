@@ -409,8 +409,25 @@ namespace System.Drawing
             return Ok;
         }
 
+        // The points [startIndex, endIndex] of a path, as (first, count): none when the range isn't inside the path.
+        static (int First, int Count) PathRange(GpPath p, int startIndex, int endIndex)
+            => startIndex < 0 || endIndex >= p.Count || startIndex > endIndex ? (0, 0) : (startIndex, endIndex - startIndex + 1);
+
         internal static int GdipPathIterEnumerate(HandleRef pathIter, out int resultCount, PointF* points, byte* types, int count)
-            => GdipPathIterCopyData(pathIter, out resultCount, points, types, 0, Math.Min(count, Iter(pathIter)?.Path.Count ?? 0) - 1);
+        {
+            resultCount = 0;
+            var it = Iter(pathIter);
+            if (it == null || points == null || types == null) return InvalidParameter;
+            var p = it.Path;
+            var (first, n) = PathRange(p, 0, Math.Min(count, p.Count) - 1);
+            for (int i = 0; i < n; i++)
+            {
+                points[i] = p.Points[first + i];
+                types[i] = p.Types[first + i];
+            }
+            resultCount = n;
+            return Ok;
+        }
 
         internal static int GdipPathIterCopyData(HandleRef pathIter, out int resultCount, PointF* points, byte* types, int startIndex, int endIndex)
         {
@@ -418,13 +435,13 @@ namespace System.Drawing
             var it = Iter(pathIter);
             if (it == null || points == null || types == null) return InvalidParameter;
             var p = it.Path;
-            if (startIndex < 0 || endIndex >= p.Count || startIndex > endIndex) return Ok;
-            for (int i = startIndex; i <= endIndex; i++)
+            var (first, n) = PathRange(p, startIndex, endIndex);
+            for (int i = 0; i < n; i++)
             {
-                points[i - startIndex] = p.Points[i];
-                types[i - startIndex] = p.Types[i];
+                points[i] = p.Points[first + i];
+                types[i] = p.Types[first + i];
             }
-            resultCount = endIndex - startIndex + 1;
+            resultCount = n;
             return Ok;
         }
 
@@ -438,7 +455,13 @@ namespace System.Drawing
             return Ok;
         }
 
-        internal static int GdipGetMatrixElements(HandleRef matrix, float* m) => GdipGetMatrixElements(matrix, (IntPtr)m);
+        internal static int GdipGetMatrixElements(HandleRef matrix, float* m)
+        {
+            var mx = Get<GpMatrix>(matrix);
+            if (mx == null || m == null) return InvalidParameter;
+            m[0] = mx.M11; m[1] = mx.M12; m[2] = mx.M21; m[3] = mx.M22; m[4] = mx.Dx; m[5] = mx.Dy;
+            return Ok;
+        }
 
         internal static int GdipIsMatrixInvertible(HandleRef matrix, out int boolean) { var m = Get<GpMatrix>(matrix); boolean = m?.IsInvertible == true ? 1 : 0; return m == null ? InvalidParameter : Ok; }
         internal static int GdipIsMatrixIdentity(HandleRef matrix, out int boolean) { var m = Get<GpMatrix>(matrix); boolean = m?.IsIdentity == true ? 1 : 0; return m == null ? InvalidParameter : Ok; }

@@ -12,7 +12,7 @@ namespace System.Drawing
 {
 internal static partial class SafeNativeMethods
 {
-    internal static unsafe partial class SkiaGdiPlus
+    internal static partial class SkiaGdiPlus
     {
         internal static int GdipCreateFontFromDC(IntPtr hdc, ref IntPtr font) { return NotImplemented; }
         internal static int GdipCreateBitmapFromResource(IntPtr hresource, IntPtr name, out IntPtr bitmap) { bitmap = default; return NotImplemented; }

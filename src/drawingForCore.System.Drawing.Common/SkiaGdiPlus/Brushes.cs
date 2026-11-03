@@ -585,23 +585,31 @@ namespace System.Drawing
 
         // Path gradients
 
+        static IntPtr CreatePathGradient(GpPathGradientBrush b)
+        {
+            b.Center = new PointF(b.Boundary.Average(p => p.X), b.Boundary.Average(p => p.Y));
+            b.CenterColor = unchecked((int)0xff000000);
+            return NewHandle(b);
+        }
+
         internal static int GdipCreatePathGradient(PointF* points, int count, WrapMode wrapMode, out IntPtr brush)
         {
             brush = IntPtr.Zero;
             if (points == null || count < 2) return OutOfMemory;
             var b = new GpPathGradientBrush { WrapMode = wrapMode, SurroundColors = new[] { -1 } };
             for (int i = 0; i < count; i++) b.Boundary.Add(points[i]);
-            b.Center = new PointF(b.Boundary.Average(p => p.X), b.Boundary.Average(p => p.Y));
-            b.CenterColor = unchecked((int)0xff000000);
-            brush = NewHandle(b);
+            brush = CreatePathGradient(b);
             return Ok;
         }
 
         internal static int GdipCreatePathGradientI(Point* points, int count, WrapMode wrapMode, out IntPtr brush)
         {
-            var f = new PointF[Math.Max(count, 0)];
-            for (int i = 0; i < count; i++) f[i] = points[i];
-            fixed (PointF* p = f) return GdipCreatePathGradient(p, count, wrapMode, out brush);
+            brush = IntPtr.Zero;
+            if (points == null || count < 2) return OutOfMemory;
+            var b = new GpPathGradientBrush { WrapMode = wrapMode, SurroundColors = new[] { -1 } };
+            for (int i = 0; i < count; i++) b.Boundary.Add(points[i]);
+            brush = CreatePathGradient(b);
+            return Ok;
         }
 
         internal static int GdipCreatePathGradientFromPath(HandleRef path, out IntPtr brush)
@@ -1014,26 +1022,31 @@ namespace System.Drawing
         internal static int GdipCreateMatrix(out IntPtr matrix) { matrix = NewHandle(new GpMatrix()); return Ok; }
         internal static int GdipCreateMatrix2(float m11, float m12, float m21, float m22, float dx, float dy, out IntPtr matrix) { matrix = NewHandle(new GpMatrix(m11, m12, m21, m22, dx, dy)); return Ok; }
 
-        internal static int GdipCreateMatrix3(ref RectangleF rect, PointF* dstplg, out IntPtr matrix)
+        // Maps rect's top-left, top-right and bottom-left to p0, p1 and p2.
+        static int CreateMatrix3(RectangleF rect, PointF p0, PointF p1, PointF p2, out IntPtr matrix)
         {
             matrix = IntPtr.Zero;
-            if (dstplg == null) return InvalidParameter;
             if (rect.Width == 0 || rect.Height == 0) return OutOfMemory;
-            // Maps rect's top-left, top-right and bottom-left to the three points.
             float sx = rect.Width, sy = rect.Height;
-            var m11 = (dstplg[1].X - dstplg[0].X) / sx; var m12 = (dstplg[1].Y - dstplg[0].Y) / sx;
-            var m21 = (dstplg[2].X - dstplg[0].X) / sy; var m22 = (dstplg[2].Y - dstplg[0].Y) / sy;
-            var m = new GpMatrix(m11, m12, m21, m22, dstplg[0].X - rect.X * m11 - rect.Y * m21, dstplg[0].Y - rect.X * m12 - rect.Y * m22);
+            var m11 = (p1.X - p0.X) / sx; var m12 = (p1.Y - p0.Y) / sx;
+            var m21 = (p2.X - p0.X) / sy; var m22 = (p2.Y - p0.Y) / sy;
+            var m = new GpMatrix(m11, m12, m21, m22, p0.X - rect.X * m11 - rect.Y * m21, p0.Y - rect.X * m12 - rect.Y * m22);
             matrix = NewHandle(m);
             return Ok;
         }
 
+        internal static int GdipCreateMatrix3(ref RectangleF rect, PointF* dstplg, out IntPtr matrix)
+        {
+            matrix = IntPtr.Zero;
+            if (dstplg == null) return InvalidParameter;
+            return CreateMatrix3(rect, dstplg[0], dstplg[1], dstplg[2], out matrix);
+        }
+
         internal static int GdipCreateMatrix3I(ref Rectangle rect, Point* dstplg, out IntPtr matrix)
         {
-            RectangleF r = rect;
-            var pts = stackalloc PointF[3];
-            for (int i = 0; i < 3; i++) pts[i] = dstplg[i];
-            return GdipCreateMatrix3(ref r, pts, out matrix);
+            matrix = IntPtr.Zero;
+            if (dstplg == null) return InvalidParameter;
+            return CreateMatrix3(rect, dstplg[0], dstplg[1], dstplg[2], out matrix);
         }
 
         static GpMatrix Matrix(HandleRef m) => Get<GpMatrix>(m);
