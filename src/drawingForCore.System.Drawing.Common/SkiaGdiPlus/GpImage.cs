@@ -1,6 +1,7 @@
 // drawingForCore: GDI+ images on SkiaSharp (see SkiaGdiPlus.cs).
 // Licensed under the MIT license (as System.Drawing.Common).
 #nullable disable
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
@@ -147,20 +148,21 @@ namespace System.Drawing
             Pixels.SetPixel(x, y, new SKColor((byte)(argb >> 16), (byte)(argb >> 8), (byte)argb, (byte)a));
         }
 
-        // Copies a rectangle of the active frame into a buffer in a GDI+ pixel format (LockBits, saving).
-        public unsafe void ReadPixels(Rectangle rect, PixelFormat format, byte* dest, int stride)
+        // Copies a rectangle of the active frame into a buffer in a GDI+ pixel format (LockBits, saving). Row y of the
+        // rectangle starts at firstRow + y * stride in the buffer; the stride can be negative (a bottom-up buffer).
+        public void ReadPixels(Rectangle rect, PixelFormat format, Span<byte> buffer, int firstRow, int stride)
         {
-            var span = Pixels.GetPixelSpan();
+            ReadOnlySpan<byte> pixels = Pixels.GetPixelSpan();
             int rowBytes = Pixels.RowBytes;
             int bpp = BitsPerPixel(format);
             for (int y = 0; y < rect.Height; y++)
             {
-                byte* row = dest + (long)y * stride;
-                if (IsIndexed(format)) new Span<byte>(row, Math.Abs(stride)).Clear();
+                var row = buffer.Slice(firstRow + y * stride);
+                if (IsIndexed(format)) row.Slice(0, Math.Abs(stride)).Clear();
                 for (int x = 0; x < rect.Width; x++)
                 {
                     int o = (rect.Y + y) * rowBytes + (rect.X + x) * 4;
-                    uint b = span[o], g = span[o + 1], r = span[o + 2], a = span[o + 3];
+                    uint b = pixels[o], g = pixels[o + 1], r = pixels[o + 2], a = pixels[o + 3];
                     if (!IsPremultiplied(format) && a != 0 && a != 255)
                     {
                         b = Math.Min(255u, (b * 255 + a / 2) / a); g = Math.Min(255u, (g * 255 + a / 2) / a); r = Math.Min(255u, (r * 255 + a / 2) / a);
@@ -175,20 +177,18 @@ namespace System.Drawing
                         case PixelFormat.Format24bppRgb:
                             row[x * 3] = (byte)b; row[x * 3 + 1] = (byte)g; row[x * 3 + 2] = (byte)r; break;
                         case PixelFormat.Format16bppRgb565:
-                            *(ushort*)(row + x * 2) = (ushort)((r >> 3) << 11 | (g >> 2) << 5 | b >> 3); break;
+                            Write16(row, x, 0, (r >> 3) << 11 | (g >> 2) << 5 | b >> 3); break;
                         case PixelFormat.Format16bppRgb555:
-                            *(ushort*)(row + x * 2) = (ushort)((r >> 3) << 10 | (g >> 3) << 5 | b >> 3); break;
+                            Write16(row, x, 0, (r >> 3) << 10 | (g >> 3) << 5 | b >> 3); break;
                         case PixelFormat.Format16bppArgb1555:
-                            *(ushort*)(row + x * 2) = (ushort)((a >= 128 ? 0x8000 : 0) | (r >> 3) << 10 | (g >> 3) << 5 | b >> 3); break;
+                            Write16(row, x, 0, (a >= 128 ? 0x8000u : 0) | (r >> 3) << 10 | (g >> 3) << 5 | b >> 3); break;
                         case PixelFormat.Format16bppGrayScale:
-                            *(ushort*)(row + x * 2) = (ushort)((r * 299 + g * 587 + b * 114) / 1000 * 257); break;
+                            Write16(row, x, 0, (r * 299 + g * 587 + b * 114) / 1000 * 257); break;
                         case PixelFormat.Format48bppRgb:
-                            ((ushort*)(row + x * 6))[0] = (ushort)(b * 8192 / 255); ((ushort*)(row + x * 6))[1] = (ushort)(g * 8192 / 255);
-                            ((ushort*)(row + x * 6))[2] = (ushort)(r * 8192 / 255); break;
+                            Write16(row, x * 3, 0, b * 8192 / 255); Write16(row, x * 3, 1, g * 8192 / 255); Write16(row, x * 3, 2, r * 8192 / 255); break;
                         case PixelFormat.Format64bppArgb:
                         case PixelFormat.Format64bppPArgb:
-                            var p = (ushort*)(row + x * 8);
-                            p[0] = (ushort)(b * 8192 / 255); p[1] = (ushort)(g * 8192 / 255); p[2] = (ushort)(r * 8192 / 255); p[3] = (ushort)(a * 8192 / 255); break;
+                            Write16(row, x * 4, 0, b * 8192 / 255); Write16(row, x * 4, 1, g * 8192 / 255); Write16(row, x * 4, 2, r * 8192 / 255); Write16(row, x * 4, 3, a * 8192 / 255); break;
                         default: // indexed
                             int index = NearestIndex((int)(a << 24 | r << 16 | g << 8 | b));
                             if (bpp == 8) row[x] = (byte)index;
@@ -201,73 +201,73 @@ namespace System.Drawing
         }
 
         // Writes a buffer in a GDI+ pixel format into a rectangle of the active frame (UnlockBits, creating from Scan0).
-        public unsafe void WritePixels(Rectangle rect, PixelFormat format, byte* src, int stride)
+        // Row y of the rectangle starts at firstRow + y * stride in the buffer; the stride can be negative.
+        public void WritePixels(Rectangle rect, PixelFormat format, ReadOnlySpan<byte> buffer, int firstRow, int stride)
         {
-            var span = Pixels.GetPixelSpan();
+            var pixels = Pixels.GetPixelSpan();
             int rowBytes = Pixels.RowBytes;
             int bpp = BitsPerPixel(format);
             bool alpha = HasAlpha(Format);
-            fixed (byte* pixels = span)
+            for (int y = 0; y < rect.Height; y++)
             {
-                for (int y = 0; y < rect.Height; y++)
+                var row = buffer.Slice(firstRow + y * stride);
+                for (int x = 0; x < rect.Width; x++)
                 {
-                    byte* row = src + (long)y * stride;
-                    for (int x = 0; x < rect.Width; x++)
+                    uint b, g, r, a = 255;
+                    switch (format)
                     {
-                        uint b, g, r, a = 255;
-                        switch (format)
+                        case PixelFormat.Format32bppArgb:
+                        case PixelFormat.Format32bppPArgb:
+                            b = row[x * 4]; g = row[x * 4 + 1]; r = row[x * 4 + 2]; a = row[x * 4 + 3]; break;
+                        case PixelFormat.Format32bppRgb:
+                            b = row[x * 4]; g = row[x * 4 + 1]; r = row[x * 4 + 2]; break;
+                        case PixelFormat.Format24bppRgb:
+                            b = row[x * 3]; g = row[x * 3 + 1]; r = row[x * 3 + 2]; break;
+                        case PixelFormat.Format16bppRgb565:
                         {
-                            case PixelFormat.Format32bppArgb:
-                            case PixelFormat.Format32bppPArgb:
-                                b = row[x * 4]; g = row[x * 4 + 1]; r = row[x * 4 + 2]; a = row[x * 4 + 3]; break;
-                            case PixelFormat.Format32bppRgb:
-                                b = row[x * 4]; g = row[x * 4 + 1]; r = row[x * 4 + 2]; break;
-                            case PixelFormat.Format24bppRgb:
-                                b = row[x * 3]; g = row[x * 3 + 1]; r = row[x * 3 + 2]; break;
-                            case PixelFormat.Format16bppRgb565:
-                            {
-                                uint v = *(ushort*)(row + x * 2);
-                                r = (v >> 11 & 31) * 255 / 31; g = (v >> 5 & 63) * 255 / 63; b = (v & 31) * 255 / 31; break;
-                            }
-                            case PixelFormat.Format16bppRgb555:
-                            case PixelFormat.Format16bppArgb1555:
-                            {
-                                uint v = *(ushort*)(row + x * 2);
-                                r = (v >> 10 & 31) * 255 / 31; g = (v >> 5 & 31) * 255 / 31; b = (v & 31) * 255 / 31;
-                                if (format == PixelFormat.Format16bppArgb1555) a = (v & 0x8000) != 0 ? 255u : 0u;
-                                break;
-                            }
-                            case PixelFormat.Format16bppGrayScale:
-                                r = g = b = (uint)(*(ushort*)(row + x * 2) / 257); break;
-                            case PixelFormat.Format48bppRgb:
-                                b = Math.Min(255u, ((ushort*)(row + x * 6))[0] * 255u / 8192); g = Math.Min(255u, ((ushort*)(row + x * 6))[1] * 255u / 8192);
-                                r = Math.Min(255u, ((ushort*)(row + x * 6))[2] * 255u / 8192); break;
-                            case PixelFormat.Format64bppArgb:
-                            case PixelFormat.Format64bppPArgb:
-                            {
-                                var p = (ushort*)(row + x * 8);
-                                b = Math.Min(255u, p[0] * 255u / 8192); g = Math.Min(255u, p[1] * 255u / 8192); r = Math.Min(255u, p[2] * 255u / 8192); a = Math.Min(255u, p[3] * 255u / 8192);
-                                break;
-                            }
-                            default:
-                            {
-                                int index = bpp == 8 ? row[x] : bpp == 4 ? (x % 2 == 0 ? row[x / 2] >> 4 : row[x / 2] & 15) : (row[x / 8] >> (7 - x % 8)) & 1;
-                                uint argb = Palette != null && index < Palette.Length ? (uint)Palette[index] : 0;
-                                a = argb >> 24; r = argb >> 16 & 255; g = argb >> 8 & 255; b = argb & 255; break;
-                            }
+                            uint v = Read16(row, x, 0);
+                            r = (v >> 11 & 31) * 255 / 31; g = (v >> 5 & 63) * 255 / 63; b = (v & 31) * 255 / 31; break;
                         }
-                        if (!alpha && !IsIndexed(Format)) a = 255;
-                        if (!IsPremultiplied(format) && a != 255)
+                        case PixelFormat.Format16bppRgb555:
+                        case PixelFormat.Format16bppArgb1555:
                         {
-                            r = r * a / 255; g = g * a / 255; b = b * a / 255;
+                            uint v = Read16(row, x, 0);
+                            r = (v >> 10 & 31) * 255 / 31; g = (v >> 5 & 31) * 255 / 31; b = (v & 31) * 255 / 31;
+                            if (format == PixelFormat.Format16bppArgb1555) a = (v & 0x8000) != 0 ? 255u : 0u;
+                            break;
                         }
-                        byte* o = pixels + (rect.Y + y) * rowBytes + (rect.X + x) * 4;
-                        o[0] = (byte)b; o[1] = (byte)g; o[2] = (byte)r; o[3] = (byte)a;
+                        case PixelFormat.Format16bppGrayScale:
+                            r = g = b = Read16(row, x, 0) / 257; break;
+                        case PixelFormat.Format48bppRgb:
+                            b = Math.Min(255u, Read16(row, x * 3, 0) * 255u / 8192); g = Math.Min(255u, Read16(row, x * 3, 1) * 255u / 8192);
+                            r = Math.Min(255u, Read16(row, x * 3, 2) * 255u / 8192); break;
+                        case PixelFormat.Format64bppArgb:
+                        case PixelFormat.Format64bppPArgb:
+                            b = Math.Min(255u, Read16(row, x * 4, 0) * 255u / 8192); g = Math.Min(255u, Read16(row, x * 4, 1) * 255u / 8192);
+                            r = Math.Min(255u, Read16(row, x * 4, 2) * 255u / 8192); a = Math.Min(255u, Read16(row, x * 4, 3) * 255u / 8192);
+                            break;
+                        default:
+                        {
+                            int index = bpp == 8 ? row[x] : bpp == 4 ? (x % 2 == 0 ? row[x / 2] >> 4 : row[x / 2] & 15) : (row[x / 8] >> (7 - x % 8)) & 1;
+                            uint argb = Palette != null && index < Palette.Length ? (uint)Palette[index] : 0;
+                            a = argb >> 24; r = argb >> 16 & 255; g = argb >> 8 & 255; b = argb & 255; break;
+                        }
                     }
+                    if (!alpha && !IsIndexed(Format)) a = 255;
+                    if (!IsPremultiplied(format) && a != 255)
+                    {
+                        r = r * a / 255; g = g * a / 255; b = b * a / 255;
+                    }
+                    int o = (rect.Y + y) * rowBytes + (rect.X + x) * 4;
+                    pixels[o] = (byte)b; pixels[o + 1] = (byte)g; pixels[o + 2] = (byte)r; pixels[o + 3] = (byte)a;
                 }
             }
             Pixels.NotifyPixelsChanged();
         }
+
+        // The 16-bit channel at (pixel * channels + channel) of a row: GDI+'s formats are little-endian (x86, x64, arm64).
+        static uint Read16(ReadOnlySpan<byte> row, int pixel, int channel) => BinaryPrimitives.ReadUInt16LittleEndian(row.Slice((pixel + channel) * 2));
+        static void Write16(Span<byte> row, int pixel, int channel, uint value) => BinaryPrimitives.WriteUInt16LittleEndian(row.Slice((pixel + channel) * 2), (ushort)value);
 
         public int NearestIndex(int argb)
         {

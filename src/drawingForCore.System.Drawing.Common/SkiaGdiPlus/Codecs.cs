@@ -493,7 +493,7 @@ namespace System.Drawing
     // BMP encoder: GDI+ writes the image's own depth (24bpp, 32bpp, indexed with its palette).
     internal static class Bmp
     {
-        public static unsafe void Write(GpImage image, Stream output)
+        public static void Write(GpImage image, Stream output)
         {
             var format = image.Format;
             if (!GpImage.IsIndexed(format) && format != PixelFormat.Format24bppRgb) format = GpImage.EncodesAlpha(format) ? PixelFormat.Format32bppArgb : PixelFormat.Format24bppRgb;
@@ -502,8 +502,8 @@ namespace System.Drawing
             int paletteSize = GpImage.IsIndexed(format) ? (image.Palette?.Length ?? 0) * 4 : 0;
             int offset = 14 + 40 + paletteSize;
             var pixels = new byte[stride * image.Height];
-            fixed (byte* p = pixels)
-                image.ReadPixels(new Rectangle(0, 0, image.Width, image.Height), format, p + (long)stride * (image.Height - 1), -stride);
+            // Bottom-up: the top row is the last in the file.
+            image.ReadPixels(new Rectangle(0, 0, image.Width, image.Height), format, pixels, stride * (image.Height - 1), -stride);
             var w = new BinaryWriter(output);
             w.Write((byte)'B'); w.Write((byte)'M'); w.Write(offset + pixels.Length); w.Write(0); w.Write(offset);
             w.Write(40); w.Write(image.Width); w.Write(image.Height); w.Write((short)1); w.Write((short)bpp); w.Write(0); w.Write(pixels.Length);
@@ -519,7 +519,7 @@ namespace System.Drawing
     // pixels to a transparent entry.
     internal static class Gif
     {
-        public static unsafe void Write(GpImage image, Stream output)
+        public static void Write(GpImage image, Stream output)
         {
             int width = image.Width, height = image.Height;
             int[] palette;
@@ -528,7 +528,7 @@ namespace System.Drawing
             if (image.Format == PixelFormat.Format8bppIndexed && image.Palette != null && image.Palette.Length <= 256)
             {
                 palette = image.Palette;
-                fixed (byte* p = indices) image.ReadPixels(new Rectangle(0, 0, width, height), PixelFormat.Format8bppIndexed, p, width);
+                image.ReadPixels(new Rectangle(0, 0, width, height), PixelFormat.Format8bppIndexed, indices, 0, width);
             }
             else
             {
@@ -806,7 +806,7 @@ namespace System.Drawing
             return output.ToArray();
         }
 
-        public static unsafe void Write(GpImage image, Stream output)
+        public static void Write(GpImage image, Stream output)
         {
             bool alpha = GpImage.EncodesAlpha(image.Format);
             int channels = alpha ? 4 : 3, width = image.Width, height = image.Height;
