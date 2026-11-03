@@ -20,7 +20,8 @@ dotnet build drawingForCore.slnx -c Release
 tools/ci/run-tests.sh            # .trx and summary.md in ./TestResults; fails on any failure not known
 ```
 
-On Windows: Git for Windows, Python 3 (as `python3`) and the SDK in `global.json`; then the same commands in Git Bash.
+On Windows: Git for Windows and the SDK in `global.json`; then the same commands in Git Bash. The test tools
+(`tools/ci/*.cs`) are C# file-based apps that `run-tests.sh` runs with `dotnet run`.
 
 ## The selection
 
@@ -41,7 +42,7 @@ Outside the selection, Microsoft disabled 1,008 tests on Unix because libgdiplus
 ## Known failures
 
 `tools/ci/known-failures/System.Drawing.Common.Tests.txt` lists the 151 tests the engine fails, and
-`tools/ci/check_failures.py` fails the run on any other failure. It also reports known failures that now pass, so the
+`tools/ci/check_failures.cs` fails the run on any other failure. It also reports known failures that now pass, so the
 list only shrinks: remove a test from the list when it passes.
 
 | Failures | Why |
