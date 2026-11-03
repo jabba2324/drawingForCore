@@ -527,8 +527,7 @@ namespace System.Drawing
 
         static void Opaque(SKBitmap bitmap)
         {
-            var span = bitmap.GetPixelSpan();
-            var pixels = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(span), span.Length);
+            var pixels = bitmap.GetPixelSpan();
             for (int i = 3; i < pixels.Length; i += 4) pixels[i] = 255;
             bitmap.NotifyPixelsChanged();
         }

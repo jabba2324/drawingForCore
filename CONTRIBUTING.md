@@ -32,9 +32,46 @@ System.Drawing closer to .NET Framework, and when it can prove it with a test.
 6. **Report numbers.** A change to the engine says what the suite gave before and after: tests run, passed, failed and
    skipped.
 
+7. **Every change names what needs it.** Say which application hit the problem, what it did and what its user saw
+   (the [webForCore smoke test](https://github.com/jabba2324/webForCore-smoke-test)'s applications are a good source),
+   or which of Microsoft's tests records the behaviour. Synthetic edge cases are fine as extra tests, but the reason
+   for a change is an application or GDI+'s recorded behaviour.
+
+## How drawingForCore's own code is written
+
+These are webForCore's rules for its own code (its CONTRIBUTING.md, 6–8), applied here to the engine
+(`tools/lift/additions/`), the lift scripts and the tools. They don't apply to Microsoft's lifted code (principle 3
+keeps that as it is). The aim is the same: code a reviewer can see is correct, that keeps working when .NET or
+SkiaSharp is patched, and that fails safely.
+
+8. **No reflection into internals.** Don't read, write or call non-public members of the runtime, of SkiaSharp, or of
+   Microsoft's System.Drawing.Common types, and don't depend on their private names or layout. Use public APIs, or the
+   data Microsoft's code passes through the GDI+ flat API. If a behaviour needs something that isn't exposed, document
+   the difference with a test instead.
+
+9. **No unsafe code and no GC tricks, except at the native boundary.** The engine stands in for `gdiplus.dll`, so its
+   flat API functions take what Microsoft's code passes to GDI+: pointers and memory blocks in GDI+'s layouts
+   (`LockBits` buffers, point and rectangle arrays, palettes, `EncoderParameters`). Reading and writing those, with
+   pointers or `Marshal`, in the function that receives them is the native contract, and is allowed there only:
+   convert to managed types (arrays, spans, objects) at that edge, and keep the rest of the engine free of pointers.
+   Nothing else: no `Unsafe`/`MemoryMarshal` reinterpretation, no P/Invoke of the engine's own (SkiaSharp's are
+   SkiaSharp's), and nothing that steers the garbage collector: no `GC.Collect`, `GC.WaitForPendingFinalizers` or
+   `GC.AddMemoryPressure`, no `GCHandle`s, no polling weak references. A GDI+ handle is an entry in the engine's
+   handle table, removed by the matching `Gdip*Delete`/`Dispose` function, which the wrapper's `Dispose` or finaliser
+   calls.
+
+10. **Slow, secure and stable beats fast.** Don't optimise before an application shows a problem with a measurement.
+    Choose the simplest design that is clearly correct over a faster one that is harder to reason about. When
+    performance does need work, the pull request includes the measurement.
+
+Code written before these rules that breaks them is listed in #3. It is removed or replaced when it is next changed.
+New code doesn't add to it.
+
 ## Pull requests
 
 - One problem per commit, with `Fixes #<issue>` in the message where there is one.
+- The pull request lists, for each change: the problem, what needs it (principle 7), the fix, the test and the suite's
+  numbers (principle 6), and whether Microsoft's code changed (and where that is documented).
 - CI (`.github/workflows/ci.yml`) checks the lift, builds, runs the tests, packs the packages and runs the package
   smoke test, on Linux and on Windows; both must pass.
 
