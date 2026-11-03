@@ -1,5 +1,6 @@
 // Summarises VSTest .trx files: totals, then failures grouped by test class and by message. Prints Markdown.
 // Usage: dotnet run tools/ci/trx_summary.cs -- results/*.trx
+#:property NuGetAudit=false
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;

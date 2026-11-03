@@ -2,6 +2,7 @@
 // Usage: dotnet run tools/ci/check_failures.cs -- results.trx [known-failures.txt]
 // Known failures are one "Class.Method(arguments)" per line, as this tool prints them; '#' starts a comment. Tests on
 // the list that now pass are reported, so the list can shrink.
+#:property NuGetAudit=false
 using System.Xml.Linq;
 
 XNamespace t = "http://microsoft.com/schemas/VisualStudio/TeamTest/2010";
