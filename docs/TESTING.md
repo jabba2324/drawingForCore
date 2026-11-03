@@ -1,7 +1,7 @@
 # Tests
 
-drawingForCore is tested with **Microsoft's own test suite** for System.Drawing.Common 6.0, lifted from dotnet/runtime
-with the code ([MODIFICATIONS.md](MODIFICATIONS.md)). Its tests record what Windows GDI+ does, so they measure how
+drawingForCore is tested with **Microsoft's own test suite** for System.Drawing.Common 6.0, from the dotnet/runtime
+submodule with the code ([MODIFICATIONS.md](MODIFICATIONS.md)). Its tests record what Windows GDI+ does, so they measure how
 close the engine is to it.
 
 **Latest run (0.2.0, .NET 10, CI, 3 Nov 2026, Linux x64 and Windows x64, Release): 3,882 tests in Microsoft's Linux selection,

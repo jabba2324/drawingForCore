@@ -32,9 +32,9 @@ what had to change.
 7. **.NET Framework is the reference.** Where System.Drawing.Common on .NET behaves differently from System.Drawing on
    .NET Framework 4.8, a change restores 4.8's behaviour, and Windows GDI+'s output is what the engine aims for.
 
-## Lifted components
+## Components from submodules
 
-| Component | Upstream (pinned commit) | Licence | Files lifted | Files changed |
+| Component | Upstream (pinned commit) | Licence | Files used | Files changed |
 | --- | --- | --- | ---: | ---: |
 | System.Drawing.Common 6.0 | [dotnet/runtime@76b9680](https://github.com/dotnet/runtime/tree/76b96800a40eb88d9ee163af68076d7fcc8216be) (release/6.0) | MIT | 199 | 4 |
 | System.Drawing (type forwards) | [webformsforcore/WebFormsForCore@52f4172](https://github.com/webformsforcore/WebFormsForCore/tree/52f4172dbc09b3ad0b849c97642720fa7a49aa22) | MIT | 1 | 1 |
