@@ -223,6 +223,40 @@ in #3.
 Result (Linux x64, Release, .NET 10.0.14): **3,883 tests, 3,716 pass, 16 skipped, 151 fail, all known**, the same as
 0.2.0.
 
+## Pointers at the edge (#3, 3 Nov 2026)
+
+What #3 listed, re-inventoried first: 14 `unsafe` modifiers, 9 `fixed`, 3 `stackalloc`, 39 lines of `Marshal` calls and
+48 flat API functions that take typed pointers. No `GC`, `GCHandle`, `MemoryMarshal`, `Unsafe`, reflection or P/Invoke
+of the engine's own. Fixed here:
+
+- **Pixel buffers:** `GpImage.ReadPixels`/`WritePixels` take a span, the offset of the first row and a stride that can
+  be negative, and read and write 16-bit channels with `BinaryPrimitives` (little-endian, as GDI+'s formats are).
+  `GdipBitmapLockBits`, `GdipBitmapUnlockBits` and `GdipCreateBitmapFromScan0` make the span from the pointer; the BMP
+  and GIF encoders pass their arrays. Before, the encoders pinned their arrays (`Codecs.cs` 505, 531) and the three
+  flat functions passed `byte*` on (`Images.cs` 488, 575, 596).
+- **Flat functions calling flat functions with pointers:** the integer overloads (`GdipTransformPointsI`,
+  `GdipDrawRectanglesI`, `GdipFillRectanglesI`, `GdipDrawImagePointsI`, `GdipDrawImagePointsRectI`,
+  `GdipCreatePathGradientI`, `GdipCreateMatrix3I`), `GdipPathIterEnumerate` and `GdipGetMatrixElements(float*)`. Each
+  now reads its own pointers and calls a managed core.
+- **`EncoderParameters`:** read in `GdipSaveImageToFile` and `GdipSaveImageToDelegate_linux`, which receive the block,
+  instead of in `Codecs.Encode`.
+- The `unsafe` modifiers on `Bmp.Write`, `Gif.Write`, `Tiff.Write` and the stubs' class, which use no pointers.
+
+`Images.cs` 35 and 120, listed in #3, were already at the edge: they pin a buffer for Microsoft's `byte*` stream
+delegates (`StreamGetBytesDelegate`, `StreamPutBytesDelegate`) in the function that receives them.
+
+Left, waiting on a decision about what counts as the edge: private helpers of the flat API class that turn a pointer
+into managed data at once (`Graphics.cs` `Pts`/`PtsF`, 20 callers; `Images.cs` `CodecListSize`/`CodecList`), and
+`GpImage` keeping the LockBits buffer as an `IntPtr` that its `Dispose` frees.
+
+drawingForCore's own tests (`test/.../Engine/NativeBoundaryTests.cs`, 94) were written and recorded on the engine
+before the change, for what Microsoft's suite doesn't cover: LockBits in every format with GDI+'s buffer and the
+caller's (negative and wider strides), Scan0 with a negative stride, the BMP and GIF encoders' bytes, JPEG quality from
+`EncoderParameters`, and the integer overloads' pixels against the float ones. They pass unchanged after it.
+
+Result (Linux x64, Release, .NET 10.0.14, with a printer): **3,977 tests (3,883 and the 94 new), 3,810 pass, 16
+skipped, 151 fail, all known**, before and after the change.
+
 ## Submodules instead of the lift (xforcore/webForCore#61, 3 Nov 2026)
 
 Microsoft's code comes from three submodules in `external/`, each a shallow checkout of a cleared-down fork branch:

@@ -23,6 +23,14 @@ tools/ci/run-tests.sh            # .trx and summary.md in ./TestResults; fails o
 On Windows: Git for Windows and the SDK in `global.json`; then the same commands in Git Bash. The test tools
 (`tools/ci/*.cs`) are C# file-based apps that `run-tests.sh` runs with `dotnet run`.
 
+## drawingForCore's own tests
+
+Where Microsoft's suite doesn't cover a behaviour, drawingForCore adds its own tests (CONTRIBUTING.md, principle 2)
+in the test project's own folders, which its `**/*.cs` item picks up: `Engine/NativeBoundaryTests.cs` (94 tests, #3)
+records what the flat API does with the buffers Microsoft's code passes it: LockBits in every format with either stride
+sign, Scan0, the BMP and GIF encoders' bytes, JPEG quality and the integer overloads. They run in the same selection,
+so from #3 the counts above are 94 higher: 3,976 tests, 3,799 pass, 26 skipped, 151 known failures in CI.
+
 ## The selection
 
 Microsoft's tests mark what doesn't apply: `[ActiveIssue]`, `[PlatformSpecific]` and similar attributes add xunit traits
