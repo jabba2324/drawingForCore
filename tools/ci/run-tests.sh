@@ -15,5 +15,5 @@ FILTER="category!=failing&category!=nonlinuxtests&category!=nonnetcoreapptests&c
 s=System.Drawing.Common.Tests
 dotnet test "test/drawingForCore.$s/drawingForCore.$s.csproj" -c Release --no-build --filter "$FILTER" \
   --logger "trx;LogFileName=$s.trx" --results-directory "$OUT"
-python3 tools/ci/trx_summary.py "$OUT/$s.trx" > "$OUT/summary.md" || true
-python3 tools/ci/check_failures.py "$OUT/$s.trx" "tools/ci/known-failures/$s.txt"
+dotnet run tools/ci/trx_summary.cs -- "$OUT/$s.trx" > "$OUT/summary.md" || true
+dotnet run tools/ci/check_failures.cs -- "$OUT/$s.trx" "tools/ci/known-failures/$s.txt"
