@@ -39,7 +39,7 @@ System.Drawing closer to .NET Framework, and when it can prove it with a test.
 
 ## How drawingForCore's own code is written
 
-These are webForCore's rules for its own code (its CONTRIBUTING.md, 6–8), applied here to the engine
+These are webForCore's rules for its own code (its CONTRIBUTING.md, 6–9), applied here to the engine
 (`tools/lift/additions/`), the lift scripts and the tools. They don't apply to Microsoft's lifted code (principle 3
 keeps that as it is). The aim is the same: code a reviewer can see is correct, that keeps working when .NET or
 SkiaSharp is patched, and that fails safely.
@@ -64,8 +64,14 @@ SkiaSharp is patched, and that fails safely.
     Choose the simplest design that is clearly correct over a faster one that is harder to reason about. When
     performance does need work, the pull request includes the measurement.
 
-Code written before these rules that breaks them is listed in #3. It is removed or replaced when it is next changed.
-New code doesn't add to it.
+11. **Programs and tools are .NET.** Everything this repository builds, and every tool it uses (CI helpers, checks),
+    is written in C# as a project or as a file-based app run with `dotnet run tool.cs`. No Python, Node.js, Ruby, Perl
+    or other general-purpose language. Shell scripts (bash, PowerShell) and CI YAML are fine as glue that calls
+    dotnet, git, gh and curl. Anything that parses data or makes decisions belongs in C#. Front-end code
+    (JavaScript, TypeScript, CSS, HTML and anything else that runs in the browser) is fine too.
+
+Code written before rules 8–10 that breaks them is listed in #3, and Python written before rule 11 in #5. Each item is
+removed or replaced when it is next changed. New code doesn't add to either list.
 
 ## Pull requests
 
