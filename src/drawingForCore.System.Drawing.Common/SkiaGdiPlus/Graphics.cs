@@ -393,28 +393,32 @@ namespace System.Drawing
             _ => new GpMatrix(),
         };
 
-        internal static int GdipTransformPoints(HandleRef graphics, int destSpace, int srcSpace, PointF* points, int count)
+        // The matrix from srcSpace to destSpace, or null for an invalid space or graphics.
+        static GpMatrix SpaceTransform(HandleRef graphics, int destSpace, int srcSpace)
         {
             var g = G(graphics);
-            if (g == null || points == null || count <= 0 || destSpace < 0 || destSpace > 2 || srcSpace < 0 || srcSpace > 2) return InvalidParameter;
+            if (g == null || destSpace < 0 || destSpace > 2 || srcSpace < 0 || srcSpace > 2) return null;
             var toDevice = SpaceToDevice(g, srcSpace);
             var fromDevice = SpaceToDevice(g, destSpace).Clone();
-            if (!fromDevice.Invert()) return InvalidParameter;
-            var m = GpMatrix.Product(toDevice, fromDevice);
+            return fromDevice.Invert() ? GpMatrix.Product(toDevice, fromDevice) : null;
+        }
+
+        internal static int GdipTransformPoints(HandleRef graphics, int destSpace, int srcSpace, PointF* points, int count)
+        {
+            if (points == null || count <= 0) return InvalidParameter;
+            var m = SpaceTransform(graphics, destSpace, srcSpace);
+            if (m == null) return InvalidParameter;
             for (int i = 0; i < count; i++) points[i] = m.Transform(points[i]);
             return Ok;
         }
 
         internal static int GdipTransformPointsI(HandleRef graphics, int destSpace, int srcSpace, Point* points, int count)
         {
-            var f = new PointF[Math.Max(count, 0)];
-            for (int i = 0; i < count; i++) f[i] = points[i];
-            fixed (PointF* p = f)
-            {
-                int status = GdipTransformPoints(graphics, destSpace, srcSpace, p, count);
-                for (int i = 0; i < count; i++) points[i] = Point.Round(f[i]);
-                return status;
-            }
+            if (points == null || count <= 0) return InvalidParameter;
+            var m = SpaceTransform(graphics, destSpace, srcSpace);
+            if (m == null) return InvalidParameter;
+            for (int i = 0; i < count; i++) points[i] = Point.Round(m.Transform(points[i]));
+            return Ok;
         }
 
         // Clipping (kept in device space)
@@ -680,20 +684,23 @@ namespace System.Drawing
 
         internal static int GdipDrawRectangleI(HandleRef graphics, HandleRef pen, int x, int y, int width, int height) => GdipDrawRectangle(graphics, pen, x, y, width, height);
 
+        static int DrawRectangles(HandleRef graphics, HandleRef pen, RectangleF[] list)
+            => StrokePath(graphics, pen, p => { foreach (var r in list) if (r.Width >= 0 && r.Height >= 0) p.AddRect(new SKRect(r.Left, r.Top, r.Right, r.Bottom)); });
+
         internal static int GdipDrawRectangles(HandleRef graphics, HandleRef pen, RectangleF* rects, int count)
         {
             if (rects == null || count <= 0) return InvalidParameter;
             var list = new RectangleF[count];
             for (int i = 0; i < count; i++) list[i] = rects[i];
-            return StrokePath(graphics, pen, p => { foreach (var r in list) if (r.Width >= 0 && r.Height >= 0) p.AddRect(new SKRect(r.Left, r.Top, r.Right, r.Bottom)); });
+            return DrawRectangles(graphics, pen, list);
         }
 
         internal static int GdipDrawRectanglesI(HandleRef graphics, HandleRef pen, Rectangle* rects, int count)
         {
             if (rects == null || count <= 0) return InvalidParameter;
-            var f = new RectangleF[count];
-            for (int i = 0; i < count; i++) f[i] = rects[i];
-            fixed (RectangleF* p = f) return GdipDrawRectangles(graphics, pen, p, count);
+            var list = new RectangleF[count];
+            for (int i = 0; i < count; i++) list[i] = rects[i];
+            return DrawRectangles(graphics, pen, list);
         }
 
         internal static int GdipDrawEllipse(HandleRef graphics, HandleRef pen, float x, float y, float width, float height) => StrokePath(graphics, pen, p => p.AddOval(new SKRect(x, y, x + width, y + height)));
@@ -773,20 +780,23 @@ namespace System.Drawing
 
         internal static int GdipFillRectangleI(HandleRef graphics, HandleRef brush, int x, int y, int width, int height) => GdipFillRectangle(graphics, brush, x, y, width, height);
 
+        static int FillRectangles(HandleRef graphics, HandleRef brush, RectangleF[] list)
+            => FillPath(graphics, brush, p => { foreach (var r in list) if (r.Width > 0 && r.Height > 0) p.AddRect(new SKRect(r.Left, r.Top, r.Right, r.Bottom)); });
+
         internal static int GdipFillRectangles(HandleRef graphics, HandleRef brush, RectangleF* rects, int count)
         {
             if (rects == null || count <= 0) return InvalidParameter;
             var list = new RectangleF[count];
             for (int i = 0; i < count; i++) list[i] = rects[i];
-            return FillPath(graphics, brush, p => { foreach (var r in list) if (r.Width > 0 && r.Height > 0) p.AddRect(new SKRect(r.Left, r.Top, r.Right, r.Bottom)); });
+            return FillRectangles(graphics, brush, list);
         }
 
         internal static int GdipFillRectanglesI(HandleRef graphics, HandleRef brush, Rectangle* rects, int count)
         {
             if (rects == null || count <= 0) return InvalidParameter;
-            var f = new RectangleF[count];
-            for (int i = 0; i < count; i++) f[i] = rects[i];
-            fixed (RectangleF* p = f) return GdipFillRectangles(graphics, brush, p, count);
+            var list = new RectangleF[count];
+            for (int i = 0; i < count; i++) list[i] = rects[i];
+            return FillRectangles(graphics, brush, list);
         }
 
         internal static int GdipFillEllipse(HandleRef graphics, HandleRef brush, float x, float y, float width, float height) => FillPath(graphics, brush, p => p.AddOval(new SKRect(x, y, x + width, y + height)));
@@ -958,10 +968,15 @@ namespace System.Drawing
 
         internal static int GdipDrawImagePointsI(HandleRef graphics, HandleRef image, Point* points, int count)
         {
-            if (points == null || count != 3) return count != 3 ? NotImplemented : InvalidParameter;
-            var f = stackalloc PointF[3];
-            for (int i = 0; i < 3; i++) f[i] = points[i];
-            return GdipDrawImagePoints(graphics, image, f, 3);
+            var img = Image(image);
+            if (img == null || points == null || count != 3) return count != 3 ? NotImplemented : InvalidParameter;
+            return DrawImage(G(graphics), img, new RectangleF(0, 0, img.Width, img.Height), points[0], points[1], points[2], null);
+        }
+
+        static int DrawImagePointsRect(HandleRef graphics, GpImage img, PointF p0, PointF p1, PointF p2, float srcx, float srcy, float srcwidth, float srcheight, GraphicsUnit srcunit, HandleRef imageAttributes)
+        {
+            var src = SourcePixels(img, new RectangleF(srcx, srcy, srcwidth, srcheight), srcunit);
+            return DrawImage(G(graphics), img, src, p0, p1, p2, Get<GpImageAttributes>(imageAttributes));
         }
 
         internal static int GdipDrawImagePointsRect(HandleRef graphics, HandleRef image, PointF* points, int count, float srcx, float srcy, float srcwidth, float srcheight, GraphicsUnit srcunit, HandleRef imageAttributes, Graphics.DrawImageAbort? callback, HandleRef callbackdata)
@@ -969,17 +984,16 @@ namespace System.Drawing
             var img = Image(image);
             if (img == null || points == null || BadSourceUnit(srcunit)) return InvalidParameter;
             if (count != 3) return NotImplemented;
-            var src = SourcePixels(img, new RectangleF(srcx, srcy, srcwidth, srcheight), srcunit);
-            return DrawImage(G(graphics), img, src, points[0], points[1], points[2], Get<GpImageAttributes>(imageAttributes));
+            return DrawImagePointsRect(graphics, img, points[0], points[1], points[2], srcx, srcy, srcwidth, srcheight, srcunit, imageAttributes);
         }
 
         internal static int GdipDrawImagePointsRectI(HandleRef graphics, HandleRef image, Point* points, int count, int srcx, int srcy, int srcwidth, int srcheight, GraphicsUnit srcunit, HandleRef imageAttributes, Graphics.DrawImageAbort? callback, HandleRef callbackdata)
         {
             if (points == null) return InvalidParameter;
             if (count != 3) return NotImplemented;
-            var f = stackalloc PointF[3];
-            for (int i = 0; i < 3; i++) f[i] = points[i];
-            return GdipDrawImagePointsRect(graphics, image, f, 3, srcx, srcy, srcwidth, srcheight, srcunit, imageAttributes, callback, callbackdata);
+            var img = Image(image);
+            if (img == null || BadSourceUnit(srcunit)) return InvalidParameter;
+            return DrawImagePointsRect(graphics, img, points[0], points[1], points[2], srcx, srcy, srcwidth, srcheight, srcunit, imageAttributes);
         }
     }
     }
