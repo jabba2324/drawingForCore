@@ -2,7 +2,7 @@
 
 Record of everything lifted into or changed in drawingForCore, with each decision and its result.
 
-**Target framework: net11.0 only.**
+**Target framework: net10.0 only** (.NET 10 LTS, from 0.2.0; 0.1.0 was net11.0).
 
 ## Sources
 
@@ -181,6 +181,21 @@ known**, the same as webForCore's last local run. In CI, on both platforms: 3,88
 known failures, the same as webForCore's CI (ten printing tests need an installed printer, which the runners lack). Packing gives `drawingForCore` and `drawingForCore.Common` with symbol
 packages. The package smoke test passes. A feed made by Sleet from those packages, served over HTTP, restores and runs
 the smoke test (NuGet downloads both packages from the feed's flat container).
+
+## .NET 10 LTS (3 Nov 2026, 0.2.0)
+
+webForCore moved from .NET 11 RC to .NET 10 LTS (webForCore #55, #58), and a `net11.0` package can't be restored by a
+`net10.0` application, so drawingForCore moves with it.
+
+- The lift scripts (`lift_drawing.py`, `lift_drawing_tests.py`, `lift_system_drawing.py`) generate `net10.0` projects,
+  and the package smoke test is `net10.0`. Lifting again changed only the six project files' target framework and
+  description; no source file changed, and `docs/lifted-changes.md` is unchanged.
+- `global.json` pins SDK 10.0.100 with `latestFeature`; CI and the feed workflow install `10.0.x`.
+- The assemblies keep their identities: System.Drawing.Common 11.0.0.0 and System.Drawing 13.5.0.0, as before.
+- Nothing else changed: no package version moved (SkiaSharp 3.119.0, xunit), and the code is the same as 0.1.0.
+
+Result (Linux x64, Release, SDK 10.0.403, runtime 10.0.14): **3,883 tests, 3,716 pass, 16 skipped, 151 fail, all
+known**, the same as on .NET 11. Packing gives both packages with `lib/net10.0`, and the package smoke test passes.
 
 ## Open items
 

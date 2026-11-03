@@ -258,7 +258,7 @@ def main():
        managed code for a Unix build, with the GDI+ flat API implemented in managed code on SkiaSharp (SkiaGdiPlus/)
        instead of libgdiplus. Generated; do not edit (change the lift script or tools/lift/additions/{NAME}/). -->
   <PropertyGroup>
-    <TargetFramework>net11.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>System.Drawing.Common</AssemblyName>
     <RootNamespace>System.Drawing</RootNamespace>
     <AssemblyVersion>11.0.0.0</AssemblyVersion>
@@ -274,7 +274,7 @@ def main():
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <NoWarn>$(NoWarn);CS0618;CS8600;CS8601;CS8602;CS8603;CS8604;CS8618;CS8625;CS8765;CS8767;CA1416;SYSLIB0003;SYSLIB0011;SYSLIB0051;CS0649;CS0169;CS0414</NoWarn>
     <PackageId>drawingForCore.Common</PackageId>
-    <Description>System.Drawing.Common for .NET 11 on Linux, macOS and Windows: Microsoft's System.Drawing.Common 6.0 with GDI+ implemented in managed code on SkiaSharp.</Description>
+    <Description>System.Drawing.Common for .NET 10 on Linux, macOS and Windows: Microsoft's System.Drawing.Common 6.0 with GDI+ implemented in managed code on SkiaSharp.</Description>
     <!-- System.Drawing.Common's identity (the shared framework's System.Drawing facade forwards to it): public signed
          with its public key (keys/), as dotnet/runtime's own open-source builds are. -->
     <AssemblyOriginatorKeyFile>..\\..\\keys\\System.Drawing.Common.snk</AssemblyOriginatorKeyFile>
