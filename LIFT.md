@@ -18,7 +18,7 @@ read) and `tools/lift/lift.sh <folder>` runs the three scripts. Full clones in t
 
 ## History
 
-drawingForCore was built inside [webForCore](https://github.com/jabba2324/webForCore), which needed System.Drawing on
+drawingForCore was built inside [webForCore](https://github.com/xforcore/webForCore), which needed System.Drawing on
 Linux for System.Web, Web Pages' WebImage and DataVisualization's Chart. These sections are from webForCore's LIFT.md,
 where the work happened; paths are given as they were then (`webForCore.*` projects).
 
@@ -132,7 +132,7 @@ fixups apply to arcade's files too). Windows runs the 3,882 tests Linux runs, wi
 ## Moved to drawingForCore (2 Nov 2026)
 
 System.Drawing moved out of webForCore into this repository
-([webForCore#53](https://github.com/jabba2324/webForCore/issues/53)): it is useful to any .NET Framework code that
+([webForCore#53](https://github.com/xforcore/webForCore/issues/53)): it is useful to any .NET Framework code that
 draws, it rarely changes, and its 151 known failures are a project of their own. webForCore now references the
 packages.
 

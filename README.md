@@ -12,7 +12,7 @@ drawingForCore keeps Microsoft's System.Drawing.Common 6.0 source (the public AP
 written in C# on [SkiaSharp](https://github.com/mono/SkiaSharp). The assemblies have Microsoft's names, versions and
 public key tokens, so code compiled against System.Drawing binds to them unchanged.
 
-It started inside [webForCore](https://github.com/jabba2324/webForCore), which runs ASP.NET 4.x applications on .NET 10,
+It started inside [webForCore](https://github.com/xforcore/webForCore), which runs ASP.NET 4.x applications on .NET 10,
 and moved to its own repository because it is useful to any .NET Framework code that draws.
 
 ## Status
@@ -22,7 +22,7 @@ and moved to its own repository because it is useful to any .NET Framework code 
 | Status | Pre-release (0.2.0) |
 | Target | .NET 10 LTS (`net10.0`), from 0.2.0 (0.1.0 was `net11.0`). Linux x64 and Windows x64, both built and tested in CI. SkiaSharp also ships macOS assets; macOS isn't tested |
 | Tests | Microsoft's System.Drawing.Common 6.0 test suite, in CI on Linux and on Windows: 3,882 tests, 3,705 pass, 26 skipped, 151 known failures (141 of them metafiles, which aren't implemented). CI fails on any other failure |
-| Packages | `drawingForCore` (System.Drawing) and `drawingForCore.Common` (System.Drawing.Common), on the feed below and on the [GitHub releases](https://github.com/jabba2324/drawingForCore/releases). Not on nuget.org |
+| Packages | `drawingForCore` (System.Drawing) and `drawingForCore.Common` (System.Drawing.Common), on the feed below and on the [GitHub releases](https://github.com/xforcore/drawingForCore/releases). Not on nuget.org |
 
 ## Using it
 
@@ -31,7 +31,7 @@ Add the feed to your `nuget.config`:
 ```xml
 <configuration>
   <packageSources>
-    <add key="drawingForCore" value="https://jabba2324.github.io/drawingForCore/index.json" />
+    <add key="drawingForCore" value="https://xforcore.github.io/drawingForCore/index.json" />
   </packageSources>
 </configuration>
 ```
@@ -50,7 +50,7 @@ Text needs fonts installed. On Linux the Windows core fonts are matched to metri
 installed: Liberation for Arial, Times New Roman and Courier New; Carlito and Caladea for Calibri and Cambria.
 
 The feed keeps the latest few versions. Every version's packages are also attached to its
-[release](https://github.com/jabba2324/drawingForCore/releases).
+[release](https://github.com/xforcore/drawingForCore/releases).
 
 ## What works
 
