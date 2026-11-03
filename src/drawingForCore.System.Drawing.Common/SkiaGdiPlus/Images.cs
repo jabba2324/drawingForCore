@@ -112,9 +112,21 @@ namespace System.Drawing
             StreamSeekDelegate doSeek, StreamCloseDelegate close, StreamSizeDelegate size, ref Guid encoderClsID, IntPtr encoderParameters)
         {
             var img = Image(image);
-            if (img == null) return InvalidParameter;
+            if (img == null) return InvalidParameter;            // The JPEG quality from GDI+'s EncoderParameters block, as Microsoft's EncoderParameters.ConvertToMemory
+            // writes it: the count (pointer-sized), then each EncoderParameter (Guid, NumberOfValues, Type, Value pointer).
+            long quality = 75;
+            if (encoderParameters != IntPtr.Zero)
+            {
+                int count = Marshal.ReadInt32(encoderParameters), parameterSize = Marshal.SizeOf<EncoderParameter>();
+                for (int i = 0; i < count; i++)
+                {
+                    IntPtr p = encoderParameters + IntPtr.Size + i * parameterSize;
+                    if (Marshal.PtrToStructure<Guid>(p) == System.Drawing.Imaging.Encoder.Quality.Guid && Marshal.ReadInt32(p, 16) > 0)
+                        quality = Marshal.ReadInt32(Marshal.ReadIntPtr(p, 24));
+                }
+            }
             using var ms = new MemoryStream();
-            int status = Codecs.Encode(img, encoderClsID, encoderParameters, ms);
+            int status = Codecs.Encode(img, encoderClsID, quality, ms);
             if (status != Ok) return status;
             var bytes = ms.GetBuffer();
             fixed (byte* p = bytes)
@@ -133,9 +145,21 @@ namespace System.Drawing
         internal static int GdipSaveImageToFile(IntPtr image, string filename, ref Guid encoderClsID, IntPtr encoderParameters)
         {
             var img = Image(image);
-            if (img == null || filename == null) return InvalidParameter;
+            if (img == null || filename == null) return InvalidParameter;            // The JPEG quality from GDI+'s EncoderParameters block, as Microsoft's EncoderParameters.ConvertToMemory
+            // writes it: the count (pointer-sized), then each EncoderParameter (Guid, NumberOfValues, Type, Value pointer).
+            long quality = 75;
+            if (encoderParameters != IntPtr.Zero)
+            {
+                int count = Marshal.ReadInt32(encoderParameters), parameterSize = Marshal.SizeOf<EncoderParameter>();
+                for (int i = 0; i < count; i++)
+                {
+                    IntPtr p = encoderParameters + IntPtr.Size + i * parameterSize;
+                    if (Marshal.PtrToStructure<Guid>(p) == System.Drawing.Imaging.Encoder.Quality.Guid && Marshal.ReadInt32(p, 16) > 0)
+                        quality = Marshal.ReadInt32(Marshal.ReadIntPtr(p, 24));
+                }
+            }
             using var ms = new MemoryStream();
-            int status = Codecs.Encode(img, encoderClsID, encoderParameters, ms);
+            int status = Codecs.Encode(img, encoderClsID, quality, ms);
             if (status != Ok) return status;
             try
             {
@@ -485,7 +509,16 @@ namespace System.Drawing
             {
                 return OutOfMemory;
             }
-            if (scan0 != IntPtr.Zero) image.WritePixels(new Rectangle(0, 0, width, height), pf, (byte*)scan0, stride);
+            if (scan0 != IntPtr.Zero)
+            {
+                // The caller's rows, as a span from the lowest address: scan0 is the top row, and a negative stride runs
+                // the rows towards lower addresses (a bottom-up DIB).
+                int step = Math.Abs(stride);
+                long length = (long)step * (height - 1) + Math.Max(step, GpImage.Stride(width, pf));
+                if (length > int.MaxValue) { image.Dispose(); return OutOfMemory; }
+                int firstRow = stride < 0 ? step * (height - 1) : 0;
+                image.WritePixels(new Rectangle(0, 0, width, height), pf, new ReadOnlySpan<byte>((byte*)scan0 - firstRow, (int)length), firstRow, stride);
+            }
             bitmap = NewHandle(image);
             return Ok;
         }
@@ -572,7 +605,14 @@ namespace System.Drawing
             bool user = (flags & ImageLockMode.UserInputBuffer) != 0;
             IntPtr buffer = user ? lockedBitmapData.Scan0 : Marshal.AllocHGlobal(stride * rect.Height);
             if (user) stride = lockedBitmapData.Stride;
-            if ((flags & ImageLockMode.ReadOnly) != 0 || !user) img.ReadPixels(rect, format, (byte*)buffer, stride);
+            // The buffer's rows, as a span from the lowest address: the caller's stride can be negative (a bottom-up
+            // buffer, Scan0 its top row). GdipBitmapUnlockBits makes the same span.
+            int step = Math.Abs(stride);
+            long length = (long)step * (rect.Height - 1) + Math.Max(step, GpImage.Stride(rect.Width, format));
+            if (length > int.MaxValue) { if (!user) Marshal.FreeHGlobal(buffer); return OutOfMemory; }
+            int firstRow = stride < 0 ? step * (rect.Height - 1) : 0;
+            if ((flags & ImageLockMode.ReadOnly) != 0 || !user)
+                img.ReadPixels(rect, format, new Span<byte>((byte*)buffer - firstRow, (int)length), firstRow, stride);
             img.LockedBuffer = buffer;
             img.LockedOwnBuffer = !user;
             img.LockedRect = rect;
@@ -593,7 +633,14 @@ namespace System.Drawing
             if (img == null || lockedBitmapData == null) return InvalidParameter;
             if (img.LockedBuffer == IntPtr.Zero) return Win32Error; // GDI+: unlocking an unlocked bitmap (ExternalException)
             if ((img.LockedMode & ImageLockMode.WriteOnly) != 0)
-                img.WritePixels(img.LockedRect, img.LockedFormat, (byte*)img.LockedBuffer, img.LockedStride);
+            {
+                // The locked buffer's rows, as GdipBitmapLockBits made them (it checked the length).
+                Rectangle rect = img.LockedRect;
+                int stride = img.LockedStride, step = Math.Abs(stride);
+                int length = step * (rect.Height - 1) + Math.Max(step, GpImage.Stride(rect.Width, img.LockedFormat));
+                int firstRow = stride < 0 ? step * (rect.Height - 1) : 0;
+                img.WritePixels(rect, img.LockedFormat, new ReadOnlySpan<byte>((byte*)img.LockedBuffer - firstRow, length), firstRow, stride);
+            }
             if (img.LockedOwnBuffer) Marshal.FreeHGlobal(img.LockedBuffer);
             img.LockedBuffer = IntPtr.Zero;
             return Ok;
