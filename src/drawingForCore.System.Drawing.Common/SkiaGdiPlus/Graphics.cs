@@ -188,7 +188,7 @@ namespace System.Drawing
     {
         static GpGraphics G(HandleRef g) => Get<GpGraphics>(g);
 
-        // Called by every Graphics flat-API function (lift_drawing.py): the Graphics is busy while its HDC is out.
+        // Called by every Graphics flat-API function (GdiplusNative.cs): the Graphics is busy while its HDC is out.
         internal static bool GraphicsBusy(HandleRef graphics) => G(graphics)?.HdcHeld == true;
         static GpGraphics G(IntPtr g) => Get<GpGraphics>(g);
 

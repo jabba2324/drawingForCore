@@ -75,8 +75,11 @@ Packing builds version `<Version>-ci.<run number>` (Directory.Build.props). The 
 folder, then draws, saves and reloads PNG, JPEG and GIF images, checks pixels, formats and `FontConverter`, and checks
 that the assemblies have Microsoft's names, versions and public key tokens.
 
-The default branch, `main`, is protected: a pull request can merge only once both jobs have passed on it. Force
-pushes and deleting the branch are blocked; repository admins can still push directly.
+The default branch, `main`, is protected by the repository ruleset `default-branch` (#11), the
+same in every xforcore repository: changes land only through a pull request (no approvals required), which merges
+only once both jobs have passed on it with the branch up to date with `main` (`gh pr update-branch <n>` when it is
+behind). Force pushes and deleting the branch are blocked, and nobody can bypass the rules, administrators included.
+Version bumps therefore go through a pull request before the `v<Version>` tag is pushed; tags aren't covered.
 
 A `v<Version>` tag also builds the release version and, once both jobs pass, attaches the packages to a GitHub release
 (with `docs/release-notes/<version>.md` as its notes) and rebuilds the NuGet feed on GitHub Pages from the latest
