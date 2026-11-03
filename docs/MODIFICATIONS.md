@@ -1,7 +1,7 @@
 # What drawingForCore changed in lifted code and tests
 
 drawingForCore runs Microsoft's own System.Drawing.Common rather than a reimplementation of it. Microsoft's source is
-**lifted**: copied file by file from the upstream repository at a pinned commit, built for .NET 11, and tested with
+**lifted**: copied file by file from the upstream repository at a pinned commit, built for .NET 10, and tested with
 Microsoft's own tests. This page explains the rules for those copies and what had to change.
 
 - The full per-file list, with a link from each changed file to its upstream original, is generated:

@@ -1,6 +1,6 @@
 # drawingForCore
 
-**System.Drawing on .NET 11, on Linux as well as Windows: Microsoft's System.Drawing.Common with GDI+ written in
+**System.Drawing on .NET 10, on Linux as well as Windows: Microsoft's System.Drawing.Common with GDI+ written in
 managed code on SkiaSharp.**
 
 Microsoft made System.Drawing.Common Windows-only in .NET 7. Version 6.0 was the last to run on Linux and macOS, and it
@@ -12,15 +12,15 @@ drawingForCore keeps Microsoft's System.Drawing.Common 6.0 source (the public AP
 written in C# on [SkiaSharp](https://github.com/mono/SkiaSharp). The assemblies have Microsoft's names, versions and
 public key tokens, so code compiled against System.Drawing binds to them unchanged.
 
-It started inside [webForCore](https://github.com/jabba2324/webForCore), which runs ASP.NET 4.x applications on .NET 11,
+It started inside [webForCore](https://github.com/jabba2324/webForCore), which runs ASP.NET 4.x applications on .NET 10,
 and moved to its own repository because it is useful to any .NET Framework code that draws.
 
 ## Status
 
 | | |
 | --- | --- |
-| Status | Pre-release (0.1.0) |
-| Target | .NET 11 (`net11.0`). Linux x64 and Windows x64, both built and tested in CI. SkiaSharp also ships macOS assets; macOS isn't tested |
+| Status | Pre-release (0.2.0) |
+| Target | .NET 10 LTS (`net10.0`), from 0.2.0 (0.1.0 was `net11.0`). Linux x64 and Windows x64, both built and tested in CI. SkiaSharp also ships macOS assets; macOS isn't tested |
 | Tests | Microsoft's System.Drawing.Common 6.0 test suite, in CI on Linux and on Windows: 3,882 tests, 3,705 pass, 26 skipped, 151 known failures (141 of them metafiles, which aren't implemented). CI fails on any other failure |
 | Packages | `drawingForCore` (System.Drawing) and `drawingForCore.Common` (System.Drawing.Common), on the feed below and on the [GitHub releases](https://github.com/jabba2324/drawingForCore/releases). Not on nuget.org |
 
@@ -39,7 +39,7 @@ Add the feed to your `nuget.config`:
 Then reference the package, instead of Microsoft's `System.Drawing.Common`:
 
 ```xml
-<PackageReference Include="drawingForCore" Version="0.1.0" />
+<PackageReference Include="drawingForCore" Version="0.2.0" />
 ```
 
 `drawingForCore` is the `System.Drawing` assembly (13.5.0.0, which replaces the shared framework's facade). It depends
@@ -90,13 +90,13 @@ differs from what is committed. The GDI+ engine is drawingForCore's own code, in
 
 ## Building
 
-The .NET SDK in `global.json` (11.0.100-rc.3). Python 3 and Bash (Git Bash on Windows) run the scripts.
+The .NET SDK in `global.json` (10.0.100, or a later 10.0 feature band). Python 3 and Bash (Git Bash on Windows) run the scripts.
 
 ```bash
 tools/ci/fetch-test-fonts.sh                     # fonts for the tests (not redistributable, so not committed)
 dotnet build drawingForCore.slnx -c Release
 tools/ci/run-tests.sh                            # the tests, checked against the known failures
-tools/ci/pack.sh 0.1.0-local packages            # the NuGet packages
+tools/ci/pack.sh 0.2.0-local packages            # the NuGet packages
 ```
 
 ## Repository layout

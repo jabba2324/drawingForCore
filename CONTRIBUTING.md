@@ -1,6 +1,6 @@
 # Contributing to drawingForCore
 
-drawingForCore runs Microsoft's System.Drawing.Common on .NET 11 on Linux as well as Windows, with GDI+ written in
+drawingForCore runs Microsoft's System.Drawing.Common on .NET 10 on Linux as well as Windows, with GDI+ written in
 managed code on SkiaSharp. A change is welcome when it brings the engine closer to what Windows GDI+ does, or
 System.Drawing closer to .NET Framework, and when it can prove it with a test.
 

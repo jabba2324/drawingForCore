@@ -25,4 +25,4 @@ cat > nuget.config <<CONFIG
 </configuration>
 CONFIG
 dotnet build Smoke.csproj -c Release -p:DrawingForCoreVersion="$version" -nodeReuse:false -v q -nologo
-dotnet bin/Release/net11.0/Smoke.dll
+dotnet bin/Release/net10.0/Smoke.dll
