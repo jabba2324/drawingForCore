@@ -33,7 +33,7 @@ System.Drawing closer to .NET Framework, and when it can prove it with a test.
    skipped.
 
 7. **Every change names what needs it.** Say which application hit the problem, what it did and what its user saw
-   (the [webForCore smoke test](https://github.com/jabba2324/webForCore-smoke-test)'s applications are a good source),
+   (the [webForCore smoke test](https://github.com/xforcore/webForCore-smoke-test)'s applications are a good source),
    or which of Microsoft's tests records the behaviour. Synthetic edge cases are fine as extra tests, but the reason
    for a change is an application or GDI+'s recorded behaviour.
 
