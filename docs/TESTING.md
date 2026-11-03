@@ -21,7 +21,8 @@ tools/ci/run-tests.sh            # .trx and summary.md in ./TestResults; fails o
 ```
 
 On Windows: Git for Windows and the SDK in `global.json`; then the same commands in Git Bash. The test tools
-(`tools/ci/*.cs`) are C# file-based apps that `run-tests.sh` runs with `dotnet run`.
+(`tools/ci/*.cs`) are C# file-based apps that `run-tests.sh` runs with `dotnet run`. macOS isn't tested
+([#13](https://github.com/xforcore/drawingForCore/issues/13)).
 
 ## drawingForCore's own tests
 
@@ -45,7 +46,7 @@ Windows runs the same selection. The engine is drawingForCore's on both, not Win
 expectations don't apply ([MODIFICATIONS.md](MODIFICATIONS.md)).
 
 Outside the selection, Microsoft disabled 1,008 tests on Unix because libgdiplus failed them. 560 of them pass here
-(LIFT.md). They aren't run in CI.
+(measured in webForCore before the move). They aren't run in CI yet ([#12](https://github.com/xforcore/drawingForCore/issues/12)).
 
 ## Known failures
 

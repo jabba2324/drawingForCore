@@ -3,7 +3,7 @@
 drawingForCore runs Microsoft's own System.Drawing.Common rather than a reimplementation of it. Microsoft's source
 comes from **submodules** in `external/`: forks of the upstream repositories, cleared down to the files drawingForCore
 uses at a pinned commit, built for .NET 10 and tested with Microsoft's own tests. (Until xforcore/webForCore#61 the
-files were copied in by lift scripts; `LIFT.md` records that history.) This page explains the rules for that code and
+files were copied in by lift scripts; git history has that record.) This page explains the rules for that code and
 what had to change.
 
 - **Every change is a commit** on the fork's `drawingforcore` branch, with its reason in the message:

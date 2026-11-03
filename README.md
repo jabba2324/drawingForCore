@@ -83,10 +83,40 @@ drawingForCore's own code, in `src/drawingForCore.System.Drawing.Common/SkiaGdiP
 | `test/drawingForCore.System.Drawing.Common.Tests` | Microsoft's tests | dotnet/runtime release/6.0, with test data from [dotnet/runtime-assets](https://github.com/dotnet/runtime-assets) |
 | `test/drawingForCore.TestUtilities`, `.Microsoft.DotNet.XUnitExtensions`, `.Microsoft.DotNet.RemoteExecutor` | Microsoft's test infrastructure | dotnet/runtime and [dotnet/arcade](https://github.com/dotnet/arcade) release/6.0 |
 
-- [LIFT.md](LIFT.md): the record of how it was built, with every decision and result.
 - [docs/MODIFICATIONS.md](docs/MODIFICATIONS.md): every change from Microsoft's source and why.
 - [docs/TESTING.md](docs/TESTING.md): running the tests, the selection, and the known failures.
 - [CONTRIBUTING.md](CONTRIBUTING.md): how to make a change.
+
+### The engine
+
+drawingForCore's GDI+ is managed code on SkiaSharp. Every `libgdiplus` import in System.Drawing.Common (556 GDI+ flat
+API functions) calls `SkiaGdiPlus` instead, which implements 516 of them; the rest return GDI+'s NotImplemented status.
+
+- **Why not libgdiplus.** System.Drawing.Common 6.0 over libgdiplus 6.2 drew, but libgdiplus corrupted the heap and
+  aborted the process (`double free or corruption`) when a 24bpp or 32bppRgb bitmap that had been drawn on was rotated
+  by 90 or 270 degrees. A JPEG loads as 24bpp, so Web Pages' resize-then-rotate took the whole server down. A native
+  crash can't be contained, and the library parses untrusted images.
+- **Pixels** are premultiplied BGRA, what Skia draws into. The GDI+ pixel format is kept apart and applied at the
+  edges (`LockBits`, `GetPixel`, saving), so drawing never depends on it.
+- **Codecs:** Skia decodes BMP, GIF, ICO, JPEG and PNG and encodes JPEG and PNG. drawingForCore's own code does the
+  rest: the BMP, GIF (halftone palette, LZW) and TIFF encoders, a baseline TIFF reader, EXIF and GDI+'s codec list.
+  Formats GDI+ can't read (WebP, ...) are rejected, as on Windows.
+- **Pixel positions:** with `PixelOffsetMode.None` GDI+ puts pixel centres on integer coordinates; Skia's are at +0.5.
+  The shift is 0.5 − 1/32, not 0.5, because Skia's aliased rasterizer rounds an edge on a pixel centre the other way
+  from GDI+, which put fills, clips and even-width pens one pixel off.
+- **Handles:** HDC, HICON, HBITMAP and HRGN are handles, as System.Drawing's Unix code assumes (libgdiplus's
+  convention). A GDI+ object handle is a number in the engine's handle table, freed by the matching `Gdip*Delete`; an
+  unknown or freed handle is InvalidParameter, not a crash.
+- **Text:** families resolve through fontconfig, and the Windows core fonts map to installed metric-compatible ones
+  that keep the Windows names. Layout is GDI+'s (1/6 em padding except for `GenericTypographic`, wrapping, alignment,
+  trimming).
+- **Pointers stay at the edge** (CONTRIBUTING.md, principle 9): a flat API function that receives a pointer or a
+  memory block, for example LockBits' buffer, `Scan0` or `EncoderParameters`, turns it into a span or an object, then
+  calls managed code. One flat function never passes a pointer to another, and the codecs and `GpImage` work on arrays
+  and spans. The open questions are in #3.
+
+Where Microsoft's tests record how Windows GDI+ behaves (matrices, gradients, containers, image flags, region data),
+the engine follows them, even where libgdiplus differed.
 
 ## Building
 
