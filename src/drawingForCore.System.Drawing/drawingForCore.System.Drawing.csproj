@@ -1,8 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- System.Drawing (webformsforcore/WebFormsForCore 52f4172, src/WebFormsForCore.Drawing), lifted by
-       tools/lift/lift_system_drawing.py: type forwards to System.Drawing.Common.
-       Generated; do not edit. -->
+  <!-- System.Drawing (webformsforcore/WebFormsForCore 52f4172, src/WebFormsForCore.Drawing), copied once
+       and kept here: type forwards to System.Drawing.Common. -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>System.Drawing</AssemblyName>

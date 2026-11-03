@@ -223,6 +223,32 @@ in #3.
 Result (Linux x64, Release, .NET 10.0.14): **3,883 tests, 3,716 pass, 16 skipped, 151 fail, all known**, the same as
 0.2.0.
 
+## Submodules instead of the lift (xforcore/webForCore#61, 3 Nov 2026)
+
+Microsoft's code comes from three submodules in `external/`, each a shallow checkout of a cleared-down fork branch:
+
+| Submodule | Branch | Upstream | Files | Change commits |
+| --- | --- | --- | --- | --- |
+| `external/runtime` | xforcore/runtime `drawingforcore` | `76b9680` (release/6.0) | 325 | 10 |
+| `external/arcade` | xforcore/arcade `drawingforcore` | `565a800` | 46 | 1 |
+| `external/runtime-assets` | xforcore/runtime-assets `drawingforcore` | `848e27e` | 59 | 0, and one that removes the fonts |
+
+How the projects use them:
+- They compile the submodules' files through `Link` items at their old paths, next to drawingForCore's own files: the
+  engine in `SkiaGdiPlus/`, the generated stubs and `SR.g.cs`, and System.Drawing's `AssemblyInfo.cs`, which came from
+  WebFormsForCore and stays here.
+- The tests' data is listed file by file, copied to the output as the `TestData/**` glob did. The five files that are
+  also embedded resources are copied too, as before.
+- The Code New Roman fonts aren't redistributable, so the runtime-assets branch removes them, and
+  `tools/ci/fetch-test-fonts.sh` still downloads them.
+
+Removed: `tools/lift/` (the scripts, the manifests and `additions/`, whose 11 engine files had identical copies in
+`SkiaGdiPlus/`), `docs/lifted-changes.md`, and CI's lift check, which was the last Python in the repository. CI checks
+out submodules on both platforms.
+
+Result (Linux x64, Release, .NET 10.0.14): **3,883 tests, 3,716 pass, 16 skipped, 151 fail, all known**, the same as
+0.2.0.
+
 ## Open items
 
 - **Metafiles** (EMF/WMF): 141 of the 151 known failures. Not implemented.

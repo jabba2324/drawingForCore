@@ -14,20 +14,19 @@ System.Drawing closer to .NET Framework, and when it can prove it with a test.
    that now passes, or one of the 1,008 tests Microsoft disabled for libgdiplus (outside the selection) that now
    passes. Otherwise add drawingForCore's own test, and say in the pull request that it failed before the change.
 
-3. **Avoid changing Microsoft's code.** Microsoft's System.Drawing.Common is lifted unchanged except for a short list
-   of changes ([`docs/MODIFICATIONS.md`](docs/MODIFICATIONS.md)). Its value is that it *is* Microsoft's code: its API,
-   argument checks and exceptions. Fix the engine (`tools/lift/additions/System.Drawing.Common/`) instead; almost every
-   difference so far was the engine's.
+3. **Avoid changing Microsoft's code.** Microsoft's System.Drawing.Common comes unchanged, apart from a short list of
+   changes ([`docs/MODIFICATIONS.md`](docs/MODIFICATIONS.md)), from the `external/` submodules. Its value is that it
+   *is* Microsoft's code: its API, argument checks and exceptions. Fix the engine
+   (`src/drawingForCore.System.Drawing.Common/SkiaGdiPlus/`) instead; almost every difference so far was the engine's.
 
 4. **When Microsoft's code must change, keep the record.** Keep the change as small as it can be and:
-   - make it a fixup in the lift script (`tools/lift/lift_drawing.py` or `lift_drawing_tests.py`), never an edit of
-     the lifted file, with a `// drawingForCore:` comment that says why;
-   - run the lift again (`tools/lift/fetch-sources.sh <folder>`, then `tools/lift/lift.sh <folder>`);
-   - regenerate [`docs/lifted-changes.md`](docs/lifted-changes.md) (`python3 tools/lift/changes_report.py <folder>`);
-   - add the reason to [`LIFT.md`](LIFT.md) and the kind of change to [`docs/MODIFICATIONS.md`](docs/MODIFICATIONS.md).
+   - make it a commit on the fork's `drawingforcore` branch (`xforcore/runtime`, `xforcore/arcade` or
+     `xforcore/runtime-assets`), one change per commit, with a `// drawingForCore:` comment and a message that say why;
+   - move the submodule to it in a drawingForCore pull request, with the test;
+   - add the kind of change to [`docs/MODIFICATIONS.md`](docs/MODIFICATIONS.md) if it's a new kind.
 
-5. **Generated files are output.** `src/` and `test/` are made by the lift scripts. Edit the scripts or
-   `tools/lift/additions/`, then lift again. CI regenerates them and fails if they differ from what is committed.
+5. **The project files are drawingForCore's.** They compile the submodules' files through `Link` items at their old
+   paths, next to drawingForCore's own files (the engine and the generated stubs), and are edited by hand.
 
 6. **Report numbers.** A change to the engine says what the suite gave before and after: tests run, passed, failed and
    skipped.
@@ -40,7 +39,7 @@ System.Drawing closer to .NET Framework, and when it can prove it with a test.
 ## How drawingForCore's own code is written
 
 These are webForCore's rules for its own code (its CONTRIBUTING.md, 6–9), applied here to the engine
-(`tools/lift/additions/`), the lift scripts and the tools. They don't apply to Microsoft's lifted code (principle 3
+(`SkiaGdiPlus/`) and the tools. They don't apply to Microsoft's code in the submodules (principle 3
 keeps that as it is). The aim is the same: code a reviewer can see is correct, that keeps working when .NET or
 SkiaSharp is patched, and that fails safely.
 
@@ -78,7 +77,7 @@ removed or replaced when it is next changed. New code doesn't add to either list
 - One problem per commit, with `Fixes #<issue>` in the message where there is one.
 - The pull request lists, for each change: the problem, what needs it (principle 7), the fix, the test and the suite's
   numbers (principle 6), and whether Microsoft's code changed (and where that is documented).
-- CI (`.github/workflows/ci.yml`) checks the lift, builds, runs the tests, packs the packages and runs the package
+- CI (`.github/workflows/ci.yml`) builds, runs the tests, packs the packages and runs the package
   smoke test, on Linux and on Windows; both must pass.
 
 ## Releases

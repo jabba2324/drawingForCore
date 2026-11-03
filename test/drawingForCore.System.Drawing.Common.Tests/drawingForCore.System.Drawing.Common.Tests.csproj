@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- System.Drawing.Common.Tests (dotnet/runtime 76b9680, release/6.0), lifted by tools/lift/lift_drawing_tests.py, with test data
-       from dotnet/runtime-assets 848e27e (release/6.0). MIT. Runs against drawingForCore's System.Drawing.Common (SkiaGdiPlus). Generated; do not edit. -->
+  <!-- System.Drawing.Common.Tests (dotnet/runtime 76b9680, release/6.0), from the external/runtime submodule, with test data
+       from external/runtime-assets (848e27e, release/6.0). MIT. Runs against drawingForCore's System.Drawing.Common (SkiaGdiPlus). -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
@@ -20,12 +20,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="**/*.cs" Exclude="bin/**;obj/**" />
-    <EmbeddedResource Include="TestData/bitmaps/48x48_multiple_entries_4bit.ico" LogicalName="System.Drawing.Tests.48x48_multiple_entries_4bit.ico" />
-    <EmbeddedResource Include="TestData/bitmaps/bitmap_173x183_indexed_8bit.bmp" LogicalName="System.Drawing.Tests.bitmap_173x183_indexed_8bit.bmp" />
-    <EmbeddedResource Include="TestData/bitmaps/empty.file" LogicalName="System.Drawing.Tests.empty.file" />
-    <EmbeddedResource Include="TestData/bitmaps/invalid.ico" LogicalName="System.Drawing.Tests.invalid.ico" />
-    <EmbeddedResource Include="TestData/bitmaps/256x256_one_entry_32bit.ico" LogicalName="System.Drawing.Tests.Icon_toolboxBitmapAttributeTest" />
-    <!-- The test data packages' contentFiles land in the output directory (bitmaps/, fonts/, colorProfiles/, *.wav). -->
+    <EmbeddedResource Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/48x48_multiple_entries_4bit.ico" Link="TestData/bitmaps/48x48_multiple_entries_4bit.ico" LogicalName="System.Drawing.Tests.48x48_multiple_entries_4bit.ico" />
+    <EmbeddedResource Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/bitmap_173x183_indexed_8bit.bmp" Link="TestData/bitmaps/bitmap_173x183_indexed_8bit.bmp" LogicalName="System.Drawing.Tests.bitmap_173x183_indexed_8bit.bmp" />
+    <EmbeddedResource Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/empty.file" Link="TestData/bitmaps/empty.file" LogicalName="System.Drawing.Tests.empty.file" />
+    <EmbeddedResource Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/invalid.ico" Link="TestData/bitmaps/invalid.ico" LogicalName="System.Drawing.Tests.invalid.ico" />
+    <EmbeddedResource Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/256x256_one_entry_32bit.ico" Link="TestData/bitmaps/256x256_one_entry_32bit.ico" LogicalName="System.Drawing.Tests.Icon_toolboxBitmapAttributeTest" />
+    <!-- The test data packages' contentFiles land in the output directory (bitmaps/, fonts/, colorProfiles/, *.wav): the
+         submodule's files are listed below; TestData/ holds the fonts tools/ci/fetch-test-fonts.sh downloads. -->
     <None Include="TestData/**" Link="%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>
@@ -43,5 +44,158 @@
     <!-- 2.4.5, the adapter of xunit 2.4's time: 3.x runs the SkippedTestCase that ConditionalFact/Theory produce
          when a condition is false instead of skipping it. -->
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5" />
+  </ItemGroup>
+  <!-- Microsoft's files from the external/ submodules (xforcore forks, drawingforcore branches), at their old paths. -->
+  <ItemGroup>
+    <!-- Also embedded above; the tests read them from the output directory too. -->
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/48x48_multiple_entries_4bit.ico" Link="bitmaps/48x48_multiple_entries_4bit.ico" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/bitmap_173x183_indexed_8bit.bmp" Link="bitmaps/bitmap_173x183_indexed_8bit.bmp" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/empty.file" Link="bitmaps/empty.file" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/invalid.ico" Link="bitmaps/invalid.ico" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/256x256_one_entry_32bit.ico" Link="bitmaps/256x256_one_entry_32bit.ico" CopyToOutputDirectory="PreserveNewest" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/AssemblyInfo.cs" Link="AssemblyInfo.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/BitmapTests.cs" Link="BitmapTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/BrushTests.cs" Link="BrushTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/BrushesTests.cs" Link="BrushesTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/BufferedGraphicsContextTests.cs" Link="BufferedGraphicsContextTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/BufferedGraphicsManagerTests.cs" Link="BufferedGraphicsManagerTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/BufferedGraphicsTests.cs" Link="BufferedGraphicsTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/CharacterRangeTests.cs" Link="CharacterRangeTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/ColorTranslatorTests.cs" Link="ColorTranslatorTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/Common/tests/System/Diagnostics/DebuggerAttributes.cs" Link="Common/System/Diagnostics/DebuggerAttributes.cs" />
+    <Compile Include="../../external/runtime/src/libraries/Common/tests/System/Drawing/Helpers.cs" Link="Common/System/Drawing/Helpers.cs" />
+    <Compile Include="../../external/runtime/src/libraries/Common/tests/System/IO/TempFile.cs" Link="Common/System/IO/TempFile.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Design/CategoryNameCollectionTests.cs" Link="Design/CategoryNameCollectionTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Drawing2D/AdjustableArrowCapTests.cs" Link="Drawing2D/AdjustableArrowCapTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Drawing2D/BlendTests.cs" Link="Drawing2D/BlendTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Drawing2D/ColorBlendTests.cs" Link="Drawing2D/ColorBlendTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Drawing2D/CustomLineCapTests.cs" Link="Drawing2D/CustomLineCapTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Drawing2D/GraphicsPathIteratorTests.cs" Link="Drawing2D/GraphicsPathIteratorTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Drawing2D/GraphicsPathTests.cs" Link="Drawing2D/GraphicsPathTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Drawing2D/HatchBrushTests.cs" Link="Drawing2D/HatchBrushTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Drawing2D/LinearGradientBrushTests.cs" Link="Drawing2D/LinearGradientBrushTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Drawing2D/MatrixTests.Core.cs" Link="Drawing2D/MatrixTests.Core.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Drawing2D/MatrixTests.cs" Link="Drawing2D/MatrixTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Drawing2D/PathGradientBrushTests.cs" Link="Drawing2D/PathGradientBrushTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/DrawingTest.cs" Link="DrawingTest.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/FontFamilyTests.cs" Link="FontFamilyTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/FontTests.cs" Link="FontTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/GdiPlusHandlesTests.cs" Link="GdiPlusHandlesTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/GdiplusTests.cs" Link="GdiplusTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/GraphicsTests.Core.cs" Link="GraphicsTests.Core.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/GraphicsTests.cs" Link="GraphicsTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Graphics_DrawBezierTests.cs" Link="Graphics_DrawBezierTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Graphics_DrawLineTests.cs" Link="Graphics_DrawLineTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Graphics_GetContextTests.Core.cs" Link="Graphics_GetContextTests.Core.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Graphics_GetContextTests.cs" Link="Graphics_GetContextTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/IconTests.cs" Link="IconTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/ImageTests.cs" Link="ImageTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Imaging/BitmapDataTests.cs" Link="Imaging/BitmapDataTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Imaging/ColorMapTests.cs" Link="Imaging/ColorMapTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Imaging/ColorMatrixTests.cs" Link="Imaging/ColorMatrixTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Imaging/EncoderParameterTests.cs" Link="Imaging/EncoderParameterTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Imaging/EncoderParametersTests.cs" Link="Imaging/EncoderParametersTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Imaging/EncoderTests.cs" Link="Imaging/EncoderTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Imaging/FrameDimensionTests.cs" Link="Imaging/FrameDimensionTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Imaging/ImageAttributesTests.cs" Link="Imaging/ImageAttributesTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Imaging/ImageCodecInfoTests.cs" Link="Imaging/ImageCodecInfoTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Imaging/ImageFormatTests.cs" Link="Imaging/ImageFormatTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Imaging/MetaHeaderTests.cs" Link="Imaging/MetaHeaderTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Imaging/MetafileTests.cs" Link="Imaging/MetafileTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Imaging/PropertyItemTests.cs" Link="Imaging/PropertyItemTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Imaging/WmfPlaceableFileHeaderTests.cs" Link="Imaging/WmfPlaceableFileHeaderTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/PenTests.cs" Link="PenTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/PensTests.cs" Link="PensTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Printing/MarginsTests.cs" Link="Printing/MarginsTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Printing/PageSettingsTests.cs" Link="Printing/PageSettingsTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Printing/PaperSizeTests.cs" Link="Printing/PaperSizeTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Printing/PaperSourceTests.cs" Link="Printing/PaperSourceTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Printing/PreviewPrintControllerTests.cs" Link="Printing/PreviewPrintControllerTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Printing/PrintControllerTests.cs" Link="Printing/PrintControllerTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Printing/PrintDocumentTests.cs" Link="Printing/PrintDocumentTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Printing/PrinterResolutionTests.cs" Link="Printing/PrinterResolutionTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Printing/PrinterSettingsTests.cs" Link="Printing/PrinterSettingsTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Printing/PrinterUnitConvertTests.cs" Link="Printing/PrinterUnitConvertTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/RegionTests.cs" Link="RegionTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/SolidBrushTests.cs" Link="SolidBrushTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/StringFormatTests.cs" Link="StringFormatTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/System/Drawing/FontConverterTests.cs" Link="System/Drawing/FontConverterTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/System/Drawing/IconConverterTests.cs" Link="System/Drawing/IconConverterTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/System/Drawing/ImageAnimator.ManualTests.cs" Link="System/Drawing/ImageAnimator.ManualTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/System/Drawing/ImageAnimatorTests.cs" Link="System/Drawing/ImageAnimatorTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/System/Drawing/ImageConverterTests.cs" Link="System/Drawing/ImageConverterTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/System/Drawing/ImageFormatConverterTests.cs" Link="System/Drawing/ImageFormatConverterTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/System/Drawing/Printing/MarginsConverterTests.cs" Link="System/Drawing/Printing/MarginsConverterTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/SystemBrushesTests.cs" Link="SystemBrushesTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/SystemFontsTests.cs" Link="SystemFontsTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/SystemIconsTests.cs" Link="SystemIconsTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/SystemPensTest.cs" Link="SystemPensTest.cs" />
+    <None Include="../../external/runtime-assets/src/System.Windows.Extensions.TestData/adpcm.wav" Link="adpcm.wav" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/10x16_one_entry_32bit.ico" Link="bitmaps/10x16_one_entry_32bit.ico" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/16x16_nonindexed_24bit.png" Link="bitmaps/16x16_nonindexed_24bit.png" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/16x16_one_entry_4bit.ico" Link="bitmaps/16x16_one_entry_4bit.ico" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/1bit.png" Link="bitmaps/1bit.png" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/256x256_seven_entries_multiple_bits.ico" Link="bitmaps/256x256_seven_entries_multiple_bits.ico" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/256x256_two_entries_multiple_bits.ico" Link="bitmaps/256x256_two_entries_multiple_bits.ico" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/32x32_one_entry_4bit.ico" Link="bitmaps/32x32_one_entry_4bit.ico" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/415581.ico" Link="bitmaps/415581.ico" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/48x48_multiple_entries_32bit.ico" Link="bitmaps/48x48_multiple_entries_32bit.ico" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/48x48_one_entry_1bit.ico" Link="bitmaps/48x48_one_entry_1bit.ico" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/4bit.png" Link="bitmaps/4bit.png" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/64x64_one_entry_8bit.ico" Link="bitmaps/64x64_one_entry_8bit.ico" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/81674-2bpp.png" Link="bitmaps/81674-2bpp.png" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/81773-interlaced.gif" Link="bitmaps/81773-interlaced.gif" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/96x96_one_entry_8bit.ico" Link="bitmaps/96x96_one_entry_8bit.ico" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.ComponentModel.TypeConverter.TestData/bitmaps/TestIcon.ico" Link="bitmaps/TestIcon.ico" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.ComponentModel.TypeConverter.TestData/bitmaps/TestImage.bmp" Link="bitmaps/TestImage.bmp" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Windows.Extensions.TestData/bitmaps/TestImageWithOleHeader.bmp" Link="bitmaps/TestImageWithOleHeader.bmp" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/VisualPng.ico" Link="bitmaps/VisualPng.ico" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/VisualPng1.ico" Link="bitmaps/VisualPng1.ico" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/almogaver-os2.bmp" Link="bitmaps/almogaver-os2.bmp" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/almogaver1bit.bmp" Link="bitmaps/almogaver1bit.bmp" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/almogaver24bits.bmp" Link="bitmaps/almogaver24bits.bmp" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/almogaver24bits1.bmp" Link="bitmaps/almogaver24bits1.bmp" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/almogaver32bits.bmp" Link="bitmaps/almogaver32bits.bmp" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/almogaver32bits.tif" Link="bitmaps/almogaver32bits.tif" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/almogaver8bits.bmp" Link="bitmaps/almogaver8bits.bmp" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/animated-timer-0-delay-all-frames.gif" Link="bitmaps/animated-timer-0-delay-all-frames.gif" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/animated-timer-100fps-repeat-2.gif" Link="bitmaps/animated-timer-100fps-repeat-2.gif" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/animated-timer-100fps-repeat-infinite.gif" Link="bitmaps/animated-timer-100fps-repeat-infinite.gif" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/animated-timer-10fps-repeat-2.gif" Link="bitmaps/animated-timer-10fps-repeat-2.gif" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/animated-timer-10fps-repeat-infinite.gif" Link="bitmaps/animated-timer-10fps-repeat-infinite.gif" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/animated-timer-1fps-repeat-2.gif" Link="bitmaps/animated-timer-1fps-repeat-2.gif" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/animated-timer-1fps-repeat-infinite.gif" Link="bitmaps/animated-timer-1fps-repeat-infinite.gif" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/cachedbitmap_test_clip_20_20_20_20.png" Link="bitmaps/cachedbitmap_test_clip_20_20_20_20.png" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/cachedbitmap_test_original.png" Link="bitmaps/cachedbitmap_test_original.png" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/cachedbitmap_test_translate_30_30.png" Link="bitmaps/cachedbitmap_test_translate_30_30.png" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/gdiwmfboundariesbug-output.png" Link="bitmaps/gdiwmfboundariesbug-output.png" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/gdiwmfboundariesbug.wmf" Link="bitmaps/gdiwmfboundariesbug.wmf" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/maketransparent.bmp" Link="bitmaps/maketransparent.bmp" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/milkmateya01.emf" Link="bitmaps/milkmateya01.emf" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/nature-greyscale.jpg" Link="bitmaps/nature-greyscale.jpg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/nature24bits.gif" Link="bitmaps/nature24bits.gif" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/nature24bits.jpg" Link="bitmaps/nature24bits.jpg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/nature24bits87.gif" Link="bitmaps/nature24bits87.gif" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/non-inverted.bmp" Link="bitmaps/non-inverted.bmp" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/overflowicon.ico" Link="bitmaps/overflowicon.ico" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/pngwithheight_icon.ico" Link="bitmaps/pngwithheight_icon.ico" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/bitmaps/telescope_01.wmf" Link="bitmaps/telescope_01.wmf" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Windows.Extensions.TestData/ccitt.wav" Link="ccitt.wav" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Drawing.Common.TestData/colorProfiles/RSWOP.icm" Link="colorProfiles/RSWOP.icm" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Windows.Extensions.TestData/ima.wav" Link="ima.wav" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../external/runtime-assets/src/System.Windows.Extensions.TestData/pcm.wav" Link="pcm.wav" CopyToOutputDirectory="PreserveNewest" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Text/InstalledFontCollectionTests.cs" Link="Text/InstalledFontCollectionTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/Text/PrivateFontCollectionTests.cs" Link="Text/PrivateFontCollectionTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/TextureBrushTests.cs" Link="TextureBrushTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/ToolboxBitmapAttributeTests.cs" Link="ToolboxBitmapAttributeTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/mono/System.Drawing.Imaging/BmpCodecTests.cs" Link="mono/System.Drawing.Imaging/BmpCodecTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/mono/System.Drawing.Imaging/GifCodecTests.cs" Link="mono/System.Drawing.Imaging/GifCodecTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/mono/System.Drawing.Imaging/IconCodecTests.cs" Link="mono/System.Drawing.Imaging/IconCodecTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/mono/System.Drawing.Imaging/JpegCodecTests.cs" Link="mono/System.Drawing.Imaging/JpegCodecTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/mono/System.Drawing.Imaging/PngCodecTests.cs" Link="mono/System.Drawing.Imaging/PngCodecTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/mono/System.Drawing.Imaging/TiffCodecTests.cs" Link="mono/System.Drawing.Imaging/TiffCodecTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/mono/System.Drawing/BitmapTests.cs" Link="mono/System.Drawing/BitmapTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/mono/System.Drawing/GraphicsTests.cs" Link="mono/System.Drawing/GraphicsTests.cs" />
+    <Compile Include="../../external/runtime/src/libraries/System.Drawing.Common/tests/mono/System.Imaging/MetafileTest.cs" Link="mono/System.Imaging/MetafileTest.cs" />
   </ItemGroup>
 </Project>

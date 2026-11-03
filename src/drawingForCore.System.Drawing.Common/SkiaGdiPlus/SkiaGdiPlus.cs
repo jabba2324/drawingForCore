@@ -1,4 +1,4 @@
-// drawingForCore: the GDI+ flat API on SkiaSharp, in place of libgdiplus (tools/lift/lift_drawing.py).
+// drawingForCore: the GDI+ flat API on SkiaSharp, in place of libgdiplus (Microsoft's GDI+ imports call it: a commit on xforcore/runtime's drawingforcore branch).
 // Licensed under the MIT license (as System.Drawing.Common).
 #nullable disable
 using System.Collections.Generic;

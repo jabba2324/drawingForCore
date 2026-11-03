@@ -58,10 +58,8 @@ list only shrinks: remove a test from the list when it passes.
 
 CI (`.github/workflows/ci.yml`) runs on every push and pull request, in two jobs that run in parallel:
 
-- `build-and-test`, Ubuntu 24.04: the lift check (the source is regenerated from upstream with
-  `tools/lift/fetch-sources.sh` and `tools/lift/lift.sh`, and `docs/lifted-changes.md` with
-  `tools/lift/changes_report.py`, and any difference from what is committed fails the job), then the build, the tests,
-  packing and the package smoke test.
+- `build-and-test`, Ubuntu 24.04: the build (with the `external/` submodules checked out), the tests, packing and the
+  package smoke test.
 - `build-windows`, Windows Server 2025 under Git Bash: the build, the tests, packing and the package smoke test.
 
 Packing builds version `<Version>-ci.<run number>` (Directory.Build.props). The package smoke test

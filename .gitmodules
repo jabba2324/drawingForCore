@@ -1,0 +1,15 @@
+[submodule "external/runtime"]
+	path = external/runtime
+	url = https://github.com/xforcore/runtime.git
+	branch = drawingforcore
+	shallow = true
+[submodule "external/arcade"]
+	path = external/arcade
+	url = https://github.com/xforcore/arcade.git
+	branch = drawingforcore
+	shallow = true
+[submodule "external/runtime-assets"]
+	path = external/runtime-assets
+	url = https://github.com/xforcore/runtime-assets.git
+	branch = drawingforcore
+	shallow = true

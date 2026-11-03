@@ -1,31 +1,34 @@
-# What drawingForCore changed in lifted code and tests
+# What drawingForCore changed in Microsoft's code and tests
 
-drawingForCore runs Microsoft's own System.Drawing.Common rather than a reimplementation of it. Microsoft's source is
-**lifted**: copied file by file from the upstream repository at a pinned commit, built for .NET 10, and tested with
-Microsoft's own tests. This page explains the rules for those copies and what had to change.
+drawingForCore runs Microsoft's own System.Drawing.Common rather than a reimplementation of it. Microsoft's source
+comes from **submodules** in `external/`: forks of the upstream repositories, cleared down to the files drawingForCore
+uses at a pinned commit, built for .NET 10 and tested with Microsoft's own tests. (Until xforcore/webForCore#61 the
+files were copied in by lift scripts; `LIFT.md` records that history.) This page explains the rules for that code and
+what had to change.
 
-- The full per-file list, with a link from each changed file to its upstream original, is generated:
-  **[lifted-changes.md](lifted-changes.md)** (`tools/lift/changes_report.py`).
-- The reasoning for every change is in [`LIFT.md`](../LIFT.md).
+- **Every change is a commit** on the fork's `drawingforcore` branch, with its reason in the message:
+
+  | Submodule | Fork branch | Upstream commit | Changes |
+  | --- | --- | --- | --- |
+  | `external/runtime` | [xforcore/runtime `drawingforcore`](https://github.com/xforcore/runtime/commits/drawingforcore) | `76b9680` (release/6.0) | 10, including the GDI+ import rewrite |
+  | `external/arcade` | [xforcore/arcade `drawingforcore`](https://github.com/xforcore/arcade/commits/drawingforcore) | `565a800` | 1 |
+  | `external/runtime-assets` | [xforcore/runtime-assets `drawingforcore`](https://github.com/xforcore/runtime-assets/commits/drawingforcore) | `848e27e` | the fonts removed (not redistributable) |
+
+  Each branch starts at the upstream commit, then one commit keeps only the files drawingForCore uses (and the
+  licences), then the changes, one file per commit. `git log` on a submodule lists them; `git revert` undoes one.
 - Licences and attributions are in [`NOTICE`](../NOTICE) and [`LICENSE`](../LICENSE).
 
-## Rules for lifted code
+## Rules for Microsoft's code
 
-1. **Copy, don't rewrite.** Each file is copied byte for byte as it is upstream and keeps its copyright header.
-2. **Every change is scripted and listed.** Changes are search-and-replace pairs (`FIXUPS`) in the lift scripts,
-   `tools/lift/lift_drawing.py`, `lift_system_drawing.py` and `lift_drawing_tests.py`, plus the GDI+ import rewrite in
-   `lift_drawing.py`. A pair
-   that no longer matches upstream stops the lift. Each change carries a `// drawingForCore:` comment that gives the
-   reason.
-3. **Additions are kept separate.** Code drawingForCore wrote, the GDI+ engine, is in
-   `tools/lift/additions/System.Drawing.Common/` and is copied in as new files (`SkiaGdiPlus/`).
-4. **Every file is traceable.** `tools/lift/manifests/*.tsv` records each lifted file's upstream repository, commit and
-   path.
+1. **Don't rewrite.** Each file is upstream's, with its copyright header, at the pinned commit.
+2. **Every change is a commit on the fork,** one file per commit, each with a `// drawingForCore:` comment that gives
+   the reason (CONTRIBUTING.md principle 4).
+3. **drawingForCore's own code stays in the projects:** the GDI+ engine in `SkiaGdiPlus/`, and the generated stubs
+   and resource class, next to the `Link` items that compile the submodules' files at their old paths.
+4. **Every file is traceable:** the submodule pins the fork's commit, and the fork's history goes back to upstream's.
 5. **Identity is kept.** The assemblies keep Microsoft's names, versions and public keys (`keys/`, public signed), so
    existing references resolve to them. They aren't signed by Microsoft.
-6. **Project files are generated** by the lift scripts. The lifted directories are output: change the script and lift
-   again (`tools/lift/lift.sh`), rather than editing them. CI regenerates them on every run and fails on any
-   difference.
+6. **Project files are drawingForCore's,** edited by hand: they name the submodule files they compile.
 7. **.NET Framework is the reference.** Where System.Drawing.Common on .NET behaves differently from System.Drawing on
    .NET Framework 4.8, a change restores 4.8's behaviour, and Windows GDI+'s output is what the engine aims for.
 

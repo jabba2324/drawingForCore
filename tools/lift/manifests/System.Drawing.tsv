@@ -1,2 +1,0 @@
-# webformsforcore/WebFormsForCore 52f4172dbc09b3ad0b849c97642720fa7a49aa22: source path (relative to repo root)	destination (relative to the repository root)
-src/WebFormsForCore.Drawing/AssemblyInfo.cs	src/drawingForCore.System.Drawing/AssemblyInfo.cs

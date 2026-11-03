@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Downloads the Code New Roman fonts System.Drawing.Common's tests use. They come from dotnet/runtime-assets (the
-# commit tools/lift/lift_drawing_tests.py lifts) and are not committed: the font's licence text both grants the
+# commit external/runtime-assets is pinned to, whose drawingforcore branch removes them) and are not committed: the font's licence text both grants the
 # SIL Open Font License 1.1 and forbids redistribution.
 set -euo pipefail
 cd "$(dirname "$0")/../.."
