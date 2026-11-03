@@ -4,11 +4,11 @@
     <Authors>drawingForCore contributors</Authors>
     <Copyright>Copyright (c) drawingForCore contributors. Portions copyright (c) Microsoft Corporation, the .NET Foundation and others; see NOTICE.</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/jabba2324/drawingForCore</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/xforcore/drawingForCore</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>system.drawing;gdiplus;skiasharp;linux;macos;net10</PackageTags>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <RepositoryUrl>https://github.com/jabba2324/drawingForCore</RepositoryUrl>
+    <RepositoryUrl>https://github.com/xforcore/drawingForCore</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
