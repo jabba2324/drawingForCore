@@ -67,8 +67,8 @@ SkiaSharp is patched, and that fails safely.
 11. **Programs and tools are .NET.** Everything this repository builds, and every tool it uses (CI helpers, checks),
     is written in C# as a project or as a file-based app run with `dotnet run tool.cs`. No Python, Node.js, Ruby, Perl
     or other general-purpose language. Shell scripts (bash, PowerShell) and CI YAML are fine as glue that calls
-    dotnet, git, gh and curl. Front-end code (JavaScript, TypeScript, CSS, HTML and anything else that runs in
-    the browser) is fine too.
+    dotnet, git, gh and curl. Anything that parses data or makes decisions belongs in C#. Front-end code
+    (JavaScript, TypeScript, CSS, HTML and anything else that runs in the browser) is fine too.
 
 Code written before rules 8–10 that breaks them is listed in #3, and Python written before rule 11 in #5. Each item is
 removed or replaced when it is next changed. New code doesn't add to either list.
