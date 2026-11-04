@@ -509,5 +509,109 @@ namespace System.Drawing.Tests.Engine
             g.Transform = matrix;
             Assert.Equal(matrix.Elements, g.Transform.Elements);
         }
+
+        // The point arrays of lines, polygons and curves: the integer overloads draw what the float ones do.
+
+        static readonly Point[] Zigzag = { new Point(3, 40), new Point(15, 5), new Point(30, 35), new Point(45, 8), new Point(60, 44) };
+        static PointF[] ZigzagF => Array.ConvertAll(Zigzag, p => (PointF)p);
+
+        [Fact]
+        public void LinesPolygonsAndCurves_IntegerAndFloat_SamePixels()
+        {
+            using var pen = new Pen(Color.DarkGreen, 2);
+            using var brush = new SolidBrush(Color.FromArgb(160, Color.Orange));
+            SamePixels(g => g.DrawLines(pen, Zigzag), g => g.DrawLines(pen, ZigzagF));
+            SamePixels(g => g.DrawPolygon(pen, Zigzag), g => g.DrawPolygon(pen, ZigzagF));
+            SamePixels(g => g.FillPolygon(brush, Zigzag, FillMode.Winding), g => g.FillPolygon(brush, ZigzagF, FillMode.Winding));
+            SamePixels(g => g.DrawCurve(pen, Zigzag), g => g.DrawCurve(pen, ZigzagF));
+            SamePixels(g => g.DrawCurve(pen, Zigzag, 0.8f), g => g.DrawCurve(pen, ZigzagF, 0.8f));
+            SamePixels(g => g.DrawCurve(pen, Zigzag, 1, 2, 0.3f), g => g.DrawCurve(pen, ZigzagF, 1, 2, 0.3f));
+            SamePixels(g => g.DrawClosedCurve(pen, Zigzag), g => g.DrawClosedCurve(pen, ZigzagF));
+            SamePixels(g => g.DrawClosedCurve(pen, Zigzag, 0.2f, FillMode.Alternate), g => g.DrawClosedCurve(pen, ZigzagF, 0.2f, FillMode.Alternate));
+            SamePixels(g => g.FillClosedCurve(brush, Zigzag), g => g.FillClosedCurve(brush, ZigzagF));
+            SamePixels(g => g.FillClosedCurve(brush, Zigzag, FillMode.Winding, 0.7f), g => g.FillClosedCurve(brush, ZigzagF, FillMode.Winding, 0.7f));
+        }
+
+        // UnlockBits writes back from the buffer LockBits gave out, GDI+'s own or the caller's, whatever the BitmapData
+        // passed back to it holds (GDI+ doesn't read it: Microsoft's UnlockBits_Scan0Zero_Nop).
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void UnlockBits_WritesTheLockedBuffer_NotTheBitmapData(bool userBuffer)
+        {
+            var rect = new Rectangle(0, 0, W, H);
+            using var pattern = Pattern();
+            byte[] bytes = Bytes(pattern, PixelFormat.Format32bppArgb);
+            using var bitmap = new Bitmap(W, H, PixelFormat.Format32bppArgb);
+            IntPtr block = userBuffer ? Marshal.AllocHGlobal(bytes.Length) : IntPtr.Zero;
+            try
+            {
+                BitmapData data;
+                if (userBuffer)
+                {
+                    data = new BitmapData { Scan0 = block, Stride = W * 4 };
+                    bitmap.LockBits(rect, ImageLockMode.WriteOnly | ImageLockMode.UserInputBuffer, PixelFormat.Format32bppArgb, data);
+                }
+                else
+                {
+                    data = bitmap.LockBits(rect, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+                }
+                Marshal.Copy(bytes, 0, data.Scan0, bytes.Length);
+                bitmap.UnlockBits(new BitmapData());
+                using var expected = new Bitmap(W, H, PixelFormat.Format32bppArgb);
+                var reference = expected.LockBits(rect, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+                Marshal.Copy(bytes, 0, reference.Scan0, bytes.Length);
+                expected.UnlockBits(reference);
+                Assert.Equal(Argb(expected), Argb(bitmap));
+                Assert.Contains(Argb(bitmap), v => v != 0); // something was written
+                Assert.Throws<ExternalException>(() => bitmap.UnlockBits(new BitmapData())); // unlocked
+            }
+            finally
+            {
+                if (block != IntPtr.Zero) Marshal.FreeHGlobal(block);
+            }
+        }
+
+        // A bitmap disposed while locked, with either buffer: nothing is left behind, and a new bitmap locks as usual.
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void LockBits_DisposedWhileLocked(bool userBuffer)
+        {
+            var rect = new Rectangle(0, 0, W, H);
+            IntPtr block = Marshal.AllocHGlobal(W * 4 * H);
+            try
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    var bitmap = new Bitmap(W, H, PixelFormat.Format32bppArgb);
+                    if (userBuffer)
+                        bitmap.LockBits(rect, ImageLockMode.ReadWrite | ImageLockMode.UserInputBuffer, PixelFormat.Format32bppArgb, new BitmapData { Scan0 = block, Stride = W * 4 });
+                    else
+                        bitmap.LockBits(rect, ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+                    bitmap.Dispose();
+                }
+                using var other = new Bitmap(W, H, PixelFormat.Format32bppArgb);
+                var data = other.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+                other.UnlockBits(data);
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(block);
+            }
+        }
+
+        // The codec lists (ImageCodecInfo.GetImageDecoders/GetImageEncoders): the structures, strings and signatures
+        // the engine writes into Microsoft's buffer.
+        static string Describe(ImageCodecInfo[] codecs) => string.Join("\n", codecs.Select(c => string.Join("|",
+            c.Clsid, c.FormatID, c.CodecName, c.DllName, c.FormatDescription, c.FilenameExtension, c.MimeType, (int)c.Flags, c.Version,
+            string.Join(",", c.SignaturePatterns.Select(Convert.ToHexString)), string.Join(",", c.SignatureMasks.Select(Convert.ToHexString)))));
+
+        [Fact]
+        public void ImageCodecs_Recorded()
+        {
+            string decoders = Describe(ImageCodecInfo.GetImageDecoders()), encoders = Describe(ImageCodecInfo.GetImageEncoders());
+            Assert.Equal(("02701614C4DE528B", "4FBADD0581E475A7"), (Sha(System.Text.Encoding.UTF8.GetBytes(decoders)), Sha(System.Text.Encoding.UTF8.GetBytes(encoders))));
+        }
     }
 }

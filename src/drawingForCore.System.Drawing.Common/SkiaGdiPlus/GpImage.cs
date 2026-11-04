@@ -4,7 +4,6 @@
 using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
 using SkiaSharp;
 
 namespace System.Drawing
@@ -29,9 +28,12 @@ namespace System.Drawing
         public int ActiveFrame;
         public Func<int, SKBitmap> FrameDecoder;
         public SKBitmap[] FrameCache;
-        // LockBits state
-        public IntPtr LockedBuffer;
-        public bool LockedOwnBuffer;
+        // LockBits state. GdipBitmapLockBits and GdipBitmapUnlockBits are the only users. LockedPixels is GDI+'s own
+        // buffer, when the caller didn't pass one (ImageLockMode.UserInputBuffer): a managed array, allocated on the
+        // pinned object heap because the caller reads and writes it through BitmapData.Scan0 until UnlockBits. The
+        // address of a caller's buffer stays with the flat API (Images.cs), not here.
+        public bool Locked;
+        public byte[] LockedPixels;
         public Rectangle LockedRect;
         public ImageLockMode LockedMode;
         public PixelFormat LockedFormat;
@@ -68,14 +70,14 @@ namespace System.Drawing
             clone.Palette = (int[])Palette?.Clone();
             clone.Properties = Properties.ConvertAll(p => p.Clone());
             clone.FrameCache = null;
-            clone.LockedBuffer = IntPtr.Zero;
+            clone.Locked = false;
+            clone.LockedPixels = null;
             return clone;
         }
 
         public void Dispose()
         {
-            if (LockedOwnBuffer && LockedBuffer != IntPtr.Zero) Marshal.FreeHGlobal(LockedBuffer);
-            LockedBuffer = IntPtr.Zero;
+            LockedPixels = null;
             Pixels?.Dispose();
             if (FrameCache != null) foreach (var f in FrameCache) if (f != Pixels) f?.Dispose();
         }

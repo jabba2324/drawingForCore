@@ -1,6 +1,7 @@
 // drawingForCore: the GDI+ flat API for images and bitmaps, on SkiaSharp (see SkiaGdiPlus.cs).
 // Licensed under the MIT license (as System.Drawing.Common).
 #nullable disable
+using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -174,10 +175,33 @@ namespace System.Drawing
 
         // Codecs
 
-        internal static int GdipGetImageDecodersSize(out int numDecoders, out int size) => CodecListSize(c => (c.Flags & 2) != 0, out numDecoders, out size);
-        internal static int GdipGetImageDecoders(int numDecoders, int size, IntPtr decoders) => CodecList(c => (c.Flags & 2) != 0, numDecoders, size, decoders);
-        internal static int GdipGetImageEncodersSize(out int numEncoders, out int size) => CodecListSize(c => (c.Flags & 1) != 0, out numEncoders, out size);
-        internal static int GdipGetImageEncoders(int numEncoders, int size, IntPtr encoders) => CodecList(c => (c.Flags & 1) != 0, numEncoders, size, encoders);
+        static bool IsDecoder(Codecs.CodecInfo c) => (c.Flags & 2) != 0;
+        static bool IsEncoder(Codecs.CodecInfo c) => (c.Flags & 1) != 0;
+
+        internal static int GdipGetImageDecodersSize(out int numDecoders, out int size) => CodecListSize(IsDecoder, out numDecoders, out size);
+        internal static int GdipGetImageEncodersSize(out int numEncoders, out int size) => CodecListSize(IsEncoder, out numEncoders, out size);
+
+        internal static int GdipGetImageDecoders(int numDecoders, int size, IntPtr decoders)
+        {
+            if (decoders == IntPtr.Zero) return InvalidParameter;
+            int status = CodecList(IsDecoder, numDecoders, size, decoders, out var infos, out byte[] data);
+            if (status != Ok) return status;
+            int structSize = Marshal.SizeOf<ImageCodecInfoPrivate>();
+            for (int i = 0; i < infos.Length; i++) Marshal.StructureToPtr(infos[i], decoders + i * structSize, false);
+            Marshal.Copy(data, 0, decoders + infos.Length * structSize, data.Length);
+            return Ok;
+        }
+
+        internal static int GdipGetImageEncoders(int numEncoders, int size, IntPtr encoders)
+        {
+            if (encoders == IntPtr.Zero) return InvalidParameter;
+            int status = CodecList(IsEncoder, numEncoders, size, encoders, out var infos, out byte[] data);
+            if (status != Ok) return status;
+            int structSize = Marshal.SizeOf<ImageCodecInfoPrivate>();
+            for (int i = 0; i < infos.Length; i++) Marshal.StructureToPtr(infos[i], encoders + i * structSize, false);
+            Marshal.Copy(data, 0, encoders + infos.Length * structSize, data.Length);
+            return Ok;
+        }
 
         static int StringBytes(string s) => s == null ? 0 : (s.Length + 1) * 2;
 
@@ -190,30 +214,26 @@ namespace System.Drawing
             return Ok;
         }
 
-        // The ImageCodecInfo structures, followed by their strings and signatures, in the caller's buffer.
-        static int CodecList(Func<Codecs.CodecInfo, bool> filter, int count, int size, IntPtr buffer)
+        // GDI+'s codec list, as the caller's buffer holds it: the ImageCodecInfo structures, then their strings and
+        // signatures (data). The structures point into the data, so they are made for the block's address, which is
+        // only a number here: the flat function that received the buffer writes the block.
+        static int CodecList(Func<Codecs.CodecInfo, bool> filter, int count, int size, IntPtr blockAddress, out ImageCodecInfoPrivate[] infos, out byte[] data)
         {
             var codecs = Codecs.All.Where(filter).ToArray();
+            infos = null;
+            data = null;
             CodecListSize(filter, out int expectedCount, out int expectedSize);
-            if (count != expectedCount || size < expectedSize || buffer == IntPtr.Zero) return InvalidParameter;
-            int structSize = Marshal.SizeOf<ImageCodecInfoPrivate>();
-            byte* extra = (byte*)buffer + structSize * count;
-            IntPtr Put(string s)
-            {
-                if (s == null) return IntPtr.Zero;
-                var at = (IntPtr)extra;
-                var bytes = Encoding.Unicode.GetBytes(s + "\0");
-                Marshal.Copy(bytes, 0, at, bytes.Length);
-                extra += bytes.Length;
-                return at;
-            }
+            if (count != expectedCount || size < expectedSize) return InvalidParameter;
+            var extra = new MemoryStream();
+            IntPtr dataAddress = blockAddress + Marshal.SizeOf<ImageCodecInfoPrivate>() * count;
             IntPtr PutBytes(byte[] b)
             {
-                var at = (IntPtr)extra;
-                Marshal.Copy(b, 0, at, b.Length);
-                extra += b.Length;
+                var at = dataAddress + (int)extra.Length;
+                extra.Write(b, 0, b.Length);
                 return at;
             }
+            IntPtr Put(string s) => s == null ? IntPtr.Zero : PutBytes(Encoding.Unicode.GetBytes(s + "\0"));
+            infos = new ImageCodecInfoPrivate[codecs.Length];
             for (int i = 0; i < codecs.Length; i++)
             {
                 var c = codecs[i];
@@ -234,8 +254,9 @@ namespace System.Drawing
                 };
                 info.SigPattern = PutBytes(c.Signatures.SelectMany(s => s.Concat(new byte[sigSize - s.Length])).ToArray());
                 info.SigMask = PutBytes(c.Signatures.SelectMany((s, i) => (c.Masks?[i] ?? Enumerable.Repeat((byte)0xff, s.Length).ToArray()).Concat(new byte[sigSize - s.Length])).ToArray());
-                Marshal.StructureToPtr(info, (IntPtr)((byte*)buffer + i * structSize), false);
+                infos[i] = info;
             }
+            data = extra.ToArray();
             return Ok;
         }
 
@@ -247,8 +268,16 @@ namespace System.Drawing
 
         // Image information
 
-        internal static int GdipDisposeImage(HandleRef image) => Free(image);
-        internal static int GdipDisposeImage(IntPtr image) => Free(image);
+        internal static int GdipDisposeImage(HandleRef image) => DisposeImage(image.Handle);
+        internal static int GdipDisposeImage(IntPtr image) => DisposeImage(image);
+
+        // An image disposed while locked with the caller's buffer: forget the buffer's address (see GdipBitmapLockBits).
+        static int DisposeImage(IntPtr image)
+        {
+            var img = Image(image);
+            if (img != null) lock (s_lockedUserBuffers) s_lockedUserBuffers.Remove(img);
+            return Free(image);
+        }
 
         internal static int GdipCloneImage(IntPtr image, out IntPtr imageclone)
         {
@@ -494,21 +523,29 @@ namespace System.Drawing
 
         // Bitmaps
 
-        internal static int GdipCreateBitmapFromScan0(int width, int height, int stride, int format, IntPtr scan0, out IntPtr bitmap)
+        // A new bitmap, cleared: GdipCreateBitmapFromScan0 without scan0, and GdipCreateBitmapFromGraphics.
+        static int CreateBitmap(int width, int height, PixelFormat format, out GpImage image)
         {
-            bitmap = IntPtr.Zero;
-            var pf = (PixelFormat)format;
-            if (width <= 0 || height <= 0 || !GpImage.IsValidFormat(pf)) return InvalidParameter;
-            if (scan0 != IntPtr.Zero && stride == 0) return InvalidParameter;
-            GpImage image;
+            image = null;
+            if (width <= 0 || height <= 0 || !GpImage.IsValidFormat(format)) return InvalidParameter;
             try
             {
-                image = GpImage.Create(width, height, pf);
+                image = GpImage.Create(width, height, format);
             }
             catch (Exception)
             {
                 return OutOfMemory;
             }
+            return Ok;
+        }
+
+        internal static int GdipCreateBitmapFromScan0(int width, int height, int stride, int format, IntPtr scan0, out IntPtr bitmap)
+        {
+            bitmap = IntPtr.Zero;
+            var pf = (PixelFormat)format;
+            if (scan0 != IntPtr.Zero && stride == 0) return InvalidParameter;
+            int status = CreateBitmap(width, height, pf, out GpImage image);
+            if (status != Ok) return status;
             if (scan0 != IntPtr.Zero)
             {
                 // The caller's rows, as a span from the lowest address: scan0 is the top row, and a negative stride runs
@@ -525,15 +562,17 @@ namespace System.Drawing
 
         internal static int GdipCreateBitmapFromGraphics(int width, int height, HandleRef graphics, out IntPtr bitmap)
         {
-            int status = GdipCreateBitmapFromScan0(width, height, 0, (int)PixelFormat.Format32bppPArgb, IntPtr.Zero, out bitmap);
+            bitmap = IntPtr.Zero;
+            int status = CreateBitmap(width, height, PixelFormat.Format32bppPArgb, out GpImage image);
+            if (status != Ok) return status;
             var g = Get<GpGraphics>(graphics);
-            if (status == Ok && g != null)
+            if (g != null)
             {
-                var img = Image(bitmap);
-                img.DpiX = g.DpiX;
-                img.DpiY = g.DpiY;
+                image.DpiX = g.DpiX;
+                image.DpiY = g.DpiY;
             }
-            return status;
+            bitmap = NewHandle(image);
+            return Ok;
         }
 
         internal static int GdipCloneBitmapAreaI(int x, int y, int width, int height, int format, HandleRef srcbitmap, out IntPtr dstbitmap)
@@ -593,37 +632,55 @@ namespace System.Drawing
             return Ok;
         }
 
+        // The caller's buffers of bitmaps locked with ImageLockMode.UserInputBuffer: GdipBitmapUnlockBits writes back
+        // from the address GdipBitmapLockBits received (GDI+ doesn't read the BitmapData it is given back). Only these
+        // two functions use the address, and GdipDisposeImage forgets it. GDI+'s own lock buffer is GpImage.LockedPixels.
+        static readonly Dictionary<GpImage, IntPtr> s_lockedUserBuffers = new Dictionary<GpImage, IntPtr>();
+
         internal static int GdipBitmapLockBits(HandleRef bitmap, ref Rectangle rect, ImageLockMode flags, PixelFormat format, BitmapData lockedBitmapData)
         {
             var img = Image(bitmap);
             if (img == null || lockedBitmapData == null) return InvalidParameter;
-            if (img.LockedBuffer != IntPtr.Zero) return WrongState;
+            if (img.Locked) return WrongState;
             if (rect.X < 0 || rect.Y < 0 || rect.Width <= 0 || rect.Height <= 0 || rect.Right > img.Width || rect.Bottom > img.Height) return InvalidParameter;
             if (!GpImage.IsValidFormat(format)) return InvalidParameter;
             if (GpImage.IsIndexed(format) && format != img.Format) return InvalidParameter;
-            int stride = GpImage.Stride(rect.Width, format);
             bool user = (flags & ImageLockMode.UserInputBuffer) != 0;
-            IntPtr buffer = user ? lockedBitmapData.Scan0 : Marshal.AllocHGlobal(stride * rect.Height);
-            if (user) stride = lockedBitmapData.Stride;
+            if (user && lockedBitmapData.Scan0 == IntPtr.Zero) return InvalidParameter; // the caller's buffer is missing
+            int stride = user ? lockedBitmapData.Stride : GpImage.Stride(rect.Width, format);
             // The buffer's rows, as a span from the lowest address: the caller's stride can be negative (a bottom-up
-            // buffer, Scan0 its top row). GdipBitmapUnlockBits makes the same span.
+            // buffer, Scan0 its top row).
             int step = Math.Abs(stride);
             long length = (long)step * (rect.Height - 1) + Math.Max(step, GpImage.Stride(rect.Width, format));
-            if (length > int.MaxValue) { if (!user) Marshal.FreeHGlobal(buffer); return OutOfMemory; }
+            if (length > int.MaxValue) return OutOfMemory;
             int firstRow = stride < 0 ? step * (rect.Height - 1) : 0;
-            if ((flags & ImageLockMode.ReadOnly) != 0 || !user)
-                img.ReadPixels(rect, format, new Span<byte>((byte*)buffer - firstRow, (int)length), firstRow, stride);
-            img.LockedBuffer = buffer;
-            img.LockedOwnBuffer = !user;
+            IntPtr scan0;
+            byte[] own = null;
+            if (user)
+            {
+                scan0 = lockedBitmapData.Scan0;
+                if ((flags & ImageLockMode.ReadOnly) != 0)
+                    img.ReadPixels(rect, format, new Span<byte>((byte*)scan0 - firstRow, (int)length), firstRow, stride);
+            }
+            else
+            {
+                // GDI+'s own buffer: pinned, so the address given to the caller stays valid until UnlockBits.
+                own = GC.AllocateArray<byte>((int)length, pinned: true);
+                img.ReadPixels(rect, format, own, firstRow, stride);
+                fixed (byte* p = own) scan0 = (IntPtr)p;
+            }
+            img.Locked = true;
+            img.LockedPixels = own;
             img.LockedRect = rect;
             img.LockedMode = flags;
             img.LockedFormat = format;
             img.LockedStride = stride;
+            if (user) lock (s_lockedUserBuffers) s_lockedUserBuffers[img] = scan0;
             lockedBitmapData.Width = rect.Width;
             lockedBitmapData.Height = rect.Height;
             lockedBitmapData.Stride = stride;
             lockedBitmapData.PixelFormat = format;
-            lockedBitmapData.Scan0 = buffer;
+            lockedBitmapData.Scan0 = scan0;
             return Ok;
         }
 
@@ -631,7 +688,9 @@ namespace System.Drawing
         {
             var img = Image(bitmap);
             if (img == null || lockedBitmapData == null) return InvalidParameter;
-            if (img.LockedBuffer == IntPtr.Zero) return Win32Error; // GDI+: unlocking an unlocked bitmap (ExternalException)
+            if (!img.Locked) return Win32Error; // GDI+: unlocking an unlocked bitmap (ExternalException)
+            IntPtr user = IntPtr.Zero;
+            if (img.LockedPixels == null) lock (s_lockedUserBuffers) s_lockedUserBuffers.Remove(img, out user);
             if ((img.LockedMode & ImageLockMode.WriteOnly) != 0)
             {
                 // The locked buffer's rows, as GdipBitmapLockBits made them (it checked the length).
@@ -639,10 +698,11 @@ namespace System.Drawing
                 int stride = img.LockedStride, step = Math.Abs(stride);
                 int length = step * (rect.Height - 1) + Math.Max(step, GpImage.Stride(rect.Width, img.LockedFormat));
                 int firstRow = stride < 0 ? step * (rect.Height - 1) : 0;
-                img.WritePixels(rect, img.LockedFormat, new ReadOnlySpan<byte>((byte*)img.LockedBuffer - firstRow, length), firstRow, stride);
+                if (img.LockedPixels != null) img.WritePixels(rect, img.LockedFormat, img.LockedPixels, firstRow, stride);
+                else img.WritePixels(rect, img.LockedFormat, new ReadOnlySpan<byte>((byte*)user - firstRow, length), firstRow, stride);
             }
-            if (img.LockedOwnBuffer) Marshal.FreeHGlobal(img.LockedBuffer);
-            img.LockedBuffer = IntPtr.Zero;
+            img.Locked = false;
+            img.LockedPixels = null;
             return Ok;
         }
 

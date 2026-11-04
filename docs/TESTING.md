@@ -33,10 +33,11 @@ build and the package smoke test passes, but the test host crashes part-way thro
 ## drawingForCore's own tests
 
 Where Microsoft's suite doesn't cover a behaviour, drawingForCore adds its own tests (CONTRIBUTING.md, principle 2)
-in the test project's own folders, which its `**/*.cs` item picks up: `Engine/NativeBoundaryTests.cs` (94 tests, #3)
+in the test project's own folders, which its `**/*.cs` item picks up: `Engine/NativeBoundaryTests.cs` (100 tests, #3)
 records what the flat API does with the buffers Microsoft's code passes it: LockBits in every format with either stride
-sign, Scan0, the BMP and GIF encoders' bytes, JPEG quality and the integer overloads. They run in the same selection,
-so from #3 the counts above are 94 higher: 3,976 tests, 3,799 pass, 26 skipped, 151 known failures in CI.
+sign, UnlockBits with another BitmapData, a bitmap disposed while locked, Scan0, the codec lists, the BMP and GIF
+encoders' bytes, JPEG quality and the integer overloads. They run in the same selection, so from #3 the counts above
+are 100 higher: 3,982 tests, 3,805 pass, 26 skipped, 151 known failures in CI.
 
 ## The selection
 
@@ -90,8 +91,10 @@ list only shrinks: remove a test from the list when it passes.
 
 ### Known failures of the Unix-disabled tests
 
-`tools/ci/known-failures/System.Drawing.Common.Tests.unix-disabled.txt` lists the second run's failures: 457 entries
-(the union of Linux, Windows and a Linux machine with a printer). Some cases fail on one platform only, and are
+`tools/ci/known-failures/System.Drawing.Common.Tests.unix-disabled.txt` lists the second run's failures: 454 entries
+(the union of Linux, Windows and a Linux machine with a printer). Since #3, a missing `UserInputBuffer` is
+InvalidParameter, and the three `LockBits_InvalidLockMode_ThrowsArgumentException` cases pass: the CI counts here
+and at the top are from before that, three failures higher. Some cases fail on one platform only, and are
 reported as passing on the others: font metrics, a long path and a UNC path pass on Windows, and
 `PrintDocumentTests.Ctor_Default_Success` passes where a printer is installed. An entry that ends in `*` covers every
 case of a theory whose names change from run to run or machine to machine (window handles, absolute paths, system

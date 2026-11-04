@@ -652,10 +652,10 @@ namespace System.Drawing
             Cap(pen.EndCap, pen.CustomEnd, points[^1], points[^2]);
         }
 
-        static SKPoint[] Pts(PointF* points, int count) { var r = new SKPoint[count]; for (int i = 0; i < count; i++) r[i] = new SKPoint(points[i].X, points[i].Y); return r; }
-        static SKPoint[] Pts(Point* points, int count) { var r = new SKPoint[count]; for (int i = 0; i < count; i++) r[i] = new SKPoint(points[i].X, points[i].Y); return r; }
-        static PointF[] PtsF(Point* points, int count) { var r = new PointF[count]; for (int i = 0; i < count; i++) r[i] = points[i]; return r; }
-        static PointF[] PtsF(PointF* points, int count) { var r = new PointF[count]; for (int i = 0; i < count; i++) r[i] = points[i]; return r; }
+        // Point conversions. They take spans: the flat function that received the pointer makes the span (#3).
+        static SKPoint[] Pts(ReadOnlySpan<PointF> points) { var r = new SKPoint[points.Length]; for (int i = 0; i < points.Length; i++) r[i] = new SKPoint(points[i].X, points[i].Y); return r; }
+        static SKPoint[] Pts(ReadOnlySpan<Point> points) { var r = new SKPoint[points.Length]; for (int i = 0; i < points.Length; i++) r[i] = new SKPoint(points[i].X, points[i].Y); return r; }
+        static PointF[] PtsF(ReadOnlySpan<Point> points) { var r = new PointF[points.Length]; for (int i = 0; i < points.Length; i++) r[i] = points[i]; return r; }
 
         static void AddGpPath(SKPath path, GpPath gp) { using var sk = gp.ToSkia(); path.AddPath(sk); }
 
@@ -665,14 +665,14 @@ namespace System.Drawing
         internal static int GdipDrawLines(HandleRef graphics, HandleRef pen, PointF* points, int count)
         {
             if (points == null || count < 2) return InvalidParameter;
-            var pts = Pts(points, count);
+            var pts = Pts(new ReadOnlySpan<PointF>(points, count));
             return StrokePath(graphics, pen, p => p.AddPoly(pts, false));
         }
 
         internal static int GdipDrawLinesI(HandleRef graphics, HandleRef pen, Point* points, int count)
         {
             if (points == null || count < 2) return InvalidParameter;
-            var pts = Pts(points, count);
+            var pts = Pts(new ReadOnlySpan<Point>(points, count));
             return StrokePath(graphics, pen, p => p.AddPoly(pts, false));
         }
 
@@ -728,14 +728,14 @@ namespace System.Drawing
         internal static int GdipDrawPolygon(HandleRef graphics, HandleRef pen, PointF* points, int count)
         {
             if (points == null || count < 2) return InvalidParameter;
-            var pts = Pts(points, count);
+            var pts = Pts(new ReadOnlySpan<PointF>(points, count));
             return StrokePath(graphics, pen, p => p.AddPoly(pts, true));
         }
 
         internal static int GdipDrawPolygonI(HandleRef graphics, HandleRef pen, Point* points, int count)
         {
             if (points == null || count < 2) return InvalidParameter;
-            var pts = Pts(points, count);
+            var pts = Pts(new ReadOnlySpan<Point>(points, count));
             return StrokePath(graphics, pen, p => p.AddPoly(pts, true));
         }
 
@@ -752,12 +752,12 @@ namespace System.Drawing
             return StrokePath(graphics, pen, p => { var gp = new GpPath(); gp.AddCurve(points, offset, segments, tension); AddGpPath(p, gp); });
         }
 
-        internal static int GdipDrawCurve(HandleRef graphics, HandleRef pen, PointF* points, int count) => DrawCurve(graphics, pen, PtsF(points, count), 0, count - 1, 0.5f);
-        internal static int GdipDrawCurveI(HandleRef graphics, HandleRef pen, Point* points, int count) => DrawCurve(graphics, pen, PtsF(points, count), 0, count - 1, 0.5f);
-        internal static int GdipDrawCurve2(HandleRef graphics, HandleRef pen, PointF* points, int count, float tension) => DrawCurve(graphics, pen, PtsF(points, count), 0, count - 1, tension);
-        internal static int GdipDrawCurve2I(HandleRef graphics, HandleRef pen, Point* points, int count, float tension) => DrawCurve(graphics, pen, PtsF(points, count), 0, count - 1, tension);
-        internal static int GdipDrawCurve3(HandleRef graphics, HandleRef pen, PointF* points, int count, int offset, int numberOfSegments, float tension) => DrawCurve(graphics, pen, PtsF(points, count), offset, numberOfSegments, tension);
-        internal static int GdipDrawCurve3I(HandleRef graphics, HandleRef pen, Point* points, int count, int offset, int numberOfSegments, float tension) => DrawCurve(graphics, pen, PtsF(points, count), offset, numberOfSegments, tension);
+        internal static int GdipDrawCurve(HandleRef graphics, HandleRef pen, PointF* points, int count) => DrawCurve(graphics, pen, new ReadOnlySpan<PointF>(points, count).ToArray(), 0, count - 1, 0.5f);
+        internal static int GdipDrawCurveI(HandleRef graphics, HandleRef pen, Point* points, int count) => DrawCurve(graphics, pen, PtsF(new ReadOnlySpan<Point>(points, count)), 0, count - 1, 0.5f);
+        internal static int GdipDrawCurve2(HandleRef graphics, HandleRef pen, PointF* points, int count, float tension) => DrawCurve(graphics, pen, new ReadOnlySpan<PointF>(points, count).ToArray(), 0, count - 1, tension);
+        internal static int GdipDrawCurve2I(HandleRef graphics, HandleRef pen, Point* points, int count, float tension) => DrawCurve(graphics, pen, PtsF(new ReadOnlySpan<Point>(points, count)), 0, count - 1, tension);
+        internal static int GdipDrawCurve3(HandleRef graphics, HandleRef pen, PointF* points, int count, int offset, int numberOfSegments, float tension) => DrawCurve(graphics, pen, new ReadOnlySpan<PointF>(points, count).ToArray(), offset, numberOfSegments, tension);
+        internal static int GdipDrawCurve3I(HandleRef graphics, HandleRef pen, Point* points, int count, int offset, int numberOfSegments, float tension) => DrawCurve(graphics, pen, PtsF(new ReadOnlySpan<Point>(points, count)), offset, numberOfSegments, tension);
 
         static int DrawClosedCurve(HandleRef graphics, HandleRef pen, PointF[] points, float tension)
         {
@@ -765,10 +765,10 @@ namespace System.Drawing
             return StrokePath(graphics, pen, p => { var gp = new GpPath(); gp.AddClosedCurve(points, tension); AddGpPath(p, gp); });
         }
 
-        internal static int GdipDrawClosedCurve(HandleRef graphics, HandleRef pen, PointF* points, int count) => DrawClosedCurve(graphics, pen, PtsF(points, count), 0.5f);
-        internal static int GdipDrawClosedCurveI(HandleRef graphics, HandleRef pen, Point* points, int count) => DrawClosedCurve(graphics, pen, PtsF(points, count), 0.5f);
-        internal static int GdipDrawClosedCurve2(HandleRef graphics, HandleRef pen, PointF* points, int count, float tension) => DrawClosedCurve(graphics, pen, PtsF(points, count), tension);
-        internal static int GdipDrawClosedCurve2I(HandleRef graphics, HandleRef pen, Point* points, int count, float tension) => DrawClosedCurve(graphics, pen, PtsF(points, count), tension);
+        internal static int GdipDrawClosedCurve(HandleRef graphics, HandleRef pen, PointF* points, int count) => DrawClosedCurve(graphics, pen, new ReadOnlySpan<PointF>(points, count).ToArray(), 0.5f);
+        internal static int GdipDrawClosedCurveI(HandleRef graphics, HandleRef pen, Point* points, int count) => DrawClosedCurve(graphics, pen, PtsF(new ReadOnlySpan<Point>(points, count)), 0.5f);
+        internal static int GdipDrawClosedCurve2(HandleRef graphics, HandleRef pen, PointF* points, int count, float tension) => DrawClosedCurve(graphics, pen, new ReadOnlySpan<PointF>(points, count).ToArray(), tension);
+        internal static int GdipDrawClosedCurve2I(HandleRef graphics, HandleRef pen, Point* points, int count, float tension) => DrawClosedCurve(graphics, pen, PtsF(new ReadOnlySpan<Point>(points, count)), tension);
 
         // Fills
 
@@ -813,14 +813,14 @@ namespace System.Drawing
         internal static int GdipFillPolygon(HandleRef graphics, HandleRef brush, PointF* points, int count, FillMode brushMode)
         {
             if (points == null || count < 2) return InvalidParameter;
-            var pts = Pts(points, count);
+            var pts = Pts(new ReadOnlySpan<PointF>(points, count));
             return FillPath(graphics, brush, p => p.AddPoly(pts, true), brushMode == FillMode.Winding ? SKPathFillType.Winding : SKPathFillType.EvenOdd);
         }
 
         internal static int GdipFillPolygonI(HandleRef graphics, HandleRef brush, Point* points, int count, FillMode brushMode)
         {
             if (points == null || count < 2) return InvalidParameter;
-            var pts = Pts(points, count);
+            var pts = Pts(new ReadOnlySpan<Point>(points, count));
             return FillPath(graphics, brush, p => p.AddPoly(pts, true), brushMode == FillMode.Winding ? SKPathFillType.Winding : SKPathFillType.EvenOdd);
         }
 
@@ -849,10 +849,10 @@ namespace System.Drawing
             return FillPath(G(graphics), Get<GpBrush>(brush), sk);
         }
 
-        internal static int GdipFillClosedCurve(HandleRef graphics, HandleRef brush, PointF* points, int count) => FillClosedCurve(graphics, brush, PtsF(points, count), 0.5f, FillMode.Alternate);
-        internal static int GdipFillClosedCurveI(HandleRef graphics, HandleRef brush, Point* points, int count) => FillClosedCurve(graphics, brush, PtsF(points, count), 0.5f, FillMode.Alternate);
-        internal static int GdipFillClosedCurve2(HandleRef graphics, HandleRef brush, PointF* points, int count, float tension, FillMode mode) => FillClosedCurve(graphics, brush, PtsF(points, count), tension, mode);
-        internal static int GdipFillClosedCurve2I(HandleRef graphics, HandleRef brush, Point* points, int count, float tension, FillMode mode) => FillClosedCurve(graphics, brush, PtsF(points, count), tension, mode);
+        internal static int GdipFillClosedCurve(HandleRef graphics, HandleRef brush, PointF* points, int count) => FillClosedCurve(graphics, brush, new ReadOnlySpan<PointF>(points, count).ToArray(), 0.5f, FillMode.Alternate);
+        internal static int GdipFillClosedCurveI(HandleRef graphics, HandleRef brush, Point* points, int count) => FillClosedCurve(graphics, brush, PtsF(new ReadOnlySpan<Point>(points, count)), 0.5f, FillMode.Alternate);
+        internal static int GdipFillClosedCurve2(HandleRef graphics, HandleRef brush, PointF* points, int count, float tension, FillMode mode) => FillClosedCurve(graphics, brush, new ReadOnlySpan<PointF>(points, count).ToArray(), tension, mode);
+        internal static int GdipFillClosedCurve2I(HandleRef graphics, HandleRef brush, Point* points, int count, float tension, FillMode mode) => FillClosedCurve(graphics, brush, PtsF(new ReadOnlySpan<Point>(points, count)), tension, mode);
 
         // Images
 
