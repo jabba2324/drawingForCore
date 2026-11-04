@@ -1,20 +1,26 @@
 // Fails when a .trx has a failed test that isn't in the suite's known-failures list.
 // Usage: dotnet run tools/ci/check_failures.cs -- results.trx [known-failures.txt]
 // Known failures are one "Class.Method(arguments)" per line, as this tool prints them; a line that starts with '#' is a
-// comment (test names can contain '#', so it isn't a comment elsewhere). Tests on the list that now pass are reported,
-// so the list can shrink.
+// comment (test names can contain '#', so it isn't a comment elsewhere). An entry that ends in '*' is a prefix, for
+// theory cases whose names change from run to run or machine to machine (window handles, absolute paths): it covers
+// every case whose name starts with it. Tests on the list that now pass are reported, so the list can shrink; a
+// prefix is reported when its cases ran and none of them failed.
 #:property NuGetAudit=false
 using System.Xml.Linq;
 
 XNamespace t = "http://microsoft.com/schemas/VisualStudio/TeamTest/2010";
 var trx = args[0];
 var known = new HashSet<string>();
+var prefixes = new List<string>();
 if (args.Length > 1)
     foreach (var line in File.ReadLines(args[1]))
     {
         var entry = line.Trim();
-        if (entry.Length > 0 && !entry.StartsWith('#')) known.Add(entry);
+        if (entry.Length == 0 || entry.StartsWith('#')) continue;
+        if (entry.EndsWith('*')) prefixes.Add(entry[..^1]);
+        else known.Add(entry);
     }
+bool IsKnown(string name) => known.Contains(name) || prefixes.Any(p => name.StartsWith(p, StringComparison.Ordinal));
 
 var root = XDocument.Load(trx).Root!;
 var classes = root.Descendants(t + "UnitTest").ToDictionary(
@@ -29,10 +35,13 @@ var pairs = root.Descendants(t + "UnitTestResult").Select(r =>
 // Theory cases can share a display name: any failing case counts as a failure.
 var failed = pairs.Where(p => p.Outcome == "Failed").Select(p => p.Name).ToHashSet();
 var passed = pairs.Where(p => p.Outcome == "Passed").Select(p => p.Name).Where(n => !failed.Contains(n)).ToHashSet();
-var newFailures = failed.Except(known).Order(StringComparer.Ordinal).ToList();
-var fixedTests = known.Where(passed.Contains).Order(StringComparer.Ordinal).ToList();
+var newFailures = failed.Where(n => !IsKnown(n)).Order(StringComparer.Ordinal).ToList();
+var fixedTests = known.Where(passed.Contains)
+    .Concat(prefixes.Where(p => passed.Any(n => n.StartsWith(p, StringComparison.Ordinal))
+        && !failed.Any(n => n.StartsWith(p, StringComparison.Ordinal))).Select(p => p + "*"))
+    .Order(StringComparer.Ordinal).ToList();
 
-Console.WriteLine($"{trx}: {pairs.Count} results, {failed.Count} failed ({failed.Count(known.Contains)} known, {newFailures.Count} new)");
+Console.WriteLine($"{trx}: {pairs.Count} results, {failed.Count} failed ({failed.Count(IsKnown)} known, {newFailures.Count} new)");
 foreach (var n in fixedTests) Console.WriteLine($"  now passes (remove from the known list): {n}");
 foreach (var n in newFailures) Console.WriteLine($"::error::{n} failed");
 return newFailures.Count > 0 ? 1 : 0;
