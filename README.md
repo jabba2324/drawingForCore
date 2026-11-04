@@ -114,8 +114,11 @@ API functions) calls `SkiaGdiPlus` instead, which implements 516 of them; the re
   trimming).
 - **Pointers stay at the edge** (CONTRIBUTING.md, principle 9): a flat API function that receives a pointer or a
   memory block, for example LockBits' buffer, `Scan0` or `EncoderParameters`, turns it into a span or an object, then
-  calls managed code. One flat function never passes a pointer to another, and the codecs and `GpImage` work on arrays
-  and spans. The open questions are in #3.
+  calls managed code. One flat function never passes a pointer to another, and helpers (the point conversions, the
+  codec list) take spans or arrays: the span is made in the flat function that received the pointer. The codecs and
+  `GpImage` work on arrays and spans, and `GpImage` holds no address: GDI+'s own LockBits buffer is a managed array
+  (pinned, since the caller writes it through `Scan0`), and the address of a caller's buffer stays with
+  `GdipBitmapLockBits` and `GdipBitmapUnlockBits` (#3).
 
 Where Microsoft's tests record how Windows GDI+ behaves (matrices, gradients, containers, image flags, region data),
 the engine follows them, even where libgdiplus differed.

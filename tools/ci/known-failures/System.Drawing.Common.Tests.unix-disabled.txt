@@ -149,9 +149,6 @@ System.Drawing.Tests.BitmapTests.GetHbitmap_Grayscale_ThrowsArgumentException(wi
 System.Drawing.Tests.BitmapTests.GetHbitmap_Grayscale_ThrowsArgumentException(width: 32767, height: 1)
 System.Drawing.Tests.BitmapTests.GetHicon_Grayscale_ThrowsArgumentException
 System.Drawing.Tests.BitmapTests.GetPixel_GrayScalePixelFormat_ThrowsArgumentException
-System.Drawing.Tests.BitmapTests.LockBits_InvalidLockMode_ThrowsArgumentException(lockMode: -1)
-System.Drawing.Tests.BitmapTests.LockBits_InvalidLockMode_ThrowsArgumentException(lockMode: 5)
-System.Drawing.Tests.BitmapTests.LockBits_InvalidLockMode_ThrowsArgumentException(lockMode: UserInputBuffer)
 System.Drawing.Tests.BitmapTests.LockBits_Invoke_Success_NotUnix(bitmap: Bitmap { Flags = 0, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 100, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, rectangle: {X=0,Y=0,Width=100,Height=100}, lockMode: ReadOnly, pixelFormat: Format8bppIndexed, expectedStride: 100, expectedReserved: 65537)
 System.Drawing.Tests.BitmapTests.LockBits_Invoke_Success_NotUnix(bitmap: Bitmap { Flags = 0, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 100, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, rectangle: {X=0,Y=0,Width=100,Height=100}, lockMode: ReadWrite, pixelFormat: Format8bppIndexed, expectedStride: 100, expectedReserved: 65539)
 System.Drawing.Tests.BitmapTests.LockBits_Invoke_Success_NotUnix(bitmap: Bitmap { Flags = 0, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 100, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, rectangle: {X=0,Y=0,Width=100,Height=100}, lockMode: WriteOnly, pixelFormat: Format8bppIndexed, expectedStride: 100, expectedReserved: 65538)
