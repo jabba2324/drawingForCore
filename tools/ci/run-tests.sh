@@ -26,7 +26,8 @@ UNIX_DISABLED="(category=failing|category=nonlinuxtests|category=nonunixtests)&$
 status=0
 for run in "$s:$SELECTION" "$s.unix-disabled:$UNIX_DISABLED"; do
   name=${run%%:*}
-  dotnet test "test/drawingForCore.$s/drawingForCore.$s.csproj" -c Release --no-build --filter "${run#*:}" \
+  # --blame: if the test host crashes, the log names the test that was running.
+  dotnet test "test/drawingForCore.$s/drawingForCore.$s.csproj" -c Release --no-build --blame --filter "${run#*:}" \
     --logger "trx;LogFileName=$name.trx" --results-directory "$OUT"
   dotnet run tools/ci/check_failures.cs -- "$OUT/$name.trx" "tools/ci/known-failures/$name.txt" || status=1
 done

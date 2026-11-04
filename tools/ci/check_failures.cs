@@ -23,6 +23,9 @@ if (args.Length > 1)
 bool IsKnown(string name) => known.Contains(name) || prefixes.Any(p => name.StartsWith(p, StringComparison.Ordinal));
 
 var root = XDocument.Load(trx).Root!;
+// A crashed test host ends the run early, and the tests it didn't reach have no results to fail.
+var aborted = root.Descendants(t + "RunInfo").Select(i => (string?)i.Element(t + "Text") ?? "")
+    .Where(s => s.StartsWith("The active test run was aborted", StringComparison.OrdinalIgnoreCase)).ToList();
 var classes = root.Descendants(t + "UnitTest").ToDictionary(
     u => (string)u.Attribute("id")!, u => (string?)u.Element(t + "TestMethod")?.Attribute("className") ?? "");
 var pairs = root.Descendants(t + "UnitTestResult").Select(r =>
@@ -44,4 +47,5 @@ var fixedTests = known.Where(passed.Contains)
 Console.WriteLine($"{trx}: {pairs.Count} results, {failed.Count} failed ({failed.Count(IsKnown)} known, {newFailures.Count} new)");
 foreach (var n in fixedTests) Console.WriteLine($"  now passes (remove from the known list): {n}");
 foreach (var n in newFailures) Console.WriteLine($"::error::{n} failed");
-return newFailures.Count > 0 ? 1 : 0;
+foreach (var a in aborted) Console.WriteLine($"::error::{a}");
+return newFailures.Count > 0 || aborted.Count > 0 ? 1 : 0;
