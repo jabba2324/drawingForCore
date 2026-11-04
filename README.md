@@ -20,8 +20,8 @@ and moved to its own repository because it is useful to any .NET Framework code 
 | | |
 | --- | --- |
 | Status | Pre-release (0.2.0) |
-| Target | .NET 10 LTS (`net10.0`), from 0.2.0 (0.1.0 was `net11.0`). Linux x64 and Windows x64, both built and tested in CI. SkiaSharp also ships macOS assets; macOS isn't tested |
-| Tests | Microsoft's System.Drawing.Common 6.0 test suite, in CI on Linux and on Windows: 3,882 tests, 3,705 pass, 26 skipped, 151 known failures (141 of them metafiles, which aren't implemented). CI fails on any other failure |
+| Target | .NET 10 LTS (`net10.0`), from 0.2.0 (0.1.0 was `net11.0`). Linux x64 and Windows x64, both built and tested in CI. macOS (Apple silicon) is built in CI and passes the package smoke test, but the test suite crashes there ([#13](https://github.com/xforcore/drawingForCore/issues/13)) |
+| Tests | Microsoft's System.Drawing.Common 6.0 test suite, in CI on Linux and on Windows: 3,882 tests, 3,705 pass, 26 skipped, 151 known failures (141 of them metafiles, which aren't implemented). A second run takes the tests Microsoft disabled for libgdiplus: on Linux 1,006, 527 pass, 19 skipped, 460 known failures (Windows: 1,019, 537, 19, 463). CI fails on any other failure |
 | Packages | `drawingForCore` (System.Drawing) and `drawingForCore.Common` (System.Drawing.Common), on the feed below and on the [GitHub releases](https://github.com/xforcore/drawingForCore/releases). Not on nuget.org |
 
 ## Using it
@@ -47,7 +47,9 @@ on `drawingForCore.Common`, which is System.Drawing.Common (11.0.0.0). Code that
 reference `drawingForCore.Common` alone.
 
 Text needs fonts installed. On Linux the Windows core fonts are matched to metric-compatible ones when they are
-installed: Liberation for Arial, Times New Roman and Courier New; Carlito and Caladea for Calibri and Cambria.
+installed: Liberation for Arial, Times New Roman and Courier New; Carlito and Caladea for Calibri and Cambria. On
+macOS families resolve through CoreText (SkiaSharp's font manager there) instead of fontconfig, and macOS has Arial,
+Times New Roman and Courier New itself, so text is measured with the real fonts, not the metric-compatible ones (#13).
 
 The feed keeps the latest few versions. Every version's packages are also attached to its
 [release](https://github.com/xforcore/drawingForCore/releases).
@@ -107,7 +109,7 @@ API functions) calls `SkiaGdiPlus` instead, which implements 516 of them; the re
 - **Handles:** HDC, HICON, HBITMAP and HRGN are handles, as System.Drawing's Unix code assumes (libgdiplus's
   convention). A GDI+ object handle is a number in the engine's handle table, freed by the matching `Gdip*Delete`; an
   unknown or freed handle is InvalidParameter, not a crash.
-- **Text:** families resolve through fontconfig, and the Windows core fonts map to installed metric-compatible ones
+- **Text:** families resolve through fontconfig (CoreText on macOS), and the Windows core fonts map to installed metric-compatible ones
   that keep the Windows names. Layout is GDI+'s (1/6 em padding except for `GenericTypographic`, wrapping, alignment,
   trimming).
 - **Pointers stay at the edge** (CONTRIBUTING.md, principle 9): a flat API function that receives a pointer or a

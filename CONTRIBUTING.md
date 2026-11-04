@@ -8,11 +8,11 @@ System.Drawing closer to .NET Framework, and when it can prove it with a test.
 
 1. **Microsoft's tests are the measure.** The engine aims for Windows GDI+'s behaviour as Microsoft's own tests record
    it. A fix that makes a known failure pass removes it from `tools/ci/known-failures/System.Drawing.Common.Tests.txt`
-   in the same change; CI reports known failures that pass.
+   (or `System.Drawing.Common.Tests.unix-disabled.txt`) in the same change; CI reports known failures that pass.
 
 2. **Every change comes with a test.** Where Microsoft's suite covers the behaviour, that is the test: a known failure
-   that now passes, or one of the 1,008 tests Microsoft disabled for libgdiplus (outside the selection) that now
-   passes. Otherwise add drawingForCore's own test, and say in the pull request that it failed before the change.
+   that now passes, in Microsoft's selection or in the tests Microsoft disabled for libgdiplus (CI's second run).
+   Otherwise add drawingForCore's own test, and say in the pull request that it failed before the change.
 
 3. **Avoid changing Microsoft's code.** Microsoft's System.Drawing.Common comes unchanged, apart from a short list of
    changes ([`docs/MODIFICATIONS.md`](docs/MODIFICATIONS.md)), from the `external/` submodules. Its value is that it
@@ -78,7 +78,8 @@ changed, and new code doesn't add to the list. The Python written before rule 11
 - The pull request lists, for each change: the problem, what needs it (principle 7), the fix, the test and the suite's
   numbers (principle 6), and whether Microsoft's code changed (and where that is documented).
 - CI (`.github/workflows/ci.yml`) builds, runs the tests, packs the packages and runs the package
-  smoke test, on Linux and on Windows; both must pass.
+  smoke test, on Linux and on Windows; both must pass. A macOS job builds, packs and runs the package smoke test, and
+  runs the tests for information (#13).
 
 ## Releases
 

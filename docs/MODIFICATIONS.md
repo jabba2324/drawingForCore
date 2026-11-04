@@ -10,7 +10,7 @@ what had to change.
 
   | Submodule | Fork branch | Upstream commit | Changes |
   | --- | --- | --- | --- |
-  | `external/runtime` | [xforcore/runtime `drawingforcore`](https://github.com/xforcore/runtime/commits/drawingforcore) | `76b9680` (release/6.0) | 10, including the GDI+ import rewrite |
+  | `external/runtime` | [xforcore/runtime `drawingforcore`](https://github.com/xforcore/runtime/commits/drawingforcore) | `76b9680` (release/6.0) | 11, including the GDI+ import rewrite |
   | `external/arcade` | [xforcore/arcade `drawingforcore`](https://github.com/xforcore/arcade/commits/drawingforcore) | `565a800` | 1 |
   | `external/runtime-assets` | [xforcore/runtime-assets `drawingforcore`](https://github.com/xforcore/runtime-assets/commits/drawingforcore) | `848e27e` | the fonts removed (not redistributable) |
 
@@ -57,7 +57,7 @@ fixed, or the failure is listed as known with its reason (`tools/ci/known-failur
 
 | Kind | Change |
 | --- | --- |
-| **GDI+ availability** | The suite's four "is GDI+ available" checks probe for libgdiplus and screen out old libgdiplus builds (by version, and on RedHat, Fedora and openSUSE). They answer for the managed engine instead |
+| **GDI+ availability** | The suite's four "is GDI+ available" checks probe for libgdiplus (libgdiplus.dylib on macOS) and screen out old libgdiplus builds (by version, and on RedHat, Fedora and openSUSE). They answer for the managed engine instead, on Linux, Windows and macOS |
 | **Windows runs as Linux** | The suite's Windows checks (`PlatformDetection.IsWindows`, `[PlatformSpecific]`, two direct OS checks) mean "GDI+ is Windows' own", which it never is here. Windows answers as Linux and runs the same tests with the same expectations. The font-name test keeps its real OS check, since it depends on the fonts Windows installs |
-| **Selection** | Microsoft's own categories: `category!=failing` and the non-Linux categories, as dotnet/runtime's Linux runs |
+| **Selection** | Microsoft's own categories: `category!=failing` and the non-Linux categories, as dotnet/runtime's Linux runs; then, in a second run with its own known failures, the tests those categories leave out ([TESTING.md](TESTING.md#the-unix-disabled-tests)) |
 | **Test infrastructure** | arcade's Microsoft.DotNet.XUnitExtensions and RemoteExecutor are built from source (dotnet/runtime takes them from the dotnet-eng feed). xunit 2.4.1 and xunit.runner.visualstudio 2.4.5, the versions of the suite's time ([TESTING.md](TESTING.md)) |
