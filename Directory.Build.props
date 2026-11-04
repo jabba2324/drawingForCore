@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <Version>0.2.0</Version>
+    <Version>0.3.0</Version>
     <Authors>drawingForCore contributors</Authors>
     <Copyright>Copyright (c) drawingForCore contributors. Portions copyright (c) Microsoft Corporation, the .NET Foundation and others; see NOTICE.</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
