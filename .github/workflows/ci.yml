@@ -1,4 +1,4 @@
-# Linux and Windows builds in parallel, System.Drawing.Common's test suite on both (docs/TESTING.md), and the NuGet
+# Linux, Windows and macOS builds in parallel, System.Drawing.Common's test suite on both (docs/TESTING.md), and the NuGet
 # packages: every run packs them, checks that an application builds and runs from them, and keeps Linux's as the
 # "packages" artifact. Microsoft's code comes from the external/ submodules. A version tag
 # (v0.1.0, matching <Version> in Directory.Build.props) also publishes the packages as a GitHub release, once both

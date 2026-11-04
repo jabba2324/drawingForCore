@@ -1,0 +1,458 @@
+# System.Drawing.Common.Tests failures accepted in the second run: the tests Microsoft disabled on Unix because
+# libgdiplus failed them (#12). Most are GDI+ features the engine doesn't have yet; docs/TESTING.md groups them.
+# CI fails on any other failure in that run, and reports a test here that passes, so it can be removed.
+MonoTests.System.Drawing.Imaging.PngCodecTest.Bitmap2bitFeatures
+MonoTests.System.Drawing.TestBitmap.LockBits_IndexedWrite_NonIndexed
+System.Drawing.Drawing2D.Tests.CustomLineCapTests.Ctor_FillPath_DoesNotCrossYAxis_ThrowsNotImplementedException
+System.Drawing.Drawing2D.Tests.CustomLineCapTests.Ctor_FillPath_Incomplete_ThrowsArgumentException
+System.Drawing.Drawing2D.Tests.GraphicsPathIteratorTests.Rewind_Success
+System.Drawing.Drawing2D.Tests.GraphicsPathTests.AddArc_Rectangle_Success
+System.Drawing.Drawing2D.Tests.GraphicsPathTests.AddArc_Values_Success
+System.Drawing.Drawing2D.Tests.GraphicsPathTests.AddClosedCurve_Points_Success
+System.Drawing.Drawing2D.Tests.GraphicsPathTests.AddClosedCurve_Tension_Success
+System.Drawing.Drawing2D.Tests.GraphicsPathTests.IsVisible_RectangleWithGraphics_ReturnsExpected
+System.Drawing.Drawing2D.Tests.GraphicsPathTests.IsVisible_RectangleWithoutGraphics_ReturnsExpected
+System.Drawing.Drawing2D.Tests.GraphicsPathTests.Reverse_String_Succes
+System.Drawing.Drawing2D.Tests.GraphicsPathTests.StartClose_AddString
+System.Drawing.Drawing2D.Tests.GraphicsPathTests.Warp_RectangleEmpty_Success
+System.Drawing.Drawing2D.Tests.GraphicsPathTests.Widen_MatrixEmpty_Success
+System.Drawing.Drawing2D.Tests.GraphicsPathTests.Widen_MatrixNull_Success
+System.Drawing.Drawing2D.Tests.GraphicsPathTests.Widen_Pen_Success
+System.Drawing.Drawing2D.Tests.LinearGradientBrushTests.Ctor_PointF_PointF_Color_Color_FloatRanges
+System.Drawing.Drawing2D.Tests.MatrixTests.Rotate_Matrix_Success(matrix: Matrix { Elements = [6.123234E-17, 1, -1, 6.123234E-17, 0, ...], IsIdentity = False, IsInvertible = True, MatrixElements = { {M11:6.123234E-17 M12:1} {M21:-1 M22:6.123234E-17} {M31:0 M32:0} }, OffsetX = 0, ... }, angle: 270, point: {X=0, Y=0}, order: Append, expectedElements: [1, 0, 0, 1, 0, ...], expectedElementsRotateAt: null, isIdentity: True)
+System.Drawing.Drawing2D.Tests.MatrixTests.Rotate_Matrix_Success(matrix: Matrix { Elements = [6.123234E-17, 1, -1, 6.123234E-17, 0, ...], IsIdentity = False, IsInvertible = True, MatrixElements = { {M11:6.123234E-17 M12:1} {M21:-1 M22:6.123234E-17} {M31:0 M32:0} }, OffsetX = 0, ... }, angle: 270, point: {X=0, Y=0}, order: Prepend, expectedElements: [1, 0, 0, 1, 0, ...], expectedElementsRotateAt: null, isIdentity: True)
+System.Drawing.Imaging.Tests.ImageAttributesTests.ClearOutputChannelColorProfile_Success
+System.Drawing.Imaging.Tests.ImageAttributesTests.ClearOutputChannelColorProfile_Type_Success(type: Bitmap)
+System.Drawing.Imaging.Tests.ImageAttributesTests.ClearOutputChannelColorProfile_Type_Success(type: Brush)
+System.Drawing.Imaging.Tests.ImageAttributesTests.ClearOutputChannelColorProfile_Type_Success(type: Default)
+System.Drawing.Imaging.Tests.ImageAttributesTests.ClearOutputChannelColorProfile_Type_Success(type: Pen)
+System.Drawing.Imaging.Tests.ImageAttributesTests.ClearOutputChannelColorProfile_Type_Success(type: Text)
+System.Drawing.Imaging.Tests.ImageAttributesTests.SetColorKey_Success
+System.Drawing.Imaging.Tests.ImageAttributesTests.SetColorKey_Type_Success(type: Bitmap)
+System.Drawing.Imaging.Tests.ImageAttributesTests.SetColorKey_Type_Success(type: Default)
+System.Drawing.Imaging.Tests.ImageAttributesTests.SetOutputChannelColorProfile_InvalidPath_ThrowsOutOfMemoryException
+System.Drawing.Imaging.Tests.ImageAttributesTests.SetOutputChannelColorProfile_InvalidPath_ThrowsPathTooLongException
+System.Drawing.Imaging.Tests.ImageAttributesTests.SetOutputChannelColorProfile_InvalidTypes_ThrowsArgumentException(type: -1)
+System.Drawing.Imaging.Tests.ImageAttributesTests.SetOutputChannelColorProfile_InvalidTypes_ThrowsArgumentException(type: 7)
+System.Drawing.Imaging.Tests.ImageAttributesTests.SetOutputChannelColorProfile_InvalidTypes_ThrowsArgumentException(type: Any)
+System.Drawing.Imaging.Tests.ImageAttributesTests.SetOutputChannelColorProfile_InvalidTypes_ThrowsArgumentException(type: Count)
+System.Drawing.Imaging.Tests.ImageAttributesTests.SetOutputChannelColorProfile_Name_Success
+System.Drawing.Imaging.Tests.ImageAttributesTests.SetOutputChannel_FlagType_Success(flag: ColorChannelC, type: Bitmap, actualColor: Color [A=255, R=100, G=100, B=100], expectedColor: Color [A=255, R=198, G=198, B=198])
+System.Drawing.Imaging.Tests.ImageAttributesTests.SetOutputChannel_FlagType_Success(flag: ColorChannelC, type: Default, actualColor: Color [A=255, R=100, G=100, B=100], expectedColor: Color [A=255, R=198, G=198, B=198])
+System.Drawing.Imaging.Tests.ImageAttributesTests.SetOutputChannel_FlagType_Success(flag: ColorChannelK, type: Bitmap, actualColor: Color [A=255, R=100, G=100, B=100], expectedColor: Color [A=255, R=108, G=108, B=108])
+System.Drawing.Imaging.Tests.ImageAttributesTests.SetOutputChannel_FlagType_Success(flag: ColorChannelK, type: Default, actualColor: Color [A=255, R=100, G=100, B=100], expectedColor: Color [A=255, R=108, G=108, B=108])
+System.Drawing.Imaging.Tests.ImageAttributesTests.SetOutputChannel_FlagType_Success(flag: ColorChannelM, type: Bitmap, actualColor: Color [A=255, R=100, G=100, B=100], expectedColor: Color [A=255, R=204, G=204, B=204])
+System.Drawing.Imaging.Tests.ImageAttributesTests.SetOutputChannel_FlagType_Success(flag: ColorChannelM, type: Default, actualColor: Color [A=255, R=100, G=100, B=100], expectedColor: Color [A=255, R=204, G=204, B=204])
+System.Drawing.Imaging.Tests.ImageAttributesTests.SetOutputChannel_FlagType_Success(flag: ColorChannelY, type: Bitmap, actualColor: Color [A=255, R=100, G=100, B=100], expectedColor: Color [A=255, R=207, G=207, B=207])
+System.Drawing.Imaging.Tests.ImageAttributesTests.SetOutputChannel_FlagType_Success(flag: ColorChannelY, type: Default, actualColor: Color [A=255, R=100, G=100, B=100], expectedColor: Color [A=255, R=207, G=207, B=207])
+System.Drawing.Imaging.Tests.ImageAttributesTests.SetOutputChannel_Flag_Success(flag: ColorChannelC, actualColor: Color [A=255, R=100, G=100, B=100], expectedColor: Color [A=255, R=198, G=198, B=198])
+System.Drawing.Imaging.Tests.ImageAttributesTests.SetOutputChannel_Flag_Success(flag: ColorChannelK, actualColor: Color [A=255, R=100, G=100, B=100], expectedColor: Color [A=255, R=108, G=108, B=108])
+System.Drawing.Imaging.Tests.ImageAttributesTests.SetOutputChannel_Flag_Success(flag: ColorChannelM, actualColor: Color [A=255, R=100, G=100, B=100], expectedColor: Color [A=255, R=204, G=204, B=204])
+System.Drawing.Imaging.Tests.ImageAttributesTests.SetOutputChannel_Flag_Success(flag: ColorChannelY, actualColor: Color [A=255, R=100, G=100, B=100], expectedColor: Color [A=255, R=207, G=207, B=207])
+System.Drawing.Imaging.Tests.MetafileTests.Ctor_EmptyStream_ThrowsExternalException
+System.Drawing.Imaging.Tests.MetafileTests.Ctor_IntPtrToWmf_ThrowsExternalException
+System.Drawing.Imaging.Tests.MetafileTests.Ctor_ZeroPointerEmfTypeInvalidString_ThrowsArgumentException(description: "")
+System.Drawing.Imaging.Tests.MetafileTests.Ctor_ZeroPointerEmfTypeInvalidString_ThrowsArgumentException(description: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"...)
+System.Drawing.Imaging.Tests.MetafileTests.Ctor_ZeroPointerEmfTypeInvalidString_ThrowsArgumentException(description: "fileNo*-//\\\\#@(found")
+System.Drawing.Imaging.Tests.MetafileTests.GetHenhmetafile_Disposed_ThrowsArgumentException
+System.Drawing.Imaging.Tests.MetafileTests.Static_GetMetafileHeader_EmptyStream_ArgumentException
+System.Drawing.Imaging.Tests.PropertyItemTests.Id_Set_GetReturnsExpected(value: -1)
+System.Drawing.Imaging.Tests.PropertyItemTests.Id_Set_GetReturnsExpected(value: 0)
+System.Drawing.Imaging.Tests.PropertyItemTests.Id_Set_GetReturnsExpected(value: 1)
+System.Drawing.Imaging.Tests.PropertyItemTests.Len_Set_GetReturnsExpected(value: -1)
+System.Drawing.Imaging.Tests.PropertyItemTests.Len_Set_GetReturnsExpected(value: 0)
+System.Drawing.Imaging.Tests.PropertyItemTests.Len_Set_GetReturnsExpected(value: 1)
+System.Drawing.Imaging.Tests.PropertyItemTests.Properties_SetValues_ReturnsExpected(id: -2147483648, len: -2147483648, type: -32768, value: [1, 1])
+System.Drawing.Imaging.Tests.PropertyItemTests.Properties_SetValues_ReturnsExpected(id: 0, len: 0, type: 0, value: [])
+System.Drawing.Imaging.Tests.PropertyItemTests.Properties_SetValues_ReturnsExpected(id: 2147483647, len: 2147483647, type: 32767, value: [0])
+System.Drawing.Imaging.Tests.PropertyItemTests.Type_Set_GetReturnsExpected(value: -1)
+System.Drawing.Imaging.Tests.PropertyItemTests.Type_Set_GetReturnsExpected(value: 0)
+System.Drawing.Imaging.Tests.PropertyItemTests.Type_Set_GetReturnsExpected(value: 1)
+System.Drawing.Imaging.Tests.PropertyItemTests.Value_Set_GetReturnsExpected(value: [1, 2, 3])
+System.Drawing.Imaging.Tests.PropertyItemTests.Value_Set_GetReturnsExpected(value: [])
+System.Drawing.Imaging.Tests.PropertyItemTests.Value_Set_GetReturnsExpected(value: null)
+System.Drawing.Printing.Tests.PrintControllerTests.OnStartPrint_InvokeNullDocument_ThrowsNullReferenceException
+System.Drawing.Printing.Tests.PrintDocumentTests.DefaultPageSettings_Null_ReturnsExpected
+System.Drawing.Printing.Tests.PrintDocumentTests.DefaultPageSettings_SetValue_ReturnsExpected
+System.Drawing.Printing.Tests.PrintDocumentTests.DocumentName_Null_ReturnsExpected
+System.Drawing.Printing.Tests.PrintDocumentTests.PrintController_SetValue_ReturnsExpected
+System.Drawing.Printing.Tests.PrinterSettingsTests.CreateMeasurementGraphics_Bool_ReturnsExpected
+System.Drawing.Printing.Tests.PrinterSettingsTests.CreateMeasurementGraphics_Default_ReturnsExpected
+System.Drawing.Printing.Tests.PrinterSettingsTests.CreateMeasurementGraphics_Null_ThrowsNullReferenceException
+System.Drawing.Printing.Tests.PrinterSettingsTests.CreateMeasurementGraphics_PageSettingsBool_ReturnsExpected
+System.Drawing.Printing.Tests.PrinterSettingsTests.CreateMeasurementGraphics_PageSettings_ReturnsExpected
+System.Drawing.Printing.Tests.PrinterSettingsTests.Duplex_Invalid_ThrowsInvalidEnumArgumentException(duplex: -2)
+System.Drawing.Printing.Tests.PrinterSettingsTests.Duplex_Invalid_ThrowsInvalidEnumArgumentException(duplex: -2147483648)
+System.Drawing.Printing.Tests.PrinterSettingsTests.Duplex_Invalid_ThrowsInvalidEnumArgumentException(duplex: 2147483647)
+System.Drawing.Printing.Tests.PrinterSettingsTests.Duplex_Invalid_ThrowsInvalidEnumArgumentException(duplex: 4)
+System.Drawing.Printing.Tests.PrinterSettingsTests.GetHdevmode_Null_ThrowsNullReferenceException
+System.Drawing.Printing.Tests.PrinterSettingsTests.GetHdevmode_PageSettings_ReturnsExpected
+System.Drawing.Printing.Tests.PrinterSettingsTests.GetHdevmode_ReturnsExpected
+System.Drawing.Printing.Tests.PrinterSettingsTests.GetHdevmode_Zero_ThrowsArgumentException
+System.Drawing.Printing.Tests.PrinterSettingsTests.GetHdevnames_ReturnsExpected
+System.Drawing.Printing.Tests.PrinterSettingsTests.IsDirectPrintingSupported_ImageFormatNotSupported_ReturnsExpected(imageFormat: Bmp)
+System.Drawing.Printing.Tests.PrinterSettingsTests.IsDirectPrintingSupported_ImageFormatNotSupported_ReturnsExpected(imageFormat: Emf)
+System.Drawing.Printing.Tests.PrinterSettingsTests.IsDirectPrintingSupported_ImageFormatNotSupported_ReturnsExpected(imageFormat: Exif)
+System.Drawing.Printing.Tests.PrinterSettingsTests.IsDirectPrintingSupported_ImageFormatNotSupported_ReturnsExpected(imageFormat: Gif)
+System.Drawing.Printing.Tests.PrinterSettingsTests.IsDirectPrintingSupported_ImageFormatNotSupported_ReturnsExpected(imageFormat: Icon)
+System.Drawing.Printing.Tests.PrinterSettingsTests.IsDirectPrintingSupported_ImageFormatNotSupported_ReturnsExpected(imageFormat: MemoryBMP)
+System.Drawing.Printing.Tests.PrinterSettingsTests.IsDirectPrintingSupported_ImageFormatNotSupported_ReturnsExpected(imageFormat: Tiff)
+System.Drawing.Printing.Tests.PrinterSettingsTests.IsDirectPrintingSupported_ImageFormatNotSupported_ReturnsExpected(imageFormat: Wmf)
+System.Drawing.Printing.Tests.PrinterSettingsTests.IsDirectPrintingSupported_ImageFormatSupported_ReturnsExpected(imageFormat: Jpeg)
+System.Drawing.Printing.Tests.PrinterSettingsTests.IsDirectPrintingSupported_ImageFormatSupported_ReturnsExpected(imageFormat: Png)
+System.Drawing.Printing.Tests.PrinterSettingsTests.IsDirectPrintingSupported_ImageNotSupported_ReturnsExpected
+System.Drawing.Printing.Tests.PrinterSettingsTests.PaperSizes_ReturnsExpected
+System.Drawing.Printing.Tests.PrinterSettingsTests.PaperSources_ReturnsExpected
+System.Drawing.Printing.Tests.PrinterSettingsTests.PrintFileName_Empty_ThrowsArgumentNullException
+System.Drawing.Printing.Tests.PrinterSettingsTests.PrintFileName_Null_ThrowsArgumentNullException
+System.Drawing.Printing.Tests.PrinterSettingsTests.PrintRange_SetValue_ReturnsExpected(printRange: CurrentPage)
+System.Drawing.Printing.Tests.PrinterSettingsTests.PrinterName_Null_ReturnsExpected
+System.Drawing.Printing.Tests.PrinterSettingsTests.SetHdevnames_IntPtr_Success
+System.Drawing.Printing.Tests.PrinterSettingsTests.ToString_ReturnsExpected
+System.Drawing.Tests.BitmapTests.Clone_GrayscaleFormat_ThrowsOutOfMemoryException
+System.Drawing.Tests.BitmapTests.Clone_InvalidPixelFormat_ThrowsOutOfMemoryException(format: Alpha)
+System.Drawing.Tests.BitmapTests.Clone_InvalidPixelFormat_ThrowsOutOfMemoryException(format: Canonical)
+System.Drawing.Tests.BitmapTests.Clone_InvalidPixelFormat_ThrowsOutOfMemoryException(format: Extended)
+System.Drawing.Tests.BitmapTests.Clone_InvalidPixelFormat_ThrowsOutOfMemoryException(format: Format16bppGrayScale)
+System.Drawing.Tests.BitmapTests.Clone_InvalidPixelFormat_ThrowsOutOfMemoryException(format: Gdi)
+System.Drawing.Tests.BitmapTests.Clone_InvalidPixelFormat_ThrowsOutOfMemoryException(format: Indexed)
+System.Drawing.Tests.BitmapTests.Clone_InvalidPixelFormat_ThrowsOutOfMemoryException(format: Max)
+System.Drawing.Tests.BitmapTests.Clone_InvalidPixelFormat_ThrowsOutOfMemoryException(format: PAlpha)
+System.Drawing.Tests.BitmapTests.Clone_InvalidRect_ThrowsOutOfMemoryException(x: 0, y: 0, width: 1, height: 4)
+System.Drawing.Tests.BitmapTests.Clone_InvalidRect_ThrowsOutOfMemoryException(x: 0, y: 0, width: 4, height: 1)
+System.Drawing.Tests.BitmapTests.Clone_InvalidRect_ThrowsOutOfMemoryException(x: 0, y: 1, width: 1, height: 3)
+System.Drawing.Tests.BitmapTests.Clone_InvalidRect_ThrowsOutOfMemoryException(x: 1, y: 0, width: 3, height: 1)
+System.Drawing.Tests.BitmapTests.Clone_InvalidRect_ThrowsOutOfMemoryException(x: 1, y: 4, width: 1, height: 1)
+System.Drawing.Tests.BitmapTests.Clone_InvalidRect_ThrowsOutOfMemoryException(x: 4, y: 1, width: 1, height: 1)
+System.Drawing.Tests.BitmapTests.Ctor_InvalidHeight_ThrowsArgumentException(height: 2147483647)
+System.Drawing.Tests.BitmapTests.Ctor_InvalidHeight_ThrowsArgumentException(height: 33619455)
+System.Drawing.Tests.BitmapTests.Ctor_InvalidWidth_ThrowsArgumentException(width: 2147483647)
+System.Drawing.Tests.BitmapTests.Ctor_InvalidWidth_ThrowsArgumentException(width: 33619455)
+System.Drawing.Tests.BitmapTests.CustomPixelFormat_GetPixels_ReturnsExpected(format: Format16bppArgb1555)
+System.Drawing.Tests.BitmapTests.CustomPixelFormat_GetPixels_ReturnsExpected(format: Format16bppRgb555)
+System.Drawing.Tests.BitmapTests.CustomPixelFormat_GetPixels_ReturnsExpected(format: Format16bppRgb565)
+System.Drawing.Tests.BitmapTests.CustomPixelFormat_GetPixels_ReturnsExpected(format: Format32bppPArgb)
+System.Drawing.Tests.BitmapTests.CustomPixelFormat_GetPixels_ReturnsExpected(format: Format32bppRgb)
+System.Drawing.Tests.BitmapTests.FromHbitmap_InvalidHandle_ThrowsExternalException
+System.Drawing.Tests.BitmapTests.FromHicon_1bppIcon_ThrowsArgumentException
+System.Drawing.Tests.BitmapTests.FromResource_InvalidBitmapName_ThrowsArgumentException
+System.Drawing.Tests.BitmapTests.FromResource_InvalidHandle_ThrowsArgumentException
+System.Drawing.Tests.BitmapTests.GetFrameCount_NewBitmap_ReturnsZero
+System.Drawing.Tests.BitmapTests.GetHbitmap_Grayscale_ThrowsArgumentException(width: 1, height: 1)
+System.Drawing.Tests.BitmapTests.GetHbitmap_Grayscale_ThrowsArgumentException(width: 1, height: 32767)
+System.Drawing.Tests.BitmapTests.GetHbitmap_Grayscale_ThrowsArgumentException(width: 32767, height: 1)
+System.Drawing.Tests.BitmapTests.GetHicon_Grayscale_ThrowsArgumentException
+System.Drawing.Tests.BitmapTests.GetPixel_GrayScalePixelFormat_ThrowsArgumentException
+System.Drawing.Tests.BitmapTests.LockBits_InvalidLockMode_ThrowsArgumentException(lockMode: -1)
+System.Drawing.Tests.BitmapTests.LockBits_InvalidLockMode_ThrowsArgumentException(lockMode: 5)
+System.Drawing.Tests.BitmapTests.LockBits_InvalidLockMode_ThrowsArgumentException(lockMode: UserInputBuffer)
+System.Drawing.Tests.BitmapTests.LockBits_Invoke_Success_NotUnix(bitmap: Bitmap { Flags = 0, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 100, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, rectangle: {X=0,Y=0,Width=100,Height=100}, lockMode: ReadOnly, pixelFormat: Format8bppIndexed, expectedStride: 100, expectedReserved: 65537)
+System.Drawing.Tests.BitmapTests.LockBits_Invoke_Success_NotUnix(bitmap: Bitmap { Flags = 0, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 100, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, rectangle: {X=0,Y=0,Width=100,Height=100}, lockMode: ReadWrite, pixelFormat: Format8bppIndexed, expectedStride: 100, expectedReserved: 65539)
+System.Drawing.Tests.BitmapTests.LockBits_Invoke_Success_NotUnix(bitmap: Bitmap { Flags = 0, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 100, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, rectangle: {X=0,Y=0,Width=100,Height=100}, lockMode: WriteOnly, pixelFormat: Format8bppIndexed, expectedStride: 100, expectedReserved: 65538)
+System.Drawing.Tests.BitmapTests.LockBits_Invoke_Success_NotUnix(bitmap: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 2, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, rectangle: {X=0,Y=0,Width=2,Height=2}, lockMode: WriteOnly, pixelFormat: Format16bppGrayScale, expectedStride: 4, expectedReserved: 65538)
+System.Drawing.Tests.BitmapTests.LockBits_Invoke_Success_NotUnix(bitmap: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 2, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, rectangle: {X=1,Y=1,Width=1,Height=1}, lockMode: 0, pixelFormat: Format32bppArgb, expectedStride: 8, expectedReserved: 0)
+System.Drawing.Tests.BitmapTests.LockBits_Invoke_Success_NotUnix(bitmap: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 2, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, rectangle: {X=1,Y=1,Width=1,Height=1}, lockMode: ReadOnly, pixelFormat: Format32bppArgb, expectedStride: 8, expectedReserved: 1)
+System.Drawing.Tests.BitmapTests.LockBits_Invoke_Success_NotUnix(bitmap: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 2, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, rectangle: {X=1,Y=1,Width=1,Height=1}, lockMode: ReadWrite, pixelFormat: Format32bppArgb, expectedStride: 8, expectedReserved: 3)
+System.Drawing.Tests.BitmapTests.LockBits_Invoke_Success_NotUnix(bitmap: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 2, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, rectangle: {X=1,Y=1,Width=1,Height=1}, lockMode: WriteOnly, pixelFormat: Format32bppArgb, expectedStride: 8, expectedReserved: 2)
+System.Drawing.Tests.BitmapTests.LockBits_ReadOnlyGrayscale_ThrowsArgumentException
+System.Drawing.Tests.BitmapTests.MakeTransparent_GrayscalePixelFormat_ThrowsArgumentException
+System.Drawing.Tests.BitmapTests.Palette_SetNull_ThrowsNullReferenceException
+System.Drawing.Tests.BitmapTests.SaveWmfAsPngDoesntChangeImageBoundaries
+System.Drawing.Tests.BitmapTests.SelectActiveFrame_InvalidFrameIndex_ThrowsArgumentException(index: -1)
+System.Drawing.Tests.BitmapTests.SelectActiveFrame_InvalidFrameIndex_ThrowsArgumentException(index: 1)
+System.Drawing.Tests.BitmapTests.SetPixel_GrayScalePixelFormat_ThrowsArgumentException
+System.Drawing.Tests.BufferedGraphicsContextTests.Allocate_BusyGraphics_ThrowsInvalidOperationException
+System.Drawing.Tests.BufferedGraphicsContextTests.Allocate_DisposedGraphics_ThrowsArgumentException
+System.Drawing.Tests.BufferedGraphicsContextTests.Allocate_InvalidHdc_ThrowsArgumentException
+System.Drawing.Tests.BufferedGraphicsContextTests.Allocate_NullGraphicsNonZeroSize_ThrowsArgumentNullException
+System.Drawing.Tests.BufferedGraphicsContextTests.Allocate_NullGraphicsZeroSize_Success
+System.Drawing.Tests.BufferedGraphicsContextTests.Allocate_ValidTargetGraphics_Success
+System.Drawing.Tests.BufferedGraphicsContextTests.Allocate_ValidTargetHdc_Success
+System.Drawing.Tests.BufferedGraphicsContextTests.Dispose_BusyAndInvalidated_ThrowsInvalidOperationException
+System.Drawing.Tests.BufferedGraphicsContextTests.Dispose_BusyAndValidated_ThrowsInvalidOperationException
+System.Drawing.Tests.BufferedGraphicsTests.Render_InvalidTargetDC_Nop
+System.Drawing.Tests.BufferedGraphicsTests.Render_ParameterlessWithNullTargetGraphics_Success
+System.Drawing.Tests.BufferedGraphicsTests.Render_ParameterlessWithTargetGraphics_Success
+System.Drawing.Tests.BufferedGraphicsTests.Render_TargetGraphics_Success
+System.Drawing.Tests.FontFamilyTests.FontFamilyProperties_CustomFont_ReturnsExpected(style: -1)
+System.Drawing.Tests.FontFamilyTests.FontFamilyProperties_CustomFont_ReturnsExpected(style: Bold | Strikeout)
+System.Drawing.Tests.FontFamilyTests.FontFamilyProperties_CustomFont_ReturnsExpected(style: Bold)
+System.Drawing.Tests.FontFamilyTests.FontFamilyProperties_CustomFont_ReturnsExpected(style: Italic)
+System.Drawing.Tests.FontFamilyTests.FontFamilyProperties_CustomFont_ReturnsExpected(style: Regular)
+System.Drawing.Tests.FontFamilyTests.FontFamilyProperties_CustomFont_ReturnsExpected(style: Strikeout)
+System.Drawing.Tests.FontFamilyTests.GetName_LanguageCode_ReturnsExpected(languageCode: 1036, expectedName: "Bonjour")
+System.Drawing.Tests.FontTests.Clone_DisposedFont_ThrowsArgumentException
+System.Drawing.Tests.FontTests.Ctor_FamilyNamePrefixedWithAtSign_StripsSign
+System.Drawing.Tests.FontTests.Ctor_InvalidEmSize_ThrowsArgumentException(emSize: -1)
+System.Drawing.Tests.FontTests.Ctor_InvalidEmSize_ThrowsArgumentException(emSize: -∞)
+System.Drawing.Tests.FontTests.Ctor_InvalidEmSize_ThrowsArgumentException(emSize: 0)
+System.Drawing.Tests.FontTests.Ctor_InvalidEmSize_ThrowsArgumentException(emSize: NaN)
+System.Drawing.Tests.FontTests.Ctor_InvalidEmSize_ThrowsArgumentException(emSize: ∞)
+System.Drawing.Tests.FontTests.FromHdc_GraphicsHdc_ThrowsArgumentException
+System.Drawing.Tests.FontTests.FromHdc_ZeroHdc_ThrowsArgumentException
+System.Drawing.Tests.FontTests.FromHfont_Zero_ThrowsArgumentException
+System.Drawing.Tests.FontTests.FromLogFont_InvalidLogFont_ThrowsArgumentException
+System.Drawing.Tests.FontTests.FromLogFont_NullLogFont_ThrowsArgumentNullException
+System.Drawing.Tests.FontTests.FromLogFont_UnblittableStruct
+System.Drawing.Tests.FontTests.FromLogFont_ValidLogFont_ReturnsExpected(fontStyle: Bold | Italic | Underline | Strikeout, weight: 2147483647, charSet: 1)
+System.Drawing.Tests.FontTests.FromLogFont_ValidLogFont_ReturnsExpected(fontStyle: Bold | Italic | Underline | Strikeout, weight: 550, charSet: 1)
+System.Drawing.Tests.FontTests.FromLogFont_ValidLogFont_ReturnsExpected(fontStyle: Bold, weight: -2147483099, charSet: 0)
+System.Drawing.Tests.FontTests.FromLogFont_ValidLogFont_ReturnsExpected(fontStyle: Bold, weight: -2147483648, charSet: 0)
+System.Drawing.Tests.FontTests.FromLogFont_ValidLogFont_ReturnsExpected(fontStyle: Italic | Underline | Strikeout, weight: 549, charSet: 1)
+System.Drawing.Tests.FontTests.FromLogFont_ValidLogFont_ReturnsExpected(fontStyle: Regular, weight: -1, charSet: 0)
+System.Drawing.Tests.FontTests.FromLogFont_ValidLogFont_ReturnsExpected(fontStyle: Regular, weight: -2147483098, charSet: 0)
+System.Drawing.Tests.FontTests.FromLogFont_ValidLogFont_ReturnsExpected(fontStyle: Regular, weight: 0, charSet: 0)
+System.Drawing.Tests.FontTests.FromLogFont_ValidLogFont_ReturnsExpected(fontStyle: Regular, weight: 300, charSet: 0)
+System.Drawing.Tests.FontTests.FromLogFont_ValidLogFont_ReturnsExpected(fontStyle: Regular, weight: 400, charSet: 0)
+System.Drawing.Tests.FontTests.GetHeight_DisposedGraphics_ThrowsArgumentException
+System.Drawing.Tests.FontTests.GetHeight_Dpi_ReturnsExpected(dpi: -1, expected: -0.1571995)
+System.Drawing.Tests.FontTests.GetHeight_Dpi_ReturnsExpected(dpi: 1, expected: 0.1571995)
+System.Drawing.Tests.FontTests.ToHfont_ComplicatedFont_DoesNotRoundtrip
+System.Drawing.Tests.FontTests.ToHfont_SimpleFont_Roundtrips
+System.Drawing.Tests.GdiPlusHandlesTests.GraphicsDrawIconDoesNotLeakHandles
+System.Drawing.Tests.GraphicsTests.CompositingMode_Set_GetReturnsExpected(mode: SourceOver, expectedOverlap: Color [A=220, R=185, G=185, B=185])
+System.Drawing.Tests.GraphicsTests.CompositingQuality_Set_GetReturnsExpected(quality: AssumeLinear, expectedIntersectionColor: [[Color [A=160, R=0, G=0, B=0], Color [A=160, R=0, G=0, B=0], Color [A=0, R=0, G=0, B=0]], [Color [A=160, R=0, G=0, B=0], Color [A=220, R=185, G=185, B=185], Color [A=160, R=255, G=255, B=255]], [Color [A=0, R=0, G=0, B=0], Color [A=160, R=255, G=255, B=255], Color [A=160, R=255, G=255, B=255]]])
+System.Drawing.Tests.GraphicsTests.CompositingQuality_Set_GetReturnsExpected(quality: Default, expectedIntersectionColor: [[Color [A=160, R=0, G=0, B=0], Color [A=160, R=0, G=0, B=0], Color [A=0, R=0, G=0, B=0]], [Color [A=160, R=0, G=0, B=0], Color [A=220, R=185, G=185, B=185], Color [A=160, R=255, G=255, B=255]], [Color [A=0, R=0, G=0, B=0], Color [A=160, R=255, G=255, B=255], Color [A=160, R=255, G=255, B=255]]])
+System.Drawing.Tests.GraphicsTests.CompositingQuality_Set_GetReturnsExpected(quality: GammaCorrected, expectedIntersectionColor: [[Color [A=159, R=0, G=0, B=0], Color [A=159, R=0, G=0, B=0], Color [A=0, R=0, G=0, B=0]], [Color [A=159, R=0, G=0, B=0], Color [A=219, R=222, G=222, B=222], Color [A=159, R=255, G=255, B=255]], [Color [A=0, R=0, G=0, B=0], Color [A=159, R=255, G=255, B=255], Color [A=159, R=255, G=255, B=255]]])
+System.Drawing.Tests.GraphicsTests.CompositingQuality_Set_GetReturnsExpected(quality: HighQuality, expectedIntersectionColor: [[Color [A=159, R=0, G=0, B=0], Color [A=159, R=0, G=0, B=0], Color [A=0, R=0, G=0, B=0]], [Color [A=159, R=0, G=0, B=0], Color [A=219, R=222, G=222, B=222], Color [A=159, R=255, G=255, B=255]], [Color [A=0, R=0, G=0, B=0], Color [A=159, R=255, G=255, B=255], Color [A=159, R=255, G=255, B=255]]])
+System.Drawing.Tests.GraphicsTests.CompositingQuality_Set_GetReturnsExpected(quality: HighSpeed, expectedIntersectionColor: [[Color [A=160, R=0, G=0, B=0], Color [A=160, R=0, G=0, B=0], Color [A=0, R=0, G=0, B=0]], [Color [A=160, R=0, G=0, B=0], Color [A=220, R=185, G=185, B=185], Color [A=160, R=255, G=255, B=255]], [Color [A=0, R=0, G=0, B=0], Color [A=160, R=255, G=255, B=255], Color [A=160, R=255, G=255, B=255]]])
+System.Drawing.Tests.GraphicsTests.CompositingQuality_Set_GetReturnsExpected(quality: Invalid, expectedIntersectionColor: [[Color [A=160, R=0, G=0, B=0], Color [A=160, R=0, G=0, B=0], Color [A=0, R=0, G=0, B=0]], [Color [A=160, R=0, G=0, B=0], Color [A=220, R=185, G=185, B=185], Color [A=160, R=255, G=255, B=255]], [Color [A=0, R=0, G=0, B=0], Color [A=160, R=255, G=255, B=255], Color [A=160, R=255, G=255, B=255]]])
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_Busy_ThrowsInvalidOperationException
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_Disposed_ThrowsArgumentException
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_IntsAndValidCopyPixelOperation_Success(copyPixelOperation: Blackness)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_IntsAndValidCopyPixelOperation_Success(copyPixelOperation: CaptureBlt)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_IntsAndValidCopyPixelOperation_Success(copyPixelOperation: DestinationInvert)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_IntsAndValidCopyPixelOperation_Success(copyPixelOperation: MergeCopy)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_IntsAndValidCopyPixelOperation_Success(copyPixelOperation: MergePaint)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_IntsAndValidCopyPixelOperation_Success(copyPixelOperation: NoMirrorBitmap)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_IntsAndValidCopyPixelOperation_Success(copyPixelOperation: NotSourceCopy)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_IntsAndValidCopyPixelOperation_Success(copyPixelOperation: NotSourceErase)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_IntsAndValidCopyPixelOperation_Success(copyPixelOperation: PatCopy)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_IntsAndValidCopyPixelOperation_Success(copyPixelOperation: PatInvert)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_IntsAndValidCopyPixelOperation_Success(copyPixelOperation: PatPaint)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_IntsAndValidCopyPixelOperation_Success(copyPixelOperation: SourceAnd)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_IntsAndValidCopyPixelOperation_Success(copyPixelOperation: SourceCopy)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_IntsAndValidCopyPixelOperation_Success(copyPixelOperation: SourceErase)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_IntsAndValidCopyPixelOperation_Success(copyPixelOperation: SourceInvert)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_IntsAndValidCopyPixelOperation_Success(copyPixelOperation: SourcePaint)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_IntsAndValidCopyPixelOperation_Success(copyPixelOperation: Whiteness)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_OutOfRange_DoesNotAffectGraphics(sourceX: -1, sourceY: -1, destinationX: 0, destinationY: 0, size: {Width=1, Height=1})
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_OutOfRange_DoesNotAffectGraphics(sourceX: 0, sourceY: 0, destinationX: -1, destinationY: -1, size: {Width=1, Height=1})
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_OutOfRange_DoesNotAffectGraphics(sourceX: 0, sourceY: 0, destinationX: 0, destinationY: 0, size: {Width=-1, Height=-1})
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_OutOfRange_DoesNotAffectGraphics(sourceX: 0, sourceY: 0, destinationX: 0, destinationY: 0, size: {Width=0, Height=0})
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_OutOfRange_DoesNotAffectGraphics(sourceX: 0, sourceY: 0, destinationX: 2147483647, destinationY: 2147483647, size: {Width=1, Height=1})
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_OutOfRange_DoesNotAffectGraphics(sourceX: 2147483647, sourceY: 2147483647, destinationX: 0, destinationY: 0, size: {Width=1, Height=1})
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_PointsAndValidCopyPixelOperation_Success(copyPixelOperation: Blackness)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_PointsAndValidCopyPixelOperation_Success(copyPixelOperation: CaptureBlt)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_PointsAndValidCopyPixelOperation_Success(copyPixelOperation: DestinationInvert)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_PointsAndValidCopyPixelOperation_Success(copyPixelOperation: MergeCopy)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_PointsAndValidCopyPixelOperation_Success(copyPixelOperation: MergePaint)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_PointsAndValidCopyPixelOperation_Success(copyPixelOperation: NoMirrorBitmap)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_PointsAndValidCopyPixelOperation_Success(copyPixelOperation: NotSourceCopy)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_PointsAndValidCopyPixelOperation_Success(copyPixelOperation: NotSourceErase)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_PointsAndValidCopyPixelOperation_Success(copyPixelOperation: PatCopy)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_PointsAndValidCopyPixelOperation_Success(copyPixelOperation: PatInvert)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_PointsAndValidCopyPixelOperation_Success(copyPixelOperation: PatPaint)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_PointsAndValidCopyPixelOperation_Success(copyPixelOperation: SourceAnd)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_PointsAndValidCopyPixelOperation_Success(copyPixelOperation: SourceCopy)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_PointsAndValidCopyPixelOperation_Success(copyPixelOperation: SourceErase)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_PointsAndValidCopyPixelOperation_Success(copyPixelOperation: SourceInvert)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_PointsAndValidCopyPixelOperation_Success(copyPixelOperation: SourcePaint)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_PointsAndValidCopyPixelOperation_Success(copyPixelOperation: Whiteness)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_ValidRange_AffectsGraphics(sourceX: 0, sourceY: 0, destinationX: 0, destinationY: 0, width: 10, height: 10)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_ValidRange_AffectsGraphics(sourceX: 0, sourceY: 0, destinationX: 0, destinationY: 0, width: 2147483647, height: 2147483647)
+System.Drawing.Tests.GraphicsTests.CopyFromScreen_ValidRange_AffectsGraphics(sourceX: 1, sourceY: 1, destinationX: 2, destinationY: 2, width: 3, height: 3)
+System.Drawing.Tests.GraphicsTests.DrawString_CompositingModeSourceCopy_ThrowsArgumentException
+System.Drawing.Tests.GraphicsTests.FromHdcInternal_GetDC_ReturnsExpected
+System.Drawing.Tests.GraphicsTests.FromHdcInternal_ZeroHdc_ThrowsOutOfMemoryException
+System.Drawing.Tests.GraphicsTests.FromHdc_InvalidHdc_ThrowsOutOfMemoryException
+System.Drawing.Tests.GraphicsTests.FromHdc_ValidHdcWithContext_ReturnsExpected
+System.Drawing.Tests.GraphicsTests.FromHdc_ValidHdc_ReturnsExpected
+System.Drawing.Tests.GraphicsTests.FromHdc_ZeroHdc_ThrowsArgumentNullException
+System.Drawing.Tests.GraphicsTests.FromHdc_ZeroHdc_ThrowsOutOfMemoryException
+System.Drawing.Tests.GraphicsTests.FromHwndInternal_ValidHwnd_ReturnsExpected
+System.Drawing.Tests.GraphicsTests.FromHwnd_InvalidHwnd_ThrowsOutOfMemoryException
+System.Drawing.Tests.GraphicsTests.FromHwnd_ValidHwnd_ReturnsExpected
+System.Drawing.Tests.GraphicsTests.FromImage_Invalid16BitFormat_ThrowsOutOfMemoryException(format: Format16bppArgb1555)
+System.Drawing.Tests.GraphicsTests.FromImage_Invalid16BitFormat_ThrowsOutOfMemoryException(format: Format16bppGrayScale)
+System.Drawing.Tests.GraphicsTests.GetHdc_FromHdc_Roundtrips
+System.Drawing.Tests.GraphicsTests.GetHdc_SameImage_ReturnsSame
+System.Drawing.Tests.GraphicsTests.GetNearestColor_Busy_ThrowsInvalidOperationException
+System.Drawing.Tests.GraphicsTests.GetNearestColor_Color_ReturnsExpected(pixelFormat: Format16bppRgb555, color: Color [Red], expected: Color [A=255, R=248, G=0, B=0])
+System.Drawing.Tests.GraphicsTests.GetNearestColor_Color_ReturnsExpected(pixelFormat: Format32bppArgb, color: Color [Red], expected: Color [A=255, R=255, G=0, B=0])
+System.Drawing.Tests.GraphicsTests.ReleaseHdc_NoSuchHdc_ResetsHdc
+System.Drawing.Tests.GraphicsTests.ReleaseHdc_OtherGraphicsHdc_Success
+System.Drawing.Tests.GraphicsTests.TransformPoints_PointFs_Success(destSpace: Device, srcSpace: Page, points: [{X=1, Y=1}, {X=2, Y=2}], expected: [{X=1, Y=1}, {X=2, Y=2}])
+System.Drawing.Tests.GraphicsTests.TransformPoints_PointFs_Success(destSpace: Device, srcSpace: World, points: [{X=1, Y=1}, {X=2, Y=2}], expected: [{X=9, Y=12}, {X=13, Y=18}])
+System.Drawing.Tests.GraphicsTests.TransformPoints_PointFs_Success(destSpace: Page, srcSpace: Device, points: [{X=1, Y=1}, {X=2, Y=2}], expected: [{X=1, Y=1}, {X=2, Y=2}])
+System.Drawing.Tests.GraphicsTests.TransformPoints_PointFs_Success(destSpace: World, srcSpace: Device, points: [{X=1, Y=1}, {X=2, Y=2}], expected: [{X=0.5, Y=-1.5}, {X=0, Y=-1}])
+System.Drawing.Tests.GraphicsTests.TransformPoints_Points_Success(destSpace: Device, srcSpace: Page, points: [{X=1,Y=1}, {X=2,Y=2}], expected: [{X=1,Y=1}, {X=2,Y=2}])
+System.Drawing.Tests.GraphicsTests.TransformPoints_Points_Success(destSpace: Device, srcSpace: World, points: [{X=1,Y=1}, {X=2,Y=2}], expected: [{X=9,Y=12}, {X=13,Y=18}])
+System.Drawing.Tests.GraphicsTests.TransformPoints_Points_Success(destSpace: Page, srcSpace: Device, points: [{X=1,Y=1}, {X=2,Y=2}], expected: [{X=1,Y=1}, {X=2,Y=2}])
+System.Drawing.Tests.GraphicsTests.TransformPoints_Points_Success(destSpace: World, srcSpace: Device, points: [{X=1,Y=1}, {X=2,Y=2}], expected: [{X=1,Y=-1}, {X=0,Y=-1}])
+System.Drawing.Tests.GraphicsTests.TransformPoints_Points_Success(destSpace: World, srcSpace: Page, points: [{X=1,Y=1}, {X=2,Y=2}], expected: [{X=1,Y=-1}, {X=0,Y=-1}])
+System.Drawing.Tests.Graphics_DrawBezierTests.DrawBezier_PointFs
+System.Drawing.Tests.Graphics_DrawBezierTests.DrawBezier_Points
+System.Drawing.Tests.Graphics_DrawBezierTests.DrawBeziers_Busy_ThrowsInvalidOperationException
+System.Drawing.Tests.Graphics_DrawBezierTests.DrawBeziers_DisposedPen_ThrowsArgumentException
+System.Drawing.Tests.Graphics_DrawBezierTests.DrawBeziers_Disposed_ThrowsArgumentException
+System.Drawing.Tests.Graphics_DrawBezierTests.DrawBeziers_EmptyPoints_ThrowsArgumentException
+System.Drawing.Tests.Graphics_DrawLineTests.DrawLines_PointFs
+System.Drawing.Tests.Graphics_DrawLineTests.DrawLines_Points
+System.Drawing.Tests.IconTests.Ctor_FilePath_Size(fileName: "256x256_one_entry_32bit.ico", size: {Width=0, Height=0}, expectedSize: {Width=256, Height=256})
+System.Drawing.Tests.IconTests.Ctor_FilePath_Size(fileName: "256x256_one_entry_32bit.ico", size: {Width=2147483647, Height=2147483647}, expectedSize: {Width=256, Height=256})
+System.Drawing.Tests.IconTests.Ctor_FilePath_Size(fileName: "256x256_seven_entries_multiple_bits.ico", size: {Width=0, Height=0}, expectedSize: {Width=32, Height=32})
+System.Drawing.Tests.IconTests.Ctor_FilePath_Size(fileName: "256x256_seven_entries_multiple_bits.ico", size: {Width=1, Height=1}, expectedSize: {Width=256, Height=256})
+System.Drawing.Tests.IconTests.Ctor_FilePath_Size(fileName: "48x48_multiple_entries_4bit.ico", size: {Width=-32, Height=-32}, expectedSize: {Width=16, Height=16})
+System.Drawing.Tests.IconTests.Ctor_FilePath_Width_Height(fileName: "256x256_one_entry_32bit.ico", size: {Width=0, Height=0}, expectedSize: {Width=256, Height=256})
+System.Drawing.Tests.IconTests.Ctor_FilePath_Width_Height(fileName: "256x256_one_entry_32bit.ico", size: {Width=2147483647, Height=2147483647}, expectedSize: {Width=256, Height=256})
+System.Drawing.Tests.IconTests.Ctor_FilePath_Width_Height(fileName: "256x256_seven_entries_multiple_bits.ico", size: {Width=0, Height=0}, expectedSize: {Width=32, Height=32})
+System.Drawing.Tests.IconTests.Ctor_FilePath_Width_Height(fileName: "256x256_seven_entries_multiple_bits.ico", size: {Width=1, Height=1}, expectedSize: {Width=256, Height=256})
+System.Drawing.Tests.IconTests.Ctor_FilePath_Width_Height(fileName: "48x48_multiple_entries_4bit.ico", size: {Width=-32, Height=-32}, expectedSize: {Width=16, Height=16})
+System.Drawing.Tests.IconTests.Ctor_Icon_Size(fileName: "256x256_one_entry_32bit.ico", size: {Width=0, Height=0}, expectedSize: {Width=256, Height=256})
+System.Drawing.Tests.IconTests.Ctor_Icon_Size(fileName: "256x256_one_entry_32bit.ico", size: {Width=2147483647, Height=2147483647}, expectedSize: {Width=256, Height=256})
+System.Drawing.Tests.IconTests.Ctor_Icon_Size(fileName: "256x256_seven_entries_multiple_bits.ico", size: {Width=0, Height=0}, expectedSize: {Width=32, Height=32})
+System.Drawing.Tests.IconTests.Ctor_Icon_Size(fileName: "256x256_seven_entries_multiple_bits.ico", size: {Width=1, Height=1}, expectedSize: {Width=256, Height=256})
+System.Drawing.Tests.IconTests.Ctor_Icon_Width_Height(fileName: "256x256_one_entry_32bit.ico", size: {Width=0, Height=0}, expectedSize: {Width=256, Height=256})
+System.Drawing.Tests.IconTests.Ctor_Icon_Width_Height(fileName: "256x256_one_entry_32bit.ico", size: {Width=2147483647, Height=2147483647}, expectedSize: {Width=256, Height=256})
+System.Drawing.Tests.IconTests.Ctor_Icon_Width_Height(fileName: "256x256_seven_entries_multiple_bits.ico", size: {Width=0, Height=0}, expectedSize: {Width=32, Height=32})
+System.Drawing.Tests.IconTests.Ctor_Icon_Width_Height(fileName: "256x256_seven_entries_multiple_bits.ico", size: {Width=1, Height=1}, expectedSize: {Width=256, Height=256})
+System.Drawing.Tests.IconTests.Ctor_InvalidBytesInStream_ThrowsException(bytes: [0, 0, 1, 0, 0, ...], exceptionType: typeof(System.ArgumentException))
+System.Drawing.Tests.IconTests.Ctor_InvalidBytesInStream_ThrowsException(bytes: [0, 0, 1, 0, 1, ...], exceptionType: typeof(System.ArgumentException))
+System.Drawing.Tests.IconTests.Ctor_InvalidBytesInStream_ThrowsException(bytes: [0, 0, 1, 0, 1, ...], exceptionType: typeof(System.ComponentModel.Win32Exception))
+System.Drawing.Tests.IconTests.Ctor_InvalidBytesInStream_ThrowsException(bytes: [0, 0, 1, 0, 10, ...], exceptionType: typeof(System.ArgumentException))
+System.Drawing.Tests.IconTests.Ctor_InvalidBytesInStream_ThrowsException(bytes: [0, 0, 1, 0, 255, ...], exceptionType: typeof(System.ArgumentException))
+System.Drawing.Tests.IconTests.Ctor_Stream_Size(fileName: "256x256_one_entry_32bit.ico", size: {Width=0, Height=0}, expectedSize: {Width=256, Height=256})
+System.Drawing.Tests.IconTests.Ctor_Stream_Size(fileName: "256x256_one_entry_32bit.ico", size: {Width=2147483647, Height=2147483647}, expectedSize: {Width=256, Height=256})
+System.Drawing.Tests.IconTests.Ctor_Stream_Size(fileName: "256x256_seven_entries_multiple_bits.ico", size: {Width=0, Height=0}, expectedSize: {Width=32, Height=32})
+System.Drawing.Tests.IconTests.Ctor_Stream_Size(fileName: "256x256_seven_entries_multiple_bits.ico", size: {Width=1, Height=1}, expectedSize: {Width=256, Height=256})
+System.Drawing.Tests.IconTests.Ctor_Stream_Size(fileName: "48x48_multiple_entries_4bit.ico", size: {Width=-32, Height=-32}, expectedSize: {Width=16, Height=16})
+System.Drawing.Tests.IconTests.Ctor_Stream_Width_Height(fileName: "256x256_one_entry_32bit.ico", size: {Width=0, Height=0}, expectedSize: {Width=256, Height=256})
+System.Drawing.Tests.IconTests.Ctor_Stream_Width_Height(fileName: "256x256_one_entry_32bit.ico", size: {Width=2147483647, Height=2147483647}, expectedSize: {Width=256, Height=256})
+System.Drawing.Tests.IconTests.Ctor_Stream_Width_Height(fileName: "256x256_seven_entries_multiple_bits.ico", size: {Width=0, Height=0}, expectedSize: {Width=32, Height=32})
+System.Drawing.Tests.IconTests.Ctor_Stream_Width_Height(fileName: "256x256_seven_entries_multiple_bits.ico", size: {Width=1, Height=1}, expectedSize: {Width=256, Height=256})
+System.Drawing.Tests.IconTests.Ctor_Stream_Width_Height(fileName: "48x48_multiple_entries_4bit.ico", size: {Width=-32, Height=-32}, expectedSize: {Width=16, Height=16})
+System.Drawing.Tests.IconTests.Dispose_OwnsHandle_DestroysHandle
+System.Drawing.Tests.IconTests.ExtractAssociatedIcon_UNCFilePath_Success
+System.Drawing.Tests.IconTests.Save_ClosedOutputStreamIconData_ThrowsException
+System.Drawing.Tests.IconTests.Save_ClosedOutputStreamNoIconData
+System.Drawing.Tests.IconTests.Save_NoIconDataOwnsHandleAndDisposed_ThrowsObjectDisposedException
+System.Drawing.Tests.IconTests.Save_NullOutputStreamNoIconData_ThrowsArgumentNullException
+System.Drawing.Tests.IconTests.ToBitmap_PngIconNotSupportedInSwitches_ThrowsArgumentOutOfRangeException
+System.Drawing.Tests.IconTests.ToBitmap_PngIconSupportedInSwitches_Success
+System.Drawing.Tests.ImageTests.FromStream_InvalidBytes_ThrowsArgumentException(bytes: [0, 0, 0, 0, 0, ...])
+System.Drawing.Tests.ImageTests.FromStream_InvalidBytes_ThrowsArgumentException(bytes: [0, 0, 0, 0, 10, ...])
+System.Drawing.Tests.ImageTests.FromStream_InvalidBytes_ThrowsArgumentException(bytes: [0, 0, 1, 0, 0, ...])
+System.Drawing.Tests.ImageTests.FromStream_InvalidBytes_ThrowsArgumentException(bytes: [0, 0, 1, 0, 1, ...])
+System.Drawing.Tests.ImageTests.FromStream_InvalidBytes_ThrowsArgumentException(bytes: [0, 0, 1, 0, 10, ...])
+System.Drawing.Tests.ImageTests.FromStream_InvalidBytes_ThrowsArgumentException(bytes: [0, 0, 1, 0, 255, ...])
+System.Drawing.Tests.ImageTests.FromStream_InvalidBytes_ThrowsArgumentException(bytes: [0, 0, 1, 2, 10, ...])
+System.Drawing.Tests.ImageTests.FromStream_InvalidBytes_ThrowsArgumentException(bytes: [0, 0, 2, 0, 10, ...])
+System.Drawing.Tests.ImageTests.FromStream_InvalidBytes_ThrowsArgumentException(bytes: [0, 10, 1, 0, 10, ...])
+System.Drawing.Tests.ImageTests.FromStream_InvalidBytes_ThrowsArgumentException(bytes: [10, 0, 1, 0, 10, ...])
+System.Drawing.Tests.ImageTests.GetEncoderParameterList_ReturnsExpected(format: Jpeg, expectedParameters: [8d0eb2d1-a58e-4ea8-aa14-108074b7b6f9, 1d5be4b5-fa4a-452d-9cdd-5db35105e7eb, edb33bce-0266-4a77-b904-27216099e717, f2e455dc-09b3-4316-8260-676ada32481c, 63875e13-1f1d-45ab-9195-a29b6066a650])
+System.Drawing.Tests.ImageTests.GetEncoderParameterList_ReturnsExpected(format: Tiff, expectedParameters: [e09d739d-ccd4-44ee-8eba-3fbf8be4fc58, 66087055-ad66-4c7c-9a18-38a2310b8337, 292266fc-ac40-47bf-8cfc-a85b89a655de, a219bbc9-0a9d-4005-a3ee-3a421b8bb06c])
+System.Drawing.Tests.ImageTests.GetPropertyItem_InvokeExistsBitmapBmp_Success
+System.Drawing.Tests.ImageTests.PropertyIdList_GetBitmapJpg_Success
+System.Drawing.Tests.ImageTests.PropertyItems_GetBitmapJpg_Success
+System.Drawing.Tests.ImageTests.RemovePropertyItem_InvokeBitmapJpg_Success
+System.Drawing.Tests.ImageTests.RemovePropertyItem_InvokeMemoryBitmap_Success
+System.Drawing.Tests.ImageTests.RemovePropertyItem_NoSuchPropertyItemEmptyImageBitmapBmp_ThrowsExternalException(propid: -1)
+System.Drawing.Tests.ImageTests.RemovePropertyItem_NoSuchPropertyItemEmptyImageBitmapBmp_ThrowsExternalException(propid: 0)
+System.Drawing.Tests.ImageTests.RemovePropertyItem_NoSuchPropertyItemEmptyImageBitmapBmp_ThrowsExternalException(propid: 1)
+System.Drawing.Tests.ImageTests.RemovePropertyItem_NoSuchPropertyItemEmptyMemoryBitmap_ThrowsExternalException(propid: -1)
+System.Drawing.Tests.ImageTests.RemovePropertyItem_NoSuchPropertyItemEmptyMemoryBitmap_ThrowsExternalException(propid: 0)
+System.Drawing.Tests.ImageTests.RemovePropertyItem_NoSuchPropertyItemEmptyMemoryBitmap_ThrowsExternalException(propid: 1)
+System.Drawing.Tests.ImageTests.RemovePropertyItem_NoSuchPropertyNotEmptyMemoryBitmap_ThrowsArgumentException(propid: -1)
+System.Drawing.Tests.ImageTests.RemovePropertyItem_NoSuchPropertyNotEmptyMemoryBitmap_ThrowsArgumentException(propid: 0)
+System.Drawing.Tests.ImageTests.RemovePropertyItem_NoSuchPropertyNotEmptyMemoryBitmap_ThrowsArgumentException(propid: 1)
+System.Drawing.Tests.ImageTests.SetPropertyItem_InvokeBitmapBmp_Success(propid: -1)
+System.Drawing.Tests.ImageTests.SetPropertyItem_InvokeBitmapBmp_Success(propid: 0)
+System.Drawing.Tests.ImageTests.SetPropertyItem_InvokeBitmapBmp_Success(propid: 1)
+System.Drawing.Tests.ImageTests.SetPropertyItem_InvokeBitmapJpg_Success(propid: -1)
+System.Drawing.Tests.ImageTests.SetPropertyItem_InvokeBitmapJpg_Success(propid: 0)
+System.Drawing.Tests.ImageTests.SetPropertyItem_InvokeBitmapJpg_Success(propid: 1)
+System.Drawing.Tests.ImageTests.SetPropertyItem_InvokeMemoryBitmap_Success(propid: -1)
+System.Drawing.Tests.ImageTests.SetPropertyItem_InvokeMemoryBitmap_Success(propid: 0)
+System.Drawing.Tests.ImageTests.SetPropertyItem_InvokeMemoryBitmap_Success(propid: 1)
+System.Drawing.Tests.RegionTests.Complement_SameRegion_ThrowsInvalidOperationException
+System.Drawing.Tests.RegionTests.Ctor_EmptyGraphicsPath_ThrowsExternalException
+System.Drawing.Tests.RegionTests.Ctor_InfiniteGraphicsPath_IsInfinite(path: GraphicsPath { FillMode = Alternate, PathData = PathData { Points = [...], Types = [...] }, PathPoints = [{X=-4194304, Y=-4194304}, {X=-4194304, Y=4194304}, {X=4194304, Y=4194304}, {X=4194304, Y=-4194304}, {X=-4194304, Y=-4194304}], PathTypes = [0, 1, 1, 1, 129], PointCount = 5 }, isInfinite: True)
+System.Drawing.Tests.RegionTests.Ctor_InfiniteGraphicsPath_IsInfinite(path: GraphicsPath { FillMode = Alternate, PathData = PathData { Points = [...], Types = [...] }, PathPoints = [{X=-4194304, Y=-4194304}, {X=-4194304, Y=4194304}, {X=4194304, Y=4194304}, {X=4194304, Y=-4194304}], PathTypes = [0, 1, 1, 129], PointCount = 4 }, isInfinite: True)
+System.Drawing.Tests.RegionTests.Ctor_InfiniteGraphicsPath_IsInfinite(path: GraphicsPath { FillMode = Alternate, PathData = PathData { Points = [...], Types = [...] }, PathPoints = [{X=-4194304, Y=-4194304}, {X=4194304, Y=-4194304}, {X=4194304, Y=4194304}, {X=-4194304, Y=4194304}], PathTypes = [0, 1, 1, 129], PointCount = 4 }, isInfinite: True)
+System.Drawing.Tests.RegionTests.Ctor_Rectangle(x: -1, y: -2, width: -3, height: -4, isEmpty: True)
+System.Drawing.Tests.RegionTests.Ctor_RectangleF(x: -1, y: -2, width: -3, height: -4, isEmpty: True)
+System.Drawing.Tests.RegionTests.Ctor_RectangleF(x: 1, y: 2, width: 3, height: -∞, isEmpty: True)
+System.Drawing.Tests.RegionTests.Ctor_RectangleF(x: 3.4028235E+38, y: 3.4028235E+38, width: 3.4028235E+38, height: 3.4028235E+38, isEmpty: True)
+System.Drawing.Tests.RegionTests.Exclude_SameRegion_ThrowsInvalidOperationException
+System.Drawing.Tests.RegionTests.Intersect_SameRegion_ThrowsInvalidOperationException
+System.Drawing.Tests.RegionTests.Translate_InvalidFloatValue_EmptiesRegion(f: -3.4028235E+38)
+System.Drawing.Tests.RegionTests.Translate_InvalidFloatValue_EmptiesRegion(f: 3.4028235E+38)
+System.Drawing.Tests.RegionTests.Union_SameRegion_ThrowsInvalidOperationException
+System.Drawing.Tests.RegionTests.Xor_SameRegion_ThrowsInvalidOperationException
+System.Drawing.Tests.StringFormatTests.SetDigitSubstitution_Invoke_SetsProperties(language: -1, substitute: -1, expectedLanguage: 65535)
+System.Drawing.Tests.StringFormatTests.SetDigitSubstitution_Invoke_SetsProperties(language: 2147483647, substitute: 4, expectedLanguage: 65535)
+System.Drawing.Tests.SystemFontsTests.SystemFont_Get_ReturnsExpected_WindowsNames
+System.Drawing.Tests.TextureBrushTests.Ctor_Bitmap
+System.Drawing.Tests.TextureBrushTests.Ctor_BitmapFromIconHandle_Success
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_Rectangle(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, rectangle: {X=0,Y=0,Width=10,Height=10})
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_Rectangle(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, rectangle: {X=5,Y=5,Width=5,Height=5})
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_RectangleF(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, rectangle: {X=0,Y=0,Width=10,Height=10})
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_RectangleF(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, rectangle: {X=5,Y=5,Width=5,Height=5})
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_RectangleF_ImageAttributes(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, rectangle: {X=0,Y=0,Width=10,Height=10}, attributes: ImageAttributes { }, expectedWrapMode: Clamp)
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_RectangleF_ImageAttributes(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, rectangle: {X=0,Y=0,Width=10,Height=10}, attributes: ImageAttributes { }, expectedWrapMode: TileFlipXY)
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_RectangleF_ImageAttributes(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, rectangle: {X=0,Y=0,Width=10,Height=10}, attributes: null, expectedWrapMode: Tile)
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_RectangleF_ImageAttributes(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, rectangle: {X=5,Y=5,Width=5,Height=5}, attributes: ImageAttributes { }, expectedWrapMode: Clamp)
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_RectangleF_ImageAttributes(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, rectangle: {X=5,Y=5,Width=5,Height=5}, attributes: ImageAttributes { }, expectedWrapMode: TileFlipXY)
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_RectangleF_ImageAttributes(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, rectangle: {X=5,Y=5,Width=5,Height=5}, attributes: null, expectedWrapMode: Tile)
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_Rectangle_ImageAttributes(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, rectangle: {X=0,Y=0,Width=10,Height=10}, attributes: ImageAttributes { }, expectedWrapMode: Clamp)
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_Rectangle_ImageAttributes(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, rectangle: {X=0,Y=0,Width=10,Height=10}, attributes: ImageAttributes { }, expectedWrapMode: TileFlipXY)
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_Rectangle_ImageAttributes(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, rectangle: {X=0,Y=0,Width=10,Height=10}, attributes: null, expectedWrapMode: Tile)
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_Rectangle_ImageAttributes(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, rectangle: {X=5,Y=5,Width=5,Height=5}, attributes: ImageAttributes { }, expectedWrapMode: Clamp)
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_Rectangle_ImageAttributes(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, rectangle: {X=5,Y=5,Width=5,Height=5}, attributes: ImageAttributes { }, expectedWrapMode: TileFlipXY)
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_Rectangle_ImageAttributes(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, rectangle: {X=5,Y=5,Width=5,Height=5}, attributes: null, expectedWrapMode: Tile)
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_WrapMode
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_WrapMode_Rectangle(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, wrapMode: Clamp, rectangle: {X=0,Y=0,Width=10,Height=10})
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_WrapMode_Rectangle(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, wrapMode: Clamp, rectangle: {X=5,Y=5,Width=5,Height=5})
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_WrapMode_Rectangle(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, wrapMode: Tile, rectangle: {X=0,Y=0,Width=10,Height=10})
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_WrapMode_Rectangle(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, wrapMode: Tile, rectangle: {X=5,Y=5,Width=5,Height=5})
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_WrapMode_Rectangle(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, wrapMode: TileFlipX, rectangle: {X=0,Y=0,Width=10,Height=10})
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_WrapMode_Rectangle(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, wrapMode: TileFlipX, rectangle: {X=5,Y=5,Width=5,Height=5})
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_WrapMode_Rectangle(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, wrapMode: TileFlipXY, rectangle: {X=0,Y=0,Width=10,Height=10})
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_WrapMode_Rectangle(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, wrapMode: TileFlipXY, rectangle: {X=5,Y=5,Width=5,Height=5})
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_WrapMode_Rectangle(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, wrapMode: TileFlipY, rectangle: {X=0,Y=0,Width=10,Height=10})
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_WrapMode_Rectangle(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, wrapMode: TileFlipY, rectangle: {X=5,Y=5,Width=5,Height=5})
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_WrapMode_RectangleF(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, wrapMode: Clamp, rectangle: {X=0,Y=0,Width=10,Height=10})
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_WrapMode_RectangleF(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, wrapMode: Clamp, rectangle: {X=5,Y=5,Width=5,Height=5})
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_WrapMode_RectangleF(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, wrapMode: Tile, rectangle: {X=0,Y=0,Width=10,Height=10})
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_WrapMode_RectangleF(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, wrapMode: Tile, rectangle: {X=5,Y=5,Width=5,Height=5})
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_WrapMode_RectangleF(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, wrapMode: TileFlipX, rectangle: {X=0,Y=0,Width=10,Height=10})
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_WrapMode_RectangleF(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, wrapMode: TileFlipX, rectangle: {X=5,Y=5,Width=5,Height=5})
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_WrapMode_RectangleF(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, wrapMode: TileFlipXY, rectangle: {X=0,Y=0,Width=10,Height=10})
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_WrapMode_RectangleF(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, wrapMode: TileFlipXY, rectangle: {X=5,Y=5,Width=5,Height=5})
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_WrapMode_RectangleF(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, wrapMode: TileFlipY, rectangle: {X=0,Y=0,Width=10,Height=10})
+System.Drawing.Tests.TextureBrushTests.Ctor_Image_WrapMode_RectangleF(image: Bitmap { Flags = 2, FrameDimensionsList = [7462dc86-6180-4c7e-8e3f-ee7333a7a483], Height = 10, HorizontalResolution = 96, Palette = ColorPalette { Entries = [...], Flags = 0 }, ... }, wrapMode: TileFlipY, rectangle: {X=5,Y=5,Width=5,Height=5})
+System.Drawing.Tests.ToolboxBitmapAttributeTests.Ctor_FileName(fileName: "/home/chris/.cache/wfc-agents/dfc-12-13-tests-and-"..., size: {Width=0, Height=0})
+System.Drawing.Tests.ToolboxBitmapAttributeTests.Ctor_FileName(fileName: "/home/chris/.cache/wfc-agents/dfc-12-13-tests-and-"..., size: {Width=16, Height=16})
+System.Drawing.Tests.ToolboxBitmapAttributeTests.Ctor_FileName(fileName: "/home/chris/.cache/wfc-agents/dfc-12-13-tests-and-"..., size: {Width=173, Height=183})
+System.Drawing.Tests.ToolboxBitmapAttributeTests.Ctor_FileName(fileName: null, size: {Width=0, Height=0})
+System.Drawing.Tests.ToolboxBitmapAttributeTests.Ctor_Type(type: null, width: -1, height: -1)
+System.Drawing.Tests.ToolboxBitmapAttributeTests.Ctor_Type(type: typeof(ClassWithNoNamespace), width: -1, height: -1)
+System.Drawing.Tests.ToolboxBitmapAttributeTests.Ctor_Type(type: typeof(System.Drawing.Tests.ToolboxBitmapAttributeTests), width: -1, height: -1)
+System.Drawing.Tests.ToolboxBitmapAttributeTests.Ctor_Type_String(type: null, fileName: "invalid.ico", width: -1, height: -1)
+System.Drawing.Tests.ToolboxBitmapAttributeTests.Ctor_Type_String(type: null, fileName: null, width: -1, height: -1)
+System.Drawing.Tests.ToolboxBitmapAttributeTests.Ctor_Type_String(type: typeof(ClassWithNoNamespace), fileName: null, width: -1, height: -1)
+System.Drawing.Tests.ToolboxBitmapAttributeTests.Ctor_Type_String(type: typeof(System.Drawing.Tests.ToolboxBitmapAttributeTests), fileName: "", width: -1, height: -1)
+System.Drawing.Tests.ToolboxBitmapAttributeTests.Ctor_Type_String(type: typeof(System.Drawing.Tests.ToolboxBitmapAttributeTests), fileName: "48x48_multiple_entries_4bit", width: 16, height: 16)
+System.Drawing.Tests.ToolboxBitmapAttributeTests.Ctor_Type_String(type: typeof(System.Drawing.Tests.ToolboxBitmapAttributeTests), fileName: "bitmap_173x183_indexed_8bit", width: 173, height: 183)
+System.Drawing.Tests.ToolboxBitmapAttributeTests.Ctor_Type_String(type: typeof(System.Drawing.Tests.ToolboxBitmapAttributeTests), fileName: "empty.file", width: -1, height: -1)
+System.Drawing.Tests.ToolboxBitmapAttributeTests.Ctor_Type_String(type: typeof(System.Drawing.Tests.ToolboxBitmapAttributeTests), fileName: "invalid.ico", width: -1, height: -1)
+System.Drawing.Tests.ToolboxBitmapAttributeTests.Ctor_Type_String(type: typeof(System.Drawing.Tests.ToolboxBitmapAttributeTests), fileName: null, width: -1, height: -1)
+System.Drawing.Tests.ToolboxBitmapAttributeTests.Equals_Other_ReturnsExpected(attribute: ToolboxBitmapAttribute { TypeId = typeof(System.Drawing.ToolboxBitmapAttribute) }, other: Object { }, expected: False)
+System.Drawing.Tests.ToolboxBitmapAttributeTests.Equals_Other_ReturnsExpected(attribute: ToolboxBitmapAttribute { TypeId = typeof(System.Drawing.ToolboxBitmapAttribute) }, other: ToolboxBitmapAttribute { TypeId = typeof(System.Drawing.ToolboxBitmapAttribute) }, expected: True)
+System.Drawing.Tests.ToolboxBitmapAttributeTests.Equals_Other_ReturnsExpected(attribute: ToolboxBitmapAttribute { TypeId = typeof(System.Drawing.ToolboxBitmapAttribute) }, other: null, expected: False)
+System.Drawing.Tests.ToolboxBitmapAttributeTests.GetImage_Default_ReturnsExpected
+System.Drawing.Tests.ToolboxBitmapAttributeTests.GetImage_NoExtension(type: typeof(System.Drawing.Tests.Icon_toolboxBitmapAttributeTest), width: 256, height: 256)
+System.Drawing.Tests.ToolboxBitmapAttributeTests.GetImage_NullComponent_ReturnsNull
+System.Drawing.Text.Tests.PrivateFontCollectionTests.AddFontFile_SameNameMultipleTimes_FamiliesContainsFirstFontOnly
+System.Drawing.Text.Tests.PrivateFontCollectionTests.AddMemoryFont_Disposed_ThrowsArgumentException

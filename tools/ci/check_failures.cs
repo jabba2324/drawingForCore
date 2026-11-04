@@ -1,7 +1,8 @@
 // Fails when a .trx has a failed test that isn't in the suite's known-failures list.
 // Usage: dotnet run tools/ci/check_failures.cs -- results.trx [known-failures.txt]
-// Known failures are one "Class.Method(arguments)" per line, as this tool prints them; '#' starts a comment. Tests on
-// the list that now pass are reported, so the list can shrink.
+// Known failures are one "Class.Method(arguments)" per line, as this tool prints them; a line that starts with '#' is a
+// comment (test names can contain '#', so it isn't a comment elsewhere). Tests on the list that now pass are reported,
+// so the list can shrink.
 #:property NuGetAudit=false
 using System.Xml.Linq;
 
@@ -11,8 +12,8 @@ var known = new HashSet<string>();
 if (args.Length > 1)
     foreach (var line in File.ReadLines(args[1]))
     {
-        var entry = line.Split('#', 2)[0].Trim();
-        if (entry.Length > 0) known.Add(entry);
+        var entry = line.Trim();
+        if (entry.Length > 0 && !entry.StartsWith('#')) known.Add(entry);
     }
 
 var root = XDocument.Load(trx).Root!;
