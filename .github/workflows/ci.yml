@@ -1,8 +1,8 @@
-# Linux, Windows and macOS builds in parallel, System.Drawing.Common's test suite on both (docs/TESTING.md), and the NuGet
+# Linux, Windows and macOS builds in parallel, System.Drawing.Common's test suite on each (docs/TESTING.md), and the NuGet
 # packages: every run packs them, checks that an application builds and runs from them, and keeps Linux's as the
 # "packages" artifact. Microsoft's code comes from the external/ submodules. A version tag
-# (v0.1.0, matching <Version> in Directory.Build.props) also publishes the packages as a GitHub release, once both
-# platforms pass, and updates the NuGet feed on GitHub Pages (feed.yml).
+# (v0.1.0, matching <Version> in Directory.Build.props) also publishes the packages as a GitHub release, once
+# Linux and Windows pass, and updates the NuGet feed on GitHub Pages (feed.yml).
 name: CI
 
 on:
@@ -150,6 +150,49 @@ jobs:
 
       - name: Package smoke test
         run: tools/ci/package-smoke.sh "$RUNNER_TEMP/packages" 0.0.0-windows.${{ github.run_number }}
+
+  # The same build, tests, packing and package smoke test on macOS (Apple silicon), #13. Not a required check, and a
+  # release doesn't wait for it.
+  build-macos:
+    runs-on: macos-latest
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Set up .NET (global.json)
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Test fonts
+        run: tools/ci/fetch-test-fonts.sh
+
+      - name: Build
+        run: dotnet build drawingForCore.slnx -c Release -nodeReuse:false -p:Version=0.0.0-macos.${{ github.run_number }}
+
+      - name: Test
+        run: tools/ci/run-tests.sh "$RUNNER_TEMP/TestResults"
+
+      - name: Test summary
+        if: always()
+        run: cat "$RUNNER_TEMP/TestResults/summary.md" >> "$GITHUB_STEP_SUMMARY" || true
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-macos
+          path: ${{ runner.temp }}/TestResults/*.trx
+          if-no-files-found: warn
+
+      - name: Pack
+        run: tools/ci/pack.sh 0.0.0-macos.${{ github.run_number }} "$RUNNER_TEMP/packages"
+
+      - name: Package smoke test
+        run: tools/ci/package-smoke.sh "$RUNNER_TEMP/packages" 0.0.0-macos.${{ github.run_number }}
 
   # A version tag: the tested packages become a GitHub release.
   release:
