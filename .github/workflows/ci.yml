@@ -176,9 +176,11 @@ jobs:
       - name: Diagnose (temporary)
         continue-on-error: true
         run: |
-          dotnet test test/drawingForCore.System.Drawing.Common.Tests/drawingForCore.System.Drawing.Common.Tests.csproj -c Release --no-build --filter "FullyQualifiedName~UnixSupportDisabledThrows" --diag "$RUNNER_TEMP/diag/log.txt" || true
-          for f in "$RUNNER_TEMP"/diag/*; do echo "=== $f"; grep -i -E "exit|crash|signal|abort|terminat|unhandled" "$f" | tail -40; done
-          ls -la ~/Library/Logs/DiagnosticReports/ 2>/dev/null | tail; for f in ~/Library/Logs/DiagnosticReports/*; do echo "=== $f"; head -60 "$f"; done 2>/dev/null | head -200
+          dotnet tool install --tool-path "$RUNNER_TEMP/tools" dotnet-dump
+          dotnet test test/drawingForCore.System.Drawing.Common.Tests/drawingForCore.System.Drawing.Common.Tests.csproj -c Release --no-build --filter "category!=failing&category!=nonlinuxtests&category!=nonunixtests&category!=nonnetcoreapptests&category!=OuterLoop&category!=IgnoreForCI" --blame-crash --blame-crash-dump-type mini --results-directory "$RUNNER_TEMP/diag" > "$RUNNER_TEMP/diag.txt" 2>&1 || true
+          grep -i -E -A3 "crash|abort|while executing" "$RUNNER_TEMP/diag.txt" | head -60
+          for d in $(find "$RUNNER_TEMP/diag" -name "*.dmp"); do echo "=== $d"; "$RUNNER_TEMP/tools/dotnet-dump" analyze "$d" -c "clrthreads" -c "pe -nested" -c "clrstack -all" -c "exit" | head -400; done
+          find "$RUNNER_TEMP/diag" -name "Sequence*.xml" -exec tail -c 1500 {} ;
 
       - name: Test
         run: tools/ci/run-tests.sh "$RUNNER_TEMP/TestResults"
