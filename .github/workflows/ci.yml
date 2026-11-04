@@ -173,6 +173,13 @@ jobs:
       - name: Build
         run: dotnet build drawingForCore.slnx -c Release -nodeReuse:false -p:Version=0.0.0-macos.${{ github.run_number }}
 
+      - name: Diagnose (temporary)
+        continue-on-error: true
+        run: |
+          dotnet test test/drawingForCore.System.Drawing.Common.Tests/drawingForCore.System.Drawing.Common.Tests.csproj -c Release --no-build --filter "FullyQualifiedName~UnixSupportDisabledThrows" --diag "$RUNNER_TEMP/diag/log.txt" || true
+          for f in "$RUNNER_TEMP"/diag/*; do echo "=== $f"; grep -i -E "exit|crash|signal|abort|terminat|unhandled" "$f" | tail -40; done
+          ls -la ~/Library/Logs/DiagnosticReports/ 2>/dev/null | tail; for f in ~/Library/Logs/DiagnosticReports/*; do echo "=== $f"; head -60 "$f"; done 2>/dev/null | head -200
+
       - name: Test
         run: tools/ci/run-tests.sh "$RUNNER_TEMP/TestResults"
 
