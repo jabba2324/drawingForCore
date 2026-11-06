@@ -2,7 +2,8 @@
 # libgdiplus failed them (#12), on Linux, Windows and macOS. Most are GDI+ features the engine doesn't have yet;
 # docs/TESTING.md groups them by reason. CI fails on any other failure in that run, and reports a test here that
 # passes, so it can be removed. Some fail on one platform only and are reported as passing on the others: font metrics
-# and UNC paths (pass on Windows), PrintDocumentTests.Ctor_Default_Success (passes where a printer is installed).
+# and UNC paths (pass on Windows; font metrics pass on macOS too, #13), PrintDocumentTests.Ctor_Default_Success
+# (passes where a printer is installed).
 # An entry ending in '*' covers the cases of a theory whose names change between runs or machines (window handles,
 # absolute paths, system fonts); infinities are named "∞" or "Infinity" depending on the machine's ICU data, so both
 # are listed.

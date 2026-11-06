@@ -20,7 +20,7 @@ and moved to its own repository because it is useful to any .NET Framework code 
 | | |
 | --- | --- |
 | Status | Pre-release (0.2.0) |
-| Target | .NET 10 LTS (`net10.0`), from 0.2.0 (0.1.0 was `net11.0`). Linux x64 and Windows x64, both built and tested in CI. macOS (Apple silicon) is built in CI and passes the package smoke test, but the test suite crashes there ([#13](https://github.com/xforcore/drawingForCore/issues/13)) |
+| Target | .NET 10 LTS (`net10.0`), from 0.2.0 (0.1.0 was `net11.0`). Linux x64, Windows x64 and macOS on Apple silicon (arm64, macOS 15), all three built and tested in CI from 0.4.0 ([#13](https://github.com/xforcore/drawingForCore/issues/13)). Intel Macs aren't tested |
 | Tests | Microsoft's System.Drawing.Common 6.0 test suite, in CI on Linux and on Windows: 3,882 tests, 3,705 pass, 26 skipped, 151 known failures (141 of them metafiles, which aren't implemented). A second run takes the tests Microsoft disabled for libgdiplus: on Linux 1,006, 527 pass, 19 skipped, 460 known failures (Windows: 1,019, 537, 19, 463). CI fails on any other failure |
 | Packages | `drawingForCore` (System.Drawing) and `drawingForCore.Common` (System.Drawing.Common), on the feed below and on the [GitHub releases](https://github.com/xforcore/drawingForCore/releases). Not on nuget.org |
 
@@ -49,7 +49,10 @@ reference `drawingForCore.Common` alone.
 Text needs fonts installed. On Linux the Windows core fonts are matched to metric-compatible ones when they are
 installed: Liberation for Arial, Times New Roman and Courier New; Carlito and Caladea for Calibri and Cambria. On
 macOS families resolve through CoreText (SkiaSharp's font manager there) instead of fontconfig, and macOS has Arial,
-Times New Roman and Courier New itself, so text is measured with the real fonts, not the metric-compatible ones (#13).
+Times New Roman and Courier New itself, so text is measured with the real fonts, not the metric-compatible ones (#13):
+text sizes and line breaks can differ slightly from Linux's, and are closer to Windows'. Calibri, Cambria, Segoe UI
+and Consolas aren't part of macOS: as on Linux, a family that isn't installed (or substituted) isn't found.
+On macOS nothing else needs installing: SkiaSharp's package carries its macOS native library.
 
 The feed keeps the latest few versions. Every version's packages are also attached to its
 [release](https://github.com/xforcore/drawingForCore/releases).

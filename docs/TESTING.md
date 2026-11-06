@@ -26,9 +26,9 @@ tools/ci/run-tests.sh            # both runs; .trx and summary.md in ./TestResul
 ```
 
 On Windows: Git for Windows and the SDK in `global.json`; then the same commands in Git Bash. The test tools
-(`tools/ci/*.cs`) are C# file-based apps that `run-tests.sh` runs with `dotnet run`. On macOS the same commands
-build and the package smoke test passes, but the test host crashes part-way through the suite
-([#13](https://github.com/xforcore/drawingForCore/issues/13), [CI](#ci)).
+(`tools/ci/*.cs`) are C# file-based apps that `run-tests.sh` runs with `dotnet run`. On macOS the same commands, in
+Terminal (the SDK in `global.json`; nothing else to install: SkiaSharp's package has the macOS native library, and
+fonts come from the system) ([macOS](#macos)).
 
 ## drawingForCore's own tests
 
@@ -37,7 +37,9 @@ in the test project's own folders, which its `**/*.cs` item picks up: `Engine/Na
 records what the flat API does with the buffers Microsoft's code passes it: LockBits in every format with either stride
 sign, UnlockBits with another BitmapData, a bitmap disposed while locked, Scan0, the codec lists, the BMP and GIF
 encoders' bytes, JPEG quality and the integer overloads. They run in the same selection, so from #3 the counts above
-are 100 higher: 3,982 tests, 3,805 pass, 26 skipped, 151 known failures in CI.
+are 100 higher: 3,982 tests, 3,805 pass, 26 skipped, 151 known failures in CI. `Engine/MacOSCrashTests.cs` (6 tests,
+#13) records what crashed the test host on macOS: a Graphics whose image is disposed before it (flushing, its
+bounds, drawing), and the scans of regions taller than 4,096 rows.
 
 ## The selection
 
@@ -49,8 +51,8 @@ uses the same filter:
 category!=failing&category!=nonlinuxtests&category!=nonnetcoreapptests&category!=OuterLoop&category!=IgnoreForCI&category!=nonunixtests
 ```
 
-Windows runs the same selection. The engine is drawingForCore's on both, not Windows' own GDI+, so the suite's Windows
-expectations don't apply ([MODIFICATIONS.md](MODIFICATIONS.md)).
+Windows and macOS run the same selection. The engine is drawingForCore's on all three, not Windows' own GDI+, so the
+suite's Windows expectations don't apply ([MODIFICATIONS.md](MODIFICATIONS.md)).
 
 ### The Unix-disabled tests
 
@@ -63,12 +65,13 @@ libgdiplus, so `run-tests.sh` runs them too, as a second run with its own known 
 (category=failing|category=nonlinuxtests|category=nonunixtests)&category!=nonnetcoreapptests&category!=OuterLoop&category!=IgnoreForCI
 ```
 
-Seven theories are left out of it by name (`SLOW` in `run-tests.sh`): `RegionTests.Exclude_Rectangle_Success`,
+Until #13, seven theories were left out of it by name: `RegionTests.Exclude_Rectangle_Success`,
 `Exclude_RectangleF_Success`, `Exclude_GraphicsPath_Success`, `Xor_Rectangle_Success`, `Xor_RectangleF_Success`,
-`Xor_GraphicsPath_Success` and `Xor_Region_Success`. All 66 of their cases pass, but in one case of each the engine
-takes 80 seconds for `GetRegionScans` of an infinite region less a rectangle (Skia rasterises the
-8,388,608-pixel-high region one row at a time), which would add 9 minutes to every run. Their data aren't
-serialisable, so xunit can't filter the slow case alone. With them the run has 1,073 tests on Fedora 44 and 603 pass.
+`Xor_GraphicsPath_Success` and `Xor_Region_Success`. All 66 of their cases passed, but in one case of each the engine
+took 80 seconds for `GetRegionScans` of an infinite region less a rectangle (Skia rasterised the
+8,388,608-pixel-high region one row at a time). The engine now rasterises a region taller than 4,096 rows in bands,
+one row for each band that only vertical edges cross, so the cases take milliseconds and the theories run: the run
+has 66 more tests, and the main selection's `Complement_InfiniteRegion_Success` no longer takes two minutes.
 
 The run's size differs by platform: Windows enumerates the cases of theories whose data come from Windows (window
 handles, device contexts, system fonts), which fail as one test elsewhere, and the printing tests depend on an
@@ -92,10 +95,11 @@ list only shrinks: remove a test from the list when it passes.
 ### Known failures of the Unix-disabled tests
 
 `tools/ci/known-failures/System.Drawing.Common.Tests.unix-disabled.txt` lists the second run's failures: 454 entries
-(the union of Linux, Windows and a Linux machine with a printer). Since #3, a missing `UserInputBuffer` is
+(the union of Linux, Windows, macOS and a Linux machine with a printer). Since #3, a missing `UserInputBuffer` is
 InvalidParameter, and the three `LockBits_InvalidLockMode_ThrowsArgumentException` cases pass: the CI counts here
 and at the top are from before that, three failures higher. Some cases fail on one platform only, and are
-reported as passing on the others: font metrics, a long path and a UNC path pass on Windows, and
+reported as passing on the others: font metrics, a long path and a UNC path pass on Windows, the two
+`FontTests.GetHeight_Dpi_ReturnsExpected` cases pass on macOS (its fonts are the real ones), and
 `PrintDocumentTests.Ctor_Default_Success` passes where a printer is installed. An entry that ends in `*` covers every
 case of a theory whose names change from run to run or machine to machine (window handles, absolute paths, system
 fonts), and infinities are listed both as `∞` and `Infinity`, since the name depends on the machine's ICU data. Most of
@@ -117,6 +121,39 @@ the failures are GDI+ features the engine doesn't have yet. By test class, in Li
 | 12 | `GraphicsPathTests` | `Widen`, `Warp`, arcs, closed curves, strings and `IsVisible` |
 | 55 | 18 other classes | 9 or fewer each: buffered graphics, private font families, metafiles, line caps, Bézier and line pixels, printing, ... |
 
+## macOS
+
+Since #13, CI runs both runs on macOS 15 on Apple silicon (arm64) with the same selections and known-failure lists as
+on Linux and Windows, and fails on the same terms. In its first runs (6 Nov 2026): **3,951 tests in the main
+selection, 3,687 pass, 113 skipped and 151 fail, the same 151 known failures as on Linux and Windows; the
+Unix-disabled run has 1,073 tests, 603 pass, 24 skipped and 446 fail, all known.**
+
+What differs from Linux x64:
+
+- **Skips on arm64.** Microsoft's suite skips tests on arm64 processes for libgdiplus problems
+  (dotnet/runtime#28859, and float precision in #35744): 64 `MatrixTests` cases (`Multiply`, `Scale`, `Shear`,
+  `Translate`), and tests and theories conditioned on `PlatformDetection.IsNotArm64Process` (`LockBits_Invoke_Success`,
+  `Rotate1bit4bit` and the codec `...Data` tests; a skipped theory counts as one test, not one per case). So the main
+  selection has 37 fewer results and 87 more skipped than on Linux. These are the suite's arm64 conditions, not
+  macOS's: the engine has no libgdiplus, but running them needs a change to Microsoft's tests, which isn't made.
+- **Fonts.** Families resolve through CoreText, SkiaSharp's font manager on macOS, and Arial, Times New Roman and
+  Courier New are the real fonts, so `FontTests.GetHeight_Dpi_ReturnsExpected(dpi: ±1)`, known failures on Linux,
+  pass (reported as passing, as font metrics are on Windows). No other test that compares text metrics or pixels
+  differs from Linux.
+- **The crashes before #13.** The test host crashed part-way through every macOS run, at a different test each time,
+  because of two engine bugs that Linux didn't reach:
+  - On macOS `Graphics.Dispose` flushes first (Microsoft's Unix code: `Gdip.UseX11Drawable` is false there), and
+    Microsoft's `BufferedGraphics.Dispose` disposes its bitmap before its Graphics. The engine's `GdipFlush` then
+    called into the disposed image's freed SKBitmap. A Graphics now keeps its own size and leaves a disposed image
+    alone (the same crash happened on Linux when an application flushed after disposing the image).
+  - `GetRegionScans` of a region as tall as the infinite one (`RegionTests.Complement_InfiniteRegion_Success`)
+    rasterised 8,388,608 rows: two minutes on Linux, a crash in `sk_region_set_path` on macOS. Tall regions are now
+    rasterised in bands.
+
+  The crash dump read in #17 stopped in CoreText (`CTFontGetBoundingBox`), on another thread than the one these bugs
+  crash; no CoreText crash has happened since they were fixed (CI's macOS runs, and the diagnostic runs on the pull
+  request).
+
 ## CI
 
 CI (`.github/workflows/ci.yml`) runs on every push and pull request, in three jobs that run in parallel:
@@ -124,11 +161,8 @@ CI (`.github/workflows/ci.yml`) runs on every push and pull request, in three jo
 - `build-and-test`, Ubuntu 24.04: the build (with the `external/` submodules checked out), the tests, packing and the
   package smoke test.
 - `build-windows`, Windows Server 2025 under Git Bash: the build, the tests, packing and the package smoke test.
-- `build-macos`, macOS on Apple silicon (`macos-latest`), #13: the build, packing and the package smoke test, which
-  must pass, and the tests, for information only (the step's failure doesn't fail the job; the results are uploaded
-  as `test-results-macos`). The test host crashes part-way through the suite on macOS: in the run analysed, in
-  CoreText (`CTFontGetBoundingBox`, called by SkiaSharp for font metrics), after 30 to 1,900 tests depending on the
-  run. It isn't a required check, and a release doesn't wait for it.
+- `build-macos`, macOS 15 on Apple silicon (arm64, the `macos-15` runner), #13: the build, the tests, packing and
+  the package smoke test, as on Linux ([macOS](#macos)). A release waits for it as for the other two.
 
 Each run is checked by `tools/ci/check_failures.cs`, which also fails a run whose test host crashed (the tests it
 didn't reach have no results to fail), and `--blame` names the tests that were running when it did.
@@ -144,6 +178,6 @@ only once `build-and-test` and `build-windows` have passed on it with the branch
 (`gh pr update-branch <n>` when it is behind). Force pushes and deleting the branch are blocked, and nobody can bypass the rules, administrators included.
 Version bumps therefore go through a pull request before the `v<Version>` tag is pushed; tags aren't covered.
 
-A `v<Version>` tag also builds the release version and, once the Linux and Windows jobs pass, attaches the packages
+A `v<Version>` tag also builds the release version and, once the Linux, Windows and macOS jobs pass, attaches the packages
 to a GitHub release (with `docs/release-notes/<version>.md` as its notes) and rebuilds the NuGet feed on GitHub Pages from the latest
 releases (`.github/workflows/feed.yml`, which can also be run by hand).
