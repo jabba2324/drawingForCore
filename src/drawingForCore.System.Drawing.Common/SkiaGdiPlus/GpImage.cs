@@ -75,8 +75,12 @@ namespace System.Drawing
             return clone;
         }
 
+        // Disposed by GdipDisposeImage: a Graphics drawing on the image can outlive it (GpGraphics).
+        public bool Disposed;
+
         public void Dispose()
         {
+            Disposed = true;
             LockedPixels = null;
             Pixels?.Dispose();
             if (FrameCache != null) foreach (var f in FrameCache) if (f != Pixels) f?.Dispose();

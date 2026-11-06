@@ -17,11 +17,7 @@ export PYTHONUTF8=1
 s=System.Drawing.Common.Tests
 NOT_RUN="category!=nonnetcoreapptests&category!=OuterLoop&category!=IgnoreForCI"
 SELECTION="category!=failing&category!=nonlinuxtests&category!=nonunixtests&$NOT_RUN"
-# Left out of the Unix-disabled run: seven Exclude/Xor theories pass, but one case of each asks for the scans of an
-# infinite region less a rectangle, which takes the engine 80 seconds (Skia rasterises the 8,388,608-pixel-high
-# region a row at a time). The theories' data aren't serialisable, so the case can't be filtered out on its own.
-SLOW="FullyQualifiedName!=System.Drawing.Tests.RegionTests.Exclude_Rectangle_Success&FullyQualifiedName!=System.Drawing.Tests.RegionTests.Exclude_RectangleF_Success&FullyQualifiedName!=System.Drawing.Tests.RegionTests.Exclude_GraphicsPath_Success&FullyQualifiedName!=System.Drawing.Tests.RegionTests.Xor_Rectangle_Success&FullyQualifiedName!=System.Drawing.Tests.RegionTests.Xor_RectangleF_Success&FullyQualifiedName!=System.Drawing.Tests.RegionTests.Xor_GraphicsPath_Success&FullyQualifiedName!=System.Drawing.Tests.RegionTests.Xor_Region_Success"
-UNIX_DISABLED="(category=failing|category=nonlinuxtests|category=nonunixtests)&$NOT_RUN&$SLOW"
+UNIX_DISABLED="(category=failing|category=nonlinuxtests|category=nonunixtests)&$NOT_RUN"
 
 status=0
 for run in "$s:$SELECTION" "$s.unix-disabled:$UNIX_DISABLED"; do

@@ -124,12 +124,74 @@ namespace System.Drawing
         {
             var result = new List<RectangleF>();
             if (Infinite) { result.Add(InfiniteRect); return result; }
-            using var region = new SKRegion();
             var b = Path.Bounds;
-            region.SetPath(Path, new SKRegion(new SKRectI((int)Math.Floor(b.Left), (int)Math.Floor(b.Top), (int)Math.Ceiling(b.Right), (int)Math.Ceiling(b.Bottom))));
+            var bounds = new SKRectI((int)Math.Floor(b.Left), (int)Math.Floor(b.Top), (int)Math.Ceiling(b.Right), (int)Math.Ceiling(b.Bottom));
+            using var region = bounds.Height <= TallRows ? Rasterize(bounds) : RasterizeInBands(bounds);
             using var iterator = region.CreateRectIterator();
             while (iterator.Next(out var r)) result.Add(new RectangleF(r.Left, r.Top, r.Width, r.Height));
             return result;
+        }
+
+        // Skia rasterises a region one row at a time: for a region as tall as the infinite one (8,388,608 rows, as
+        // the infinite region less a rectangle is) that took two minutes on Linux and crashed on macOS (#13).
+        const int TallRows = 4096;
+
+        SKRegion Rasterize(SKRectI clip)
+        {
+            var region = new SKRegion();
+            using var clipRegion = new SKRegion(clip);
+            region.SetPath(Path, clipRegion);
+            return region;
+        }
+
+        // The same rows in horizontal bands. A row's coverage can only change at a row that holds a point of the path
+        // or follows one; between those, a band that only vertical lines cross covers the same pixels on every row, so
+        // its first row is rasterised and stretched to the band. Any other band is rasterised whole.
+        SKRegion RasterizeInBands(SKRectI bounds)
+        {
+            var edges = new List<(float MinY, float MaxY, bool Vertical)>();
+            var breaks = new SortedSet<int> { bounds.Top, bounds.Bottom };
+            using (var iterator = Path.CreateIterator(forceClose: true))
+            {
+                var points = new SKPoint[4];
+                SKPathVerb verb;
+                while ((verb = iterator.Next(points)) != SKPathVerb.Done)
+                {
+                    int count = verb switch { SKPathVerb.Move => 1, SKPathVerb.Line => 2, SKPathVerb.Quad or SKPathVerb.Conic => 3, SKPathVerb.Cubic => 4, _ => 0 };
+                    if (count == 0) continue;
+                    float minY = float.MaxValue, maxY = float.MinValue, minX = float.MaxValue, maxX = float.MinValue;
+                    for (int i = 0; i < count; i++)
+                    {
+                        var p = points[i];
+                        int row = (int)Math.Floor(p.Y);
+                        if (row > bounds.Top && row < bounds.Bottom) breaks.Add(row);
+                        if (row + 1 > bounds.Top && row + 1 < bounds.Bottom) breaks.Add(row + 1);
+                        minY = Math.Min(minY, p.Y); maxY = Math.Max(maxY, p.Y);
+                        minX = Math.Min(minX, p.X); maxX = Math.Max(maxX, p.X);
+                    }
+                    if (verb != SKPathVerb.Move) edges.Add((minY, maxY, minX == maxX));
+                }
+            }
+
+            var region = new SKRegion();
+            int top = bounds.Top;
+            foreach (int bottom in breaks)
+            {
+                if (bottom <= top) continue;
+                bool uniform = bottom - top > 1 && edges.TrueForAll(e => e.Vertical || e.MaxY <= top || e.MinY >= bottom);
+                using var band = Rasterize(new SKRectI(bounds.Left, top, bounds.Right, uniform ? top + 1 : bottom));
+                if (uniform)
+                {
+                    using var rects = band.CreateRectIterator();
+                    while (rects.Next(out var r)) region.Op(new SKRectI(r.Left, top, r.Right, bottom), SKRegionOperation.Union);
+                }
+                else
+                {
+                    region.Op(band, SKRegionOperation.Union);
+                }
+                top = bottom;
+            }
+            return region;
         }
     }
 
