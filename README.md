@@ -21,7 +21,7 @@ and moved to its own repository because it is useful to any .NET Framework code 
 | --- | --- |
 | Status | Pre-release (0.2.0) |
 | Target | .NET 10 LTS (`net10.0`), from 0.2.0 (0.1.0 was `net11.0`). Linux x64, Windows x64 and macOS on Apple silicon (arm64, macOS 15), all three built and tested in CI from 0.4.0 ([#13](https://github.com/xforcore/drawingForCore/issues/13)). Intel Macs aren't tested |
-| Tests | Microsoft's System.Drawing.Common 6.0 test suite, in CI on Linux and on Windows: 3,882 tests, 3,705 pass, 26 skipped, 151 known failures (141 of them metafiles, which aren't implemented). A second run takes the tests Microsoft disabled for libgdiplus: on Linux 1,006, 527 pass, 19 skipped, 460 known failures (Windows: 1,019, 537, 19, 463). CI fails on any other failure |
+| Tests | Microsoft's System.Drawing.Common 6.0 test suite and drawingForCore's own tests, in CI on Linux, Windows and macOS: on Linux and Windows 3,988 tests, 3,811 pass, 26 skipped, 151 known failures (141 of them metafiles, which aren't implemented); on macOS (arm64, where Microsoft's suite skips more) 3,951, 3,687, 113, the same 151. A second run takes the tests Microsoft disabled for libgdiplus: on Linux 1,072, 596 pass, 19 skipped, 457 known failures (Windows: 1,085, 606, 19, 460; macOS: 1,073, 603, 24, 446). CI fails on any other failure ([TESTING.md](docs/TESTING.md)) |
 | Packages | `drawingForCore` (System.Drawing) and `drawingForCore.Common` (System.Drawing.Common), on the feed below and on the [GitHub releases](https://github.com/xforcore/drawingForCore/releases). Not on nuget.org |
 
 ## Using it

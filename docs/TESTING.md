@@ -99,7 +99,7 @@ list only shrinks: remove a test from the list when it passes.
 InvalidParameter, and the three `LockBits_InvalidLockMode_ThrowsArgumentException` cases pass: the CI counts here
 and at the top are from before that, three failures higher. Some cases fail on one platform only, and are
 reported as passing on the others: font metrics, a long path and a UNC path pass on Windows, the two
-`FontTests.GetHeight_Dpi_ReturnsExpected` cases pass on macOS (its fonts are the real ones), and
+`FontTests.GetHeight_Dpi_ReturnsExpected` cases and four compositing pixel cases pass on macOS ([below](#macos)), and
 `PrintDocumentTests.Ctor_Default_Success` passes where a printer is installed. An entry that ends in `*` covers every
 case of a theory whose names change from run to run or machine to machine (window handles, absolute paths, system
 fonts), and infinities are listed both as `∞` and `Infinity`, since the name depends on the machine's ICU data. Most of
@@ -138,8 +138,13 @@ What differs from Linux x64:
   macOS's: the engine has no libgdiplus, but running them needs a change to Microsoft's tests, which isn't made.
 - **Fonts.** Families resolve through CoreText, SkiaSharp's font manager on macOS, and Arial, Times New Roman and
   Courier New are the real fonts, so `FontTests.GetHeight_Dpi_ReturnsExpected(dpi: ±1)`, known failures on Linux,
-  pass (reported as passing, as font metrics are on Windows). No other test that compares text metrics or pixels
-  differs from Linux.
+  pass (reported as passing, as font metrics are on Windows). No test that compares text sizes or text pixels fails
+  on macOS where it passes on Linux.
+- **Blending.** Some blends round differently on macOS (arm64), and four Unix-disabled cases that compare blended
+  pixels with Windows GDI+'s pass on macOS and fail on Linux and Windows:
+  `GraphicsTests.CompositingMode_Set_GetReturnsExpected(mode: SourceOver)` and
+  `CompositingQuality_Set_GetReturnsExpected` for `AssumeLinear`, `Default` and `HighSpeed`. They stay on the known
+  list, reported as passing on macOS. No pixel test fails on macOS where it passes on Linux.
 - **The crashes before #13.** The test host crashed part-way through every macOS run, at a different test each time,
   because of two engine bugs that Linux didn't reach:
   - On macOS `Graphics.Dispose` flushes first (Microsoft's Unix code: `Gdip.UseX11Drawable` is false there), and
@@ -150,9 +155,9 @@ What differs from Linux x64:
     rasterised 8,388,608 rows: two minutes on Linux, a crash in `sk_region_set_path` on macOS. Tall regions are now
     rasterised in bands.
 
-  The crash dump read in #17 stopped in CoreText (`CTFontGetBoundingBox`), on another thread than the one these bugs
-  crash; no CoreText crash has happened since they were fixed (CI's macOS runs, and the diagnostic runs on the pull
-  request).
+  The crash dump read in #17 had a thread in CoreText (`CTFontGetBoundingBox`), but didn't say which thread faulted.
+  In the dumps taken for #13 the faulting threads were in `GdipFlush` and `GetRegionScans`, and since the two fixes
+  no macOS run has crashed: seven runs of the main selection, three of them with the Unix-disabled run as well.
 
 ## CI
 
