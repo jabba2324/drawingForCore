@@ -27,6 +27,7 @@ jobs:
         env:
           MODE: ${{ matrix.mode }}
         run: |
+          set +e
           P=test/drawingForCore.System.Drawing.Common.Tests/drawingForCore.System.Drawing.Common.Tests.csproj
           SEL="category!=failing&category!=nonlinuxtests&category!=nonunixtests&category!=nonnetcoreapptests&category!=OuterLoop&category!=IgnoreForCI"
           summ() { grep -E "Passed!|Failed!|aborted|Total tests" "$1" | head -3; grep -A6 "test running when the crash" "$1" | head -8; }
