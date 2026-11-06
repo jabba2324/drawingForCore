@@ -1,0 +1,47 @@
+# Temporary (#13): find the macOS test host crash. Removed before the PR is merged.
+name: macOS diag
+on:
+  push:
+    branches: [fix/13-macos]
+env:
+  DOTNET_NOLOGO: "1"
+  DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+jobs:
+  diag:
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [baseline, serial, perclass]
+    runs-on: macos-15
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - run: tools/ci/fetch-test-fonts.sh
+      - run: dotnet build drawingForCore.slnx -c Release -nodeReuse:false
+      - name: Run
+        env:
+          MODE: ${{ matrix.mode }}
+        run: |
+          P=test/drawingForCore.System.Drawing.Common.Tests/drawingForCore.System.Drawing.Common.Tests.csproj
+          SEL="category!=failing&category!=nonlinuxtests&category!=nonunixtests&category!=nonnetcoreapptests&category!=OuterLoop&category!=IgnoreForCI"
+          summ() { grep -E "Passed!|Failed!|aborted|Total tests" "$1" | head -3; grep -A6 "test running when the crash" "$1" | head -8; }
+          case $MODE in
+            baseline)
+              for i in 1 2 3; do echo "=== run $i"; dotnet test $P -c Release --no-build --blame --filter "$SEL" > out.txt 2>&1; summ out.txt; done ;;
+            serial)
+              for i in 1 2 3; do echo "=== run $i"; dotnet test $P -c Release --no-build --blame --filter "$SEL" -- xUnit.ParallelizeTestCollections=false > out.txt 2>&1; summ out.txt; done ;;
+            perclass)
+              dotnet test $P -c Release --no-build --list-tests > list.txt 2>&1
+              grep -E '^\s+[A-Za-z]' list.txt | sed -E 's/^\s+//; s/\(.*//' | awk -F. '{NF--; print}' OFS=. | sort -u > classes.txt
+              wc -l classes.txt
+              for c in $(cat classes.txt); do
+                dotnet test $P -c Release --no-build --filter "($SEL)&FullyQualifiedName~$c." > out.txt 2>&1
+                if grep -q "aborted" out.txt; then echo "CRASH $c"; summ out.txt; fi
+              done
+              echo done ;;
+          esac
