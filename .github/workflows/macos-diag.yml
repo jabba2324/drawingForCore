@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        mode: [baseline, serial, perclass]
+        mode: [buffered, serial, scribble, full]
     runs-on: macos-15
     timeout-minutes: 60
     steps:
@@ -23,6 +23,7 @@ jobs:
           dotnet-version: 10.0.x
       - run: tools/ci/fetch-test-fonts.sh
       - run: dotnet build drawingForCore.slnx -c Release -nodeReuse:false
+      - run: dotnet tool install --tool-path "$RUNNER_TEMP/tools" dotnet-dump
       - name: Run
         env:
           MODE: ${{ matrix.mode }}
@@ -30,19 +31,32 @@ jobs:
           set +e
           P=test/drawingForCore.System.Drawing.Common.Tests/drawingForCore.System.Drawing.Common.Tests.csproj
           SEL="category!=failing&category!=nonlinuxtests&category!=nonunixtests&category!=nonnetcoreapptests&category!=OuterLoop&category!=IgnoreForCI"
-          summ() { grep -E "Passed!|Failed!|aborted|Total tests" "$1" | head -3; grep -A6 "test running when the crash" "$1" | head -8; }
+          D="$RUNNER_TEMP/diag"; mkdir -p "$D"
+          summ() { grep -E "Passed!|Failed!|aborted|Total tests|Unhandled exception" "$1" | head -4; grep -A6 "test running when the crash" "$1" | head -8; }
+          dumps() {
+            for d in $(find "$D/$1" -name "*.dmp"); do
+              echo "=== $d"
+              lldb --batch -c "$d" -o "thread backtrace all -c 30" > "$d.lldb.txt" 2>&1
+              "$RUNNER_TEMP/tools/dotnet-dump" analyze "$d" -c "pe -nested" -c "clrstack -all" -c "exit" > "$d.clr.txt" 2>&1
+              # The native threads in Skia, CoreText or an abort, and the exception.
+              awk '/^  thread #|^\* thread #/{t=$0; p=0} /SkiaSharp|CoreText|FontParser|abort|malloc_|__pthread_kill|CoreGraphics/{if(!p){print t; p=1}} ' "$d.lldb.txt" | head -20
+              grep -B2 -A40 "stop reason\|EXC_\|signal SIG" "$d.lldb.txt" | head -80
+              grep -A20 "Exception object" "$d.clr.txt" | head -30
+              rm -f "$d"
+            done
+          }
           case $MODE in
-            baseline)
-              for i in 1 2 3; do echo "=== run $i"; dotnet test $P -c Release --no-build --blame --filter "$SEL" > out.txt 2>&1; summ out.txt; done ;;
+            buffered)
+              for i in $(seq 1 8); do echo "=== run $i"; dotnet test $P -c Release --no-build --blame-crash --blame-crash-dump-type full --results-directory "$D/b$i" --filter "($SEL)&FullyQualifiedName~System.Drawing.Tests.BufferedGraphics" > "$D/b$i.txt" 2>&1; summ "$D/b$i.txt"; grep -B3 -A30 "Unhandled\|crashed" "$D/b$i.txt" | head -60; dumps b$i; done ;;
             serial)
-              for i in 1 2 3; do echo "=== run $i"; dotnet test $P -c Release --no-build --blame --filter "$SEL" -- xUnit.ParallelizeTestCollections=false > out.txt 2>&1; summ out.txt; done ;;
-            perclass)
-              dotnet test $P -c Release --no-build --list-tests > list.txt 2>&1
-              grep -E '^\s+[A-Za-z]' list.txt | sed -E 's/^\s+//; s/\(.*//' | awk -F. '{NF--; print}' OFS=. | sort -u > classes.txt
-              wc -l classes.txt
-              for c in $(cat classes.txt); do
-                dotnet test $P -c Release --no-build --filter "($SEL)&FullyQualifiedName~$c." > out.txt 2>&1
-                if grep -q "aborted" out.txt; then echo "CRASH $c"; summ out.txt; fi
-              done
-              echo done ;;
+              for i in 1 2 3; do echo "=== run $i"; dotnet test $P -c Release --no-build --blame --filter "$SEL" -- RunConfiguration.DisableParallelization=true xUnit.ParallelizeTestCollections=false > "$D/s$i.txt" 2>&1; summ "$D/s$i.txt"; done ;;
+            scribble)
+              for i in 1 2 3; do echo "=== run $i"; MallocScribble=1 MallocPreScribble=1 MallocGuardEdges=1 MallocCheckHeapStart=1000 MallocCheckHeapEach=1000 dotnet test $P -c Release --no-build --blame-crash --blame-crash-dump-type full --results-directory "$D/m$i" --filter "$SEL" > "$D/m$i.txt" 2>&1; summ "$D/m$i.txt"; dumps m$i; done ;;
+            full)
+              for i in 1 2 3; do echo "=== run $i"; dotnet test $P -c Release --no-build --blame-crash --blame-crash-dump-type full --results-directory "$D/f$i" --filter "$SEL" > "$D/f$i.txt" 2>&1; summ "$D/f$i.txt"; dumps f$i; done ;;
           esac
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: diag-${{ matrix.mode }}
+          path: ${{ runner.temp }}/diag/**/*.txt
