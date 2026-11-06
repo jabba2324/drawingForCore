@@ -2,7 +2,7 @@
 # packages: every run packs them, checks that an application builds and runs from them, and keeps Linux's as the
 # "packages" artifact. Microsoft's code comes from the external/ submodules. A version tag
 # (v0.1.0, matching <Version> in Directory.Build.props) also publishes the packages as a GitHub release, once
-# Linux and Windows pass, and updates the NuGet feed on GitHub Pages (feed.yml).
+# Linux, Windows and macOS pass, and updates the NuGet feed on GitHub Pages (feed.yml).
 name: CI
 
 on:
@@ -68,9 +68,7 @@ jobs:
       - name: Build
         run: dotnet build drawingForCore.slnx -c Release -nodeReuse:false -p:Version=${{ steps.version.outputs.version }}
 
-      # For information until the crash is fixed (#13): the results are uploaded and summarised.
       - name: Test
-        continue-on-error: true
         run: tools/ci/run-tests.sh "$RUNNER_TEMP/TestResults"
 
       - name: Test summary
@@ -153,11 +151,9 @@ jobs:
       - name: Package smoke test
         run: tools/ci/package-smoke.sh "$RUNNER_TEMP/packages" 0.0.0-windows.${{ github.run_number }}
 
-  # The build, packing and package smoke test on macOS (Apple silicon), #13, and the tests for information only: the
-  # test host crashes part-way through on macOS, in CoreText (font metrics through SkiaSharp), so the step may fail
-  # without failing the job. Not a required check, and a release doesn't wait for it.
+  # The same build, tests, packing and package smoke test on macOS 15 on Apple silicon (arm64), #13.
   build-macos:
-    runs-on: macos-latest
+    runs-on: macos-15
     timeout-minutes: 60
 
     steps:
@@ -177,7 +173,6 @@ jobs:
         run: dotnet build drawingForCore.slnx -c Release -nodeReuse:false -p:Version=0.0.0-macos.${{ github.run_number }}
 
       - name: Test
-        continue-on-error: true
         run: tools/ci/run-tests.sh "$RUNNER_TEMP/TestResults"
 
       - name: Test summary
@@ -200,7 +195,7 @@ jobs:
 
   # A version tag: the tested packages become a GitHub release.
   release:
-    needs: [build-and-test, build-windows]
+    needs: [build-and-test, build-windows, build-macos]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-24.04
     permissions:

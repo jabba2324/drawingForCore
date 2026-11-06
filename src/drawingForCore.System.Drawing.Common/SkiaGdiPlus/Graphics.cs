@@ -20,8 +20,12 @@ namespace System.Drawing
 
     internal sealed class GpGraphics : IDisposable
     {
+        // The image drawn on. It can be disposed before the Graphics (Microsoft's BufferedGraphics.Dispose does that on
+        // Unix): the canvas keeps the pixels alive, and the size is the canvas's, so nothing here reads the image's
+        // freed bitmap (#13).
         public GpImage Target;
         public SKCanvas Canvas;
+        public readonly int Width, Height;
         public float DpiX = 96, DpiY = 96;
         public GpMatrix World = new GpMatrix();
         public GraphicsUnit PageUnit = GraphicsUnit.Display;
@@ -65,6 +69,8 @@ namespace System.Drawing
         {
             Target = target;
             Canvas = new SKCanvas(target.Pixels);
+            Width = target.Width;
+            Height = target.Height;
             DpiX = target.DpiX;
             DpiY = target.DpiY;
         }
@@ -234,7 +240,7 @@ namespace System.Drawing
             var g = G(graphics);
             if (g == null) return InvalidParameter;
             g.Canvas.Flush();
-            g.Target.Pixels.NotifyPixelsChanged();
+            if (!g.Target.Disposed) g.Target.Pixels.NotifyPixelsChanged();
             return Ok;
         }
 
@@ -513,7 +519,7 @@ namespace System.Drawing
         // The visible clip: the clip within the bitmap.
         static GpRegion VisibleClip(GpGraphics g)
         {
-            var visible = GpRegion.FromRect(new RectangleF(0, 0, g.Target.Width, g.Target.Height));
+            var visible = GpRegion.FromRect(new RectangleF(0, 0, g.Width, g.Height));
             visible.Combine(g.ContainerClip, CombineMode.Intersect);
             visible.Combine(g.Clip, CombineMode.Intersect);
             return visible;

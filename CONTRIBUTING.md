@@ -78,14 +78,13 @@ changed, and new code doesn't add to the list. The Python written before rule 11
 - The pull request lists, for each change: the problem, what needs it (principle 7), the fix, the test and the suite's
   numbers (principle 6), and whether Microsoft's code changed (and where that is documented).
 - CI (`.github/workflows/ci.yml`) builds, runs the tests, packs the packages and runs the package
-  smoke test, on Linux and on Windows; both must pass. A macOS job builds, packs and runs the package smoke test, and
-  runs the tests for information (#13).
+  smoke test, on Linux, on Windows and on macOS (Apple silicon, #13); all three must pass.
 
 ## Releases
 
 1. Set `<Version>` in `Directory.Build.props` and write `docs/release-notes/<version>.md`.
 2. Update the test numbers in README.md and docs/TESTING.md.
-3. Tag the merged commit `v<version>`. CI builds and tests the tag on both platforms, creates the GitHub release with
+3. Tag the merged commit `v<version>`. CI builds and tests the tag on all three platforms, creates the GitHub release with
    the packages, and rebuilds the NuGet feed.
 
 Licences: drawingForCore's own code is MIT, and Microsoft's code keeps its MIT licence
